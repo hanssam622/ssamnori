@@ -11,13 +11,6 @@
 </head>
 <body>
 
-  <!-- Background Ambient Glowing Orbs -->
-  <div class="bg-glow-container" aria-hidden="true">
-    <div class="glow-orb glow-orb-1"></div>
-    <div class="glow-orb glow-orb-2"></div>
-    <div class="glow-orb glow-orb-3"></div>
-  </div>
-
   <!-- Header Navigation -->
   <header class="header">
     <div class="container header-container">
@@ -25,15 +18,6 @@
         <span class="logo-text">achuhanssam</span>
         <span class="logo-badge">Portfolio</span>
       </a>
-      
-      <div class="nav-controls">
-        <button class="btn-drawer-trigger" id="btn-open-drawer" aria-label="클래스룸 퀵 툴 열기">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-          </svg>
-          교실 퀵 툴
-        </button>
-      </div>
     </div>
   </header>
 
@@ -100,12 +84,12 @@
             철자 퀴즈를 맞힐 때마다 아이스크림 한 스쿱씩 올라갑니다! 교실 대형 전자칠판에 띄워 모둠별 영어 어휘 경쟁 게임으로 활용하기 좋습니다.
           </p>
           <div class="card-actions">
-            <button class="btn btn-web-game btn-play-trigger" data-title="아이스크림 탑 쌓기" data-src="games/icecream/index.html" aria-label="아이스크림 탑 쌓기 바로 플레이">
+            <a href="games/icecream/index.html" class="btn btn-web-game" aria-label="아이스크림 탑 쌓기 바로 플레이">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
               </svg>
               바로 플레이
-            </button>
+            </a>
             <a href="games/icecream/index.html" target="_blank" class="btn btn-secondary" title="새 창에서 열기" aria-label="새 창에서 열기">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
@@ -132,12 +116,12 @@
             곱셈의 받아올림과 나눗셈의 계산 과정을 색상 및 자리값 매핑을 활용해 시각적이고 직관적으로 익히는 미니게임식 연산 도구입니다.
           </p>
           <div class="card-actions">
-            <button class="btn btn-web-game btn-play-trigger" data-title="연산맨" data-src="games/calcman/index.html" aria-label="연산맨 바로 플레이">
+            <a href="games/calcman/index.html" class="btn btn-web-game" aria-label="연산맨 바로 플레이">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
               </svg>
               바로 플레이
-            </button>
+            </a>
             <a href="games/calcman/index.html" target="_blank" class="btn btn-secondary" title="새 창에서 열기" aria-label="새 창에서 열기">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
@@ -163,12 +147,12 @@
             삼각형의 변의 길이와 각의 크기에 따른 분류 기준을 연습하고, 모눈 칠판에 점 세 개를 찍어 삼각형을 직접 디자인해 분류 결과를 분석하는 기하 학습 게임입니다.
           </p>
           <div class="card-actions">
-            <button class="btn btn-web-game btn-play-trigger" data-title="도형맨" data-src="games/shapeman/index.html" aria-label="도형맨 바로 플레이">
+            <a href="games/shapeman/index.html" class="btn btn-web-game" aria-label="도형맨 바로 플레이">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
               </svg>
               바로 플레이
-            </button>
+            </a>
             <a href="games/shapeman/index.html" target="_blank" class="btn btn-secondary" title="새 창에서 열기" aria-label="새 창에서 열기">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
@@ -194,12 +178,12 @@
             제시되는 각도를 비주얼 프로트랙터로 맞추고 어림값을 가늠하며 정밀한 수학적 공간 지각 능력과 도형의 내각 및 외각 계산 능력을 마스터하는 전자칠판용 교육 게임입니다.
           </p>
           <div class="card-actions">
-            <button class="btn btn-web-game btn-play-trigger" data-title="각도맨" data-src="games/angleman/index.html" aria-label="각도맨 바로 플레이">
+            <a href="games/angleman/index.html" class="btn btn-web-game" aria-label="각도맨 바로 플레이">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
               </svg>
               바로 플레이
-            </button>
+            </a>
             <a href="games/angleman/index.html" target="_blank" class="btn btn-secondary" title="새 창에서 열기" aria-label="새 창에서 열기">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
@@ -225,12 +209,12 @@
             학생 명단을 넣고 원하는 대형(모둠형, ㄷ자형, 기본 분단형)을 선택하면 무작위로 교실 자리를 생성합니다. 시력이나 학생 간 성향에 따른 예외 지정 옵션을 지원합니다.
           </p>
           <div class="card-actions">
-            <button class="btn btn-teacher-tool btn-play-trigger" data-title="교실 자리 배치기" data-src="tools/seat/index.html" aria-label="교실 자리 배치기 실행">
+            <a href="tools/seat/index.html" class="btn btn-teacher-tool" aria-label="교실 자리 배치기 실행">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z" />
               </svg>
               도구 열기
-            </button>
+            </a>
             <a href="tools/seat/index.html" target="_blank" class="btn btn-secondary" title="새 창에서 열기" aria-label="새 창에서 열기">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
@@ -256,12 +240,12 @@
             마인드맵이나 생각의 가지 뻗기 수업에 특화된 직관적 마인드맵 뷰어 및 에디터입니다. 단축키와 원클릭 노드 추가 기능을 지원하여 빠른 조작이 가능합니다.
           </p>
           <div class="card-actions">
-            <button class="btn btn-teacher-tool btn-play-trigger" data-title="마인드맵 메이커" data-src="tools/mindmap/index.html" aria-label="마인드맵 메이커 실행">
+            <a href="tools/mindmap/index.html" class="btn btn-teacher-tool" aria-label="마인드맵 메이커 실행">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z" />
               </svg>
               도구 열기
-            </button>
+            </a>
             <a href="tools/mindmap/index.html" target="_blank" class="btn btn-secondary" title="새 창에서 열기" aria-label="새 창에서 열기">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
@@ -327,93 +311,6 @@
 
     </div>
   </main>
-
-  <!-- Interactive Modal Dialog (Play Overlay) -->
-  <dialog class="play-dialog" id="play-dialog">
-    <div class="dialog-header">
-      <h3 class="dialog-title" id="play-dialog-title">게임 플레이</h3>
-      <div class="dialog-actions">
-        <!-- Open in New Tab -->
-        <a href="" target="_blank" class="dialog-btn" id="btn-dialog-external" title="새 탭에서 열기" aria-label="새 탭에서 열기">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
-          </svg>
-        </a>
-        <!-- Close Dialog -->
-        <button class="dialog-btn dialog-btn-close" id="btn-dialog-close" aria-label="게임 닫기">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-          </svg>
-        </button>
-      </div>
-    </div>
-    <div class="dialog-body">
-      <!-- Hidden until opened by script -->
-      <iframe src="about:blank" class="dialog-iframe" id="play-iframe" title="게임 플레이어"></iframe>
-    </div>
-  </dialog>
-
-  <!-- Classroom Quick Tools Drawer Sidebar -->
-  <div class="drawer-backdrop" id="drawer-backdrop" aria-hidden="true"></div>
-  <aside class="drawer" id="drawer" role="complementary" aria-label="교실 퀵 툴">
-    <div class="drawer-header">
-      <h2 class="drawer-title">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-        </svg>
-        교실 퀵 툴
-      </h2>
-      <button class="btn-drawer-close" id="btn-close-drawer" aria-label="교실 퀵 툴 닫기">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-        </svg>
-      </button>
-    </div>
-    
-    <div class="drawer-content">
-      
-      <!-- Widget 1: Digital Timer -->
-      <section class="widget-card" id="widget-timer">
-        <h3 class="widget-title">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-          </svg>
-          수업 집중 타이머
-        </h3>
-        <div class="timer-display" id="timer-val">03:00</div>
-        
-        <div class="timer-controls">
-          <button class="timer-btn timer-btn-start" id="btn-timer-toggle">시작</button>
-          <button class="timer-btn timer-btn-reset" id="btn-timer-reset">리셋</button>
-        </div>
-        
-        <div class="timer-presets">
-          <button class="preset-btn" data-time="60">1분</button>
-          <button class="preset-btn" data-time="180">3분</button>
-          <button class="preset-btn" data-time="300">5분</button>
-          <button class="preset-btn" data-time="600">10분</button>
-        </div>
-      </section>
-
-      <!-- Widget 2: Student Random Picker -->
-      <section class="widget-card" id="widget-picker">
-        <h3 class="widget-title">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
-          </svg>
-          발표자 무작위 추첨
-        </h3>
-        <textarea class="picker-input" id="picker-list" placeholder="이름을 줄바꿈(엔터)으로 구분하여 입력하세요...&#10;예시:&#10;김철수&#10;이영희&#10;박민수"></textarea>
-        
-        <div class="picker-result-container">
-          <div class="picker-result" id="picker-result">누구를 뽑을까요?</div>
-        </div>
-        
-        <button class="picker-btn" id="btn-pick-start">랜덤 추첨하기</button>
-      </section>
-
-    </div>
-  </aside>
 
   <!-- Footer -->
   <footer class="footer">
