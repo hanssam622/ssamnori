@@ -75,7 +75,15 @@ document.addEventListener('DOMContentLoaded', () => {
     'assets/char_cat.png',
     ...Array.from({ length: 23 }, (_, index) => `assets/hero-characters/character-${index + 1}.png`),
   ];
-  const heroSpeechSources = Array.from({ length: 9 }, (_, index) => `assets/speech-bubbles/bubble-${index + 1}.png`);
+  const heroSpeechSources = [
+    'assets/speech-bubbles/bubble-1.png',
+    'assets/speech-bubbles/bubble-2.png',
+    'assets/speech-bubbles/bubble-3.png',
+    'assets/speech-bubbles/bubble-4.png',
+    'assets/speech-bubbles/bubble-6.png',
+    'assets/speech-bubbles/bubble-8.png',
+    'assets/speech-bubbles/bubble-9.png',
+  ];
   let heroCharacterVisible = false;
 
   function pickHeroCharacter() {
