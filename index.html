@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>achuhanssam | 교육용 웹게임 & 교사 프로그램 포트폴리오</title>
+  <meta name="description" content="achuhanssam의 학생용 전자칠판 웹게임, 교사용 유틸리티 프로그램, 그리고 PC용 다운로드 게임 포트폴리오 사이트입니다. 바로 플레이하거나 다운로드할 수 있습니다.">
+  
+  <!-- CSS Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Background Ambient Glowing Orbs -->
+  <div class="bg-glow-container" aria-hidden="true">
+    <div class="glow-orb glow-orb-1"></div>
+    <div class="glow-orb glow-orb-2"></div>
+    <div class="glow-orb glow-orb-3"></div>
+  </div>
+
+  <!-- Header Navigation -->
+  <header class="header">
+    <div class="container header-container">
+      <a href="#" class="logo-link" id="logo-nav">
+        <span class="logo-text">achuhanssam</span>
+        <span class="logo-badge">Portfolio</span>
+      </a>
+      
+      <div class="nav-controls">
+        <button class="btn-drawer-trigger" id="btn-open-drawer" aria-label="클래스룸 퀵 툴 열기">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+          </svg>
+          교실 퀵 툴
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Banner -->
+  <section class="hero">
+    <div class="container">
+      <span class="hero-subtitle">Interactive Class Experience</span>
+      <h1 class="hero-title">교실을 더 즐겁게,<br><span>배움을 더 역동적이게</span></h1>
+      <p class="hero-desc">
+        전자칠판과 웹 브라우저만 있다면 언제든 즐길 수 있는 학생용 학습 게임과 교사를 위한 스마트 수업 도구를 만드는 크리에이터 <strong>achuhanssam</strong>의 개인 아카이브입니다.
+      </p>
+    </div>
+  </section>
+
+  <!-- Main Projects Section -->
+  <main class="container">
+    
+    <!-- Category Tabs Filter -->
+    <div class="filter-section">
+      <div class="tab-container" role="tablist" aria-label="프로젝트 카테고리">
+        <button class="tab-btn active" role="tab" aria-selected="true" aria-controls="grid-container" data-filter="all" id="tab-all">
+          전체 보기
+        </button>
+        <button class="tab-btn" role="tab" aria-selected="false" aria-controls="grid-container" data-filter="web-game" id="tab-web-game">
+          🎮 학생용 웹게임
+        </button>
+        <button class="tab-btn" role="tab" aria-selected="false" aria-controls="grid-container" data-filter="teacher-tool" id="tab-teacher-tool">
+          🛠️ 교사용 도구
+        </button>
+        <button class="tab-btn" role="tab" aria-selected="false" aria-controls="grid-container" data-filter="download-game" id="tab-download-game">
+          📥 다운로드 게임
+        </button>
+      </div>
+    </div>
+
+    <!-- Portfolio Card Grid -->
+    <div class="portfolio-grid" id="grid-container">
+      
+      <!-- Card 1: Icecream Tower (Web Game) -->
+      <article class="portfolio-card" data-category="web-game" id="card-icecream">
+        <div class="card-thumb-container">
+          <!-- Temporary placeholder/generated image or custom SVG illustration -->
+          <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #0e7490, #155e75); display: flex; align-items: center; justify-content: center;">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 48px; height: 48px; color: #a5f3fc;">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 18a3.75 3.75 0 0 0 .495-7.467 5.99 5.99 0 0 0-1.925 3.546 5.974 5.974 0 0 1-2.133-1A3.75 3.75 0 0 0 12 18Z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 18a3.75 3.75 0 0 1-.495-7.467 5.99 5.99 0 0 1 1.925 3.546 5.974 5.974 0 0 0 2.133-1A3.75 3.75 0 0 1 12 18Z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 3c-1.2 0-2.4 1.2-2.4 2.4s1.2 2.4 2.4 2.4 2.4-1.2 2.4-2.4S13.2 3 12 3Z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 15.75 3.75 6 3.75-6" />
+            </svg>
+          </div>
+          <span class="card-badge badge-web-game">학생용 웹게임</span>
+        </div>
+        <div class="card-content">
+          <h2 class="card-title">아이스크림 탑 쌓기</h2>
+          <p class="card-desc">
+            철자 퀴즈를 맞힐 때마다 아이스크림 한 스쿱씩 올라갑니다! 교실 대형 전자칠판에 띄워 모둠별 영어 어휘 경쟁 게임으로 활용하기 좋습니다.
+          </p>
+          <div class="card-actions">
+            <button class="btn btn-web-game btn-play-trigger" data-title="아이스크림 탑 쌓기" data-src="games/icecream/index.html" aria-label="아이스크림 탑 쌓기 바로 플레이">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
+              </svg>
+              바로 플레이
+            </button>
+            <a href="games/icecream/index.html" target="_blank" class="btn btn-secondary" title="새 창에서 열기" aria-label="새 창에서 열기">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+              </svg>
+            </a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 2: Classroom Escape (Web Game) -->
+      <article class="portfolio-card" data-category="web-game" id="card-escape">
+        <div class="card-thumb-container">
+          <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #0891b2, #0369a1); display: flex; align-items: center; justify-content: center;">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 48px; height: 48px; color: #bae6fd;">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75" />
+            </svg>
+          </div>
+          <span class="card-badge badge-web-game">학생용 웹게임</span>
+        </div>
+        <div class="card-content">
+          <h2 class="card-title">방탈출: 교실 탈출</h2>
+          <p class="card-desc">
+            제한 시간 안에 교실 곳곳에 숨겨진 단서 힌트를 찾고 퀴즈를 풀어 방을 탈출하는 협동 어드벤처 게임입니다. 수업 복습용 퀴즈 팩을 적용할 수 있습니다.
+          </p>
+          <div class="card-actions">
+            <button class="btn btn-web-game btn-play-trigger" data-title="교실 탈출 게임" data-src="games/escape/index.html" aria-label="교실 탈출 게임 바로 플레이">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
+              </svg>
+              바로 플레이
+            </button>
+            <a href="games/escape/index.html" target="_blank" class="btn btn-secondary" title="새 창에서 열기" aria-label="새 창에서 열기">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+              </svg>
+            </a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 3: Classroom Seat Arranger (Teacher Tool) -->
+      <article class="portfolio-card" data-category="teacher-tool" id="card-seat">
+        <div class="card-thumb-container">
+          <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #047857, #065f46); display: flex; align-items: center; justify-content: center;">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 48px; height: 48px; color: #a7f3d0;">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25A2.25 2.25 0 0 1 13.5 8V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25A2.25 2.25 0 0 1 13.5 18v-2.25Z" />
+            </svg>
+          </div>
+          <span class="card-badge badge-teacher-tool">교사용 도구</span>
+        </div>
+        <div class="card-content">
+          <h2 class="card-title">교실 자리 배치기</h2>
+          <p class="card-desc">
+            학생 명단을 넣고 원하는 대형(모둠형, ㄷ자형, 기본 분단형)을 선택하면 무작위로 교실 자리를 생성합니다. 시력이나 학생 간 성향에 따른 예외 지정 옵션을 지원합니다.
+          </p>
+          <div class="card-actions">
+            <button class="btn btn-teacher-tool btn-play-trigger" data-title="교실 자리 배치기" data-src="tools/seat/index.html" aria-label="교실 자리 배치기 실행">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z" />
+              </svg>
+              도구 열기
+            </button>
+            <a href="tools/seat/index.html" target="_blank" class="btn btn-secondary" title="새 창에서 열기" aria-label="새 창에서 열기">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+              </svg>
+            </a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 4: Mindmap Maker (Teacher Tool) -->
+      <article class="portfolio-card" data-category="teacher-tool" id="card-mindmap">
+        <div class="card-thumb-container">
+          <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #065f46, #064e3b); display: flex; align-items: center; justify-content: center;">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 48px; height: 48px; color: #a7f3d0;">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z" />
+            </svg>
+          </div>
+          <span class="card-badge badge-teacher-tool">교사용 도구</span>
+        </div>
+        <div class="card-content">
+          <h2 class="card-title">브레인 마인드맵 메이커</h2>
+          <p class="card-desc">
+            마인드맵이나 생각의 가지 뻗기 수업에 특화된 직관적 마인드맵 뷰어 및 에디터입니다. 단축키와 원클릭 노드 추가 기능을 지원하여 빠른 조작이 가능합니다.
+          </p>
+          <div class="card-actions">
+            <button class="btn btn-teacher-tool btn-play-trigger" data-title="마인드맵 메이커" data-src="tools/mindmap/index.html" aria-label="마인드맵 메이커 실행">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z" />
+              </svg>
+              도구 열기
+            </button>
+            <a href="tools/mindmap/index.html" target="_blank" class="btn btn-secondary" title="새 창에서 열기" aria-label="새 창에서 열기">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+              </svg>
+            </a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 5: Team Battle Quiz Board (Download Game) -->
+      <article class="portfolio-card" data-category="download-game" id="card-battle-quiz">
+        <div class="card-thumb-container">
+          <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #c2410c, #9a3412); display: flex; align-items: center; justify-content: center;">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 48px; height: 48px; color: #ffedd5;">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+            </svg>
+          </div>
+          <span class="card-badge badge-download-game">PC 다운로드 게임</span>
+        </div>
+        <div class="card-content">
+          <h2 class="card-title">팀 배틀 퀴즈 보드</h2>
+          <p class="card-desc">
+            두 개의 팀으로 나눠 문제를 풀고 퀴즈 땅을 차지하는 오프라인 전용 EXE 게임입니다. 고화질 애니메이션과 효과음이 적용되어 전자칠판 교실 수업에 적합합니다. (용량: 140MB)
+          </p>
+          <div class="card-actions">
+            <!-- Mock Google Drive Link -->
+            <a href="https://drive.google.com/drive/folders/your-mock-id-1" target="_blank" class="btn btn-download-game" aria-label="팀 배틀 퀴즈 보드 구글 드라이브 다운로드">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+              </svg>
+              구글 드라이브 다운로드
+            </a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 6: Mission Cart Rider (Download Game) -->
+      <article class="portfolio-card" data-category="download-game" id="card-cart-rider">
+        <div class="card-thumb-container">
+          <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #ea580c, #c2410c); display: flex; align-items: center; justify-content: center;">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 48px; height: 48px; color: #ffedd5;">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+            </svg>
+          </div>
+          <span class="card-badge badge-download-game">PC 다운로드 게임</span>
+        </div>
+        <div class="card-content">
+          <h2 class="card-title">미션 카트 라이더</h2>
+          <p class="card-desc">
+            덧셈, 뺄셈, 곱셈 등 연산 퀴즈를 풀며 카트를 조종해 트랙을 완주하는 터치식 교육 게임입니다. 윈도우 환경의 전자칠판 터치 센서에 완전히 최적화되어 있습니다. (용량: 85MB)
+          </p>
+          <div class="card-actions">
+            <!-- Mock Google Drive Link -->
+            <a href="https://drive.google.com/drive/folders/your-mock-id-2" target="_blank" class="btn btn-download-game" aria-label="미션 카트 라이더 구글 드라이브 다운로드">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+              </svg>
+              구글 드라이브 다운로드
+            </a>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </main>
+
+  <!-- Interactive Modal Dialog (Play Overlay) -->
+  <dialog class="play-dialog" id="play-dialog">
+    <div class="dialog-header">
+      <h3 class="dialog-title" id="play-dialog-title">게임 플레이</h3>
+      <div class="dialog-actions">
+        <!-- Open in New Tab -->
+        <a href="" target="_blank" class="dialog-btn" id="btn-dialog-external" title="새 탭에서 열기" aria-label="새 탭에서 열기">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+          </svg>
+        </a>
+        <!-- Close Dialog -->
+        <button class="dialog-btn dialog-btn-close" id="btn-dialog-close" aria-label="게임 닫기">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+    </div>
+    <div class="dialog-body">
+      <!-- Hidden until opened by script -->
+      <iframe src="about:blank" class="dialog-iframe" id="play-iframe" title="게임 플레이어"></iframe>
+    </div>
+  </dialog>
+
+  <!-- Classroom Quick Tools Drawer Sidebar -->
+  <div class="drawer-backdrop" id="drawer-backdrop" aria-hidden="true"></div>
+  <aside class="drawer" id="drawer" role="complementary" aria-label="교실 퀵 툴">
+    <div class="drawer-header">
+      <h2 class="drawer-title">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+        </svg>
+        교실 퀵 툴
+      </h2>
+      <button class="btn-drawer-close" id="btn-close-drawer" aria-label="교실 퀵 툴 닫기">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+    
+    <div class="drawer-content">
+      
+      <!-- Widget 1: Digital Timer -->
+      <section class="widget-card" id="widget-timer">
+        <h3 class="widget-title">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+          </svg>
+          수업 집중 타이머
+        </h3>
+        <div class="timer-display" id="timer-val">03:00</div>
+        
+        <div class="timer-controls">
+          <button class="timer-btn timer-btn-start" id="btn-timer-toggle">시작</button>
+          <button class="timer-btn timer-btn-reset" id="btn-timer-reset">리셋</button>
+        </div>
+        
+        <div class="timer-presets">
+          <button class="preset-btn" data-time="60">1분</button>
+          <button class="preset-btn" data-time="180">3분</button>
+          <button class="preset-btn" data-time="300">5분</button>
+          <button class="preset-btn" data-time="600">10분</button>
+        </div>
+      </section>
+
+      <!-- Widget 2: Student Random Picker -->
+      <section class="widget-card" id="widget-picker">
+        <h3 class="widget-title">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+          </svg>
+          발표자 무작위 추첨
+        </h3>
+        <textarea class="picker-input" id="picker-list" placeholder="이름을 줄바꿈(엔터)으로 구분하여 입력하세요...&#10;예시:&#10;김철수&#10;이영희&#10;박민수"></textarea>
+        
+        <div class="picker-result-container">
+          <div class="picker-result" id="picker-result">누구를 뽑을까요?</div>
+        </div>
+        
+        <button class="picker-btn" id="btn-pick-start">랜덤 추첨하기</button>
+      </section>
+
+    </div>
+  </aside>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <span class="footer-logo">achuhanssam</span>
+      <div class="footer-links">
+        <a href="https://github.com/achuhanssam" target="_blank" class="footer-link">GitHub</a>
+        <a href="#" class="footer-link">이메일 문의</a>
+        <a href="#" class="footer-link">이용안내</a>
+      </div>
+      <p class="footer-text">
+        © 2026 achuhanssam. All Rights Reserved. 본 사이트의 웹 게임 및 도구는 교육 목적의 비상업적 용도로 자유롭게 사용하실 수 있습니다.
+      </p>
+    </div>
+  </footer>
+
+  <!-- JS Controller -->
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>아이스크림 탑 쌓기 - achuhanssam</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 1.5rem;
+      background: #111827;
+      color: #f3f4f6;
+      font-family: system-ui, -apple-system, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      box-sizing: border-box;
+      overflow-y: auto;
+    }
+    
+    h1 {
+      font-size: 1.5rem;
+      color: #06b6d4;
+      margin-bottom: 0.5rem;
+      text-align: center;
+    }
+
+    .desc {
+      font-size: 0.9rem;
+      color: #9ca3af;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    .game-area {
+      display: flex;
+      width: 100%;
+      max-width: 600px;
+      gap: 1.5rem;
+      background: rgba(31, 41, 55, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+    }
+
+    .tower-container {
+      flex: 1;
+      height: 300px;
+      position: relative;
+      display: flex;
+      flex-direction: column-reverse;
+      align-items: center;
+      border-bottom: 4px solid #4b5563;
+      padding-bottom: 8px;
+      overflow: hidden;
+    }
+
+    .cone {
+      width: 60px;
+      height: 50px;
+      background: #d97706;
+      clip-path: polygon(0 0, 100% 0, 50% 100%);
+      z-index: 2;
+    }
+
+    .scoop {
+      width: 70px;
+      height: 45px;
+      border-radius: 50% 50% 40% 40%;
+      margin-bottom: -15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #1f2937;
+      animation: dropScoop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+      box-shadow: inset 0 -5px 10px rgba(0, 0, 0, 0.15);
+      z-index: 3;
+    }
+
+    @keyframes dropScoop {
+      from {
+        transform: translateY(-200px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .control-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 1rem;
+    }
+
+    .quiz-card {
+      background: #1f2937;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    .quiz-title {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #9ca3af;
+      margin-bottom: 0.5rem;
+    }
+
+    .quiz-word {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .input-box {
+      width: 100%;
+      background: #111827;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #fff;
+      padding: 0.75rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      outline: none;
+      box-sizing: border-box;
+      text-align: center;
+    }
+
+    .input-box:focus {
+      border-color: #06b6d4;
+    }
+
+    .btn-submit {
+      background: #06b6d4;
+      color: white;
+      font-weight: 600;
+      border: none;
+      padding: 0.75rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      transition: background 0.2s;
+    }
+
+    .btn-submit:hover {
+      background: #0891b2;
+    }
+
+    .score-board {
+      text-align: center;
+      font-weight: 600;
+      color: #10b981;
+    }
+
+    @media (max-width: 480px) {
+      .game-area {
+        flex-direction: column;
+      }
+      .tower-container {
+        height: 200px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>아이스크림 탑 쌓기 🍦</h1>
+  <p class="desc">한글 단어의 올바른 영어 철자를 맞혀 탑을 쌓아 올리세요!</p>
+
+  <div class="game-area">
+    
+    <!-- Left: Icecream Tower view -->
+    <div class="tower-container" id="tower">
+      <div class="cone"></div>
+      <!-- Scoops will stack here dynamically -->
+    </div>
+
+    <!-- Right: Quiz board -->
+    <div class="control-panel">
+      <div class="score-board" id="score-display">점수: 0점</div>
+      
+      <div class="quiz-card">
+        <div class="quiz-title">의미에 맞는 영어 단어는?</div>
+        <div class="quiz-word" id="quiz-word">사과</div>
+      </div>
+
+      <input type="text" class="input-box" id="answer-input" placeholder="영어 입력..." autofocus autocomplete="off">
+      <button class="btn-submit" id="btn-submit">정답 제출</button>
+    </div>
+
+  </div>
+
+  <script>
+    const quizData = [
+      { kr: '사과', en: 'apple', color: '#ff8787' },
+      { kr: '바나나', en: 'banana', color: '#ffd43b' },
+      { kr: '포도', en: 'grape', color: '#da77f2' },
+      { kr: '오렌지', en: 'orange', color: '#ffd8a8' },
+      { kr: '멜론', en: 'melon', color: '#b2f2bb' },
+      { kr: '수박', en: 'watermelon', color: '#8ce99a' },
+      { kr: '체리', en: 'cherry', color: '#ff6b6b' },
+      { kr: '딸기', en: 'strawberry', color: '#ff8787' }
+    ];
+
+    let currentQuizIndex = 0;
+    let score = 0;
+    const tower = document.getElementById('tower');
+    const quizWord = document.getElementById('quiz-word');
+    const answerInput = document.getElementById('answer-input');
+    const btnSubmit = document.getElementById('btn-submit');
+    const scoreDisplay = document.getElementById('score-display');
+
+    function loadQuiz() {
+      const quiz = quizData[currentQuizIndex];
+      quizWord.textContent = quiz.kr;
+      answerInput.value = '';
+      answerInput.focus();
+    }
+
+    function checkAnswer() {
+      const quiz = quizData[currentQuizIndex];
+      const answer = answerInput.value.trim().toLowerCase();
+      
+      if (answer === quiz.en) {
+        // Success
+        score += 10;
+        scoreDisplay.textContent = `점수: ${score}점`;
+
+        // Add a scoop
+        const scoop = document.createElement('div');
+        scoop.className = 'scoop';
+        scoop.style.backgroundColor = quiz.color;
+        scoop.textContent = quiz.en;
+        
+        // Find existing scoops and adjust height if too many
+        const existingScoops = tower.querySelectorAll('.scoop');
+        if (existingScoops.length >= 5) {
+          // Remove the bottom-most scoop (first child after cone)
+          existingScoops[0].remove();
+        }
+        
+        // Insert scoop
+        tower.appendChild(scoop);
+
+        // Move to next quiz
+        currentQuizIndex = (currentQuizIndex + 1) % quizData.length;
+        loadQuiz();
+      } else {
+        alert('틀렸습니다! 다시 시도해보세요.');
+        answerInput.select();
+      }
+    }
+
+    btnSubmit.addEventListener('click', checkAnswer);
+    answerInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        checkAnswer();
+      }
+    });
+
+    // Initial load
+    loadQuiz();
+  </script>
+</body>
+</html>
