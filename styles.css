@@ -42,6 +42,23 @@
   --transition-bounce: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
+:root[data-theme="light"] {
+  --bg-main: #f7fafc;
+  --bg-card: rgba(255, 255, 255, 0.92);
+  --bg-card-hover: rgba(255, 255, 255, 1);
+  --border-color: rgba(15, 23, 42, 0.1);
+  --border-color-hover: rgba(15, 23, 42, 0.2);
+  --text-primary: #111827;
+  --text-secondary: #4b5563;
+  --text-muted: #6b7280;
+  --accent-purple: #6d28d9;
+  --accent-purple-glow: rgba(109, 40, 217, 0.16);
+  --color-game-glow: rgba(6, 182, 212, 0.18);
+  --color-tool-glow: rgba(16, 185, 129, 0.18);
+  --color-download-glow: rgba(249, 115, 22, 0.18);
+  --shadow-glow: 0 0 25px rgba(99, 102, 241, 0.12);
+}
+
 /* ==========================================
    2. Reset & Core Page Styles
    ========================================== */
@@ -64,6 +81,13 @@ body {
   min-height: 100vh;
   position: relative;
   line-height: 1.6;
+}
+
+:root[data-theme="light"] body {
+  background:
+    radial-gradient(circle at top left, rgba(6, 182, 212, 0.08), transparent 32rem),
+    radial-gradient(circle at top right, rgba(139, 92, 246, 0.08), transparent 28rem),
+    var(--bg-main);
 }
 
 /* Custom Scrollbar */
@@ -99,6 +123,10 @@ body {
   background: rgba(10, 12, 16, 0.94);
   border-bottom: 1px solid var(--border-color);
   padding: 1rem 0;
+}
+
+:root[data-theme="light"] .header {
+  background: rgba(255, 255, 255, 0.94);
 }
 
 .header-container {
@@ -141,6 +169,31 @@ body {
   border-radius: 4px;
   letter-spacing: 0.5px;
   box-shadow: 0 0 15px rgba(139, 92, 246, 0.4);
+}
+
+.theme-toggle {
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-primary);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 0.45rem 0.8rem;
+  transition: var(--transition-smooth);
+}
+
+.theme-toggle:hover {
+  border-color: var(--border-color-hover);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+:root[data-theme="light"] .theme-toggle {
+  background: rgba(15, 23, 42, 0.04);
 }
 
 /* ==========================================
@@ -283,6 +336,9 @@ body {
 .portfolio-card[data-category="download-game"]:hover {
   box-shadow: 0 12px 30px -10px var(--color-download-glow);
 }
+.portfolio-card[data-category="other-program"]:hover {
+  box-shadow: 0 12px 30px -10px var(--color-download-glow);
+}
 
 /* Card Thumbnail */
 .card-thumb-container {
@@ -326,6 +382,9 @@ body {
 }
 .badge-download-game {
   background: rgba(249, 115, 22, 0.7);
+}
+.badge-file {
+  background: rgba(249, 115, 22, 0.72);
 }
 
 /* Card Info */
@@ -417,8 +476,15 @@ body {
   color: var(--text-secondary);
   flex-grow: 0;
   width: auto;
-  aspect-ratio: 1;
   padding: 0.7rem;
+}
+
+.btn-secondary:not(.btn-info) {
+  aspect-ratio: 1;
+}
+
+.btn-info {
+  flex-grow: 1;
 }
 
 .btn-secondary:hover {
@@ -618,4 +684,110 @@ body {
 /* Make sure touch screens can activate too */
 .hero-brand-logo:active .hero-logo-image {
   transform: scale(0.98);
+}
+
+/* ==========================================
+   12. Program Detail Pages
+   ========================================== */
+.program-main {
+  padding: 4rem 1.5rem 5rem;
+}
+
+.program-shell {
+  max-width: 980px;
+  margin: 0 auto;
+}
+
+.program-back {
+  color: var(--text-secondary);
+  display: inline-flex;
+  font-size: 0.92rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  text-decoration: none;
+}
+
+.program-back:hover {
+  color: var(--text-primary);
+}
+
+.program-hero {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.9fr);
+  align-items: center;
+  margin-bottom: 3rem;
+}
+
+.program-kicker {
+  color: var(--accent-purple);
+  display: inline-block;
+  font-family: var(--font-title);
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+}
+
+.program-title {
+  color: var(--text-primary);
+  font-family: var(--font-title);
+  font-size: clamp(2.25rem, 6vw, 4.25rem);
+  line-height: 1.05;
+  margin-bottom: 1rem;
+}
+
+.program-desc {
+  color: var(--text-secondary);
+  font-size: 1.05rem;
+  margin-bottom: 1.5rem;
+}
+
+.program-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.program-preview {
+  align-items: center;
+  aspect-ratio: 16 / 10;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  color: var(--text-muted);
+  display: flex;
+  font-weight: 800;
+  justify-content: center;
+  min-height: 240px;
+}
+
+.program-section {
+  border-top: 1px solid var(--border-color);
+  padding: 2rem 0;
+}
+
+.program-section h2 {
+  color: var(--text-primary);
+  font-family: var(--font-title);
+  font-size: 1.35rem;
+  margin-bottom: 0.85rem;
+}
+
+.program-section p,
+.program-section li {
+  color: var(--text-secondary);
+}
+
+.program-section ul {
+  display: grid;
+  gap: 0.5rem;
+  list-style-position: inside;
+}
+
+@media (max-width: 768px) {
+  .program-hero {
+    grid-template-columns: 1fr;
+  }
 }

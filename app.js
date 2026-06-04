@@ -1,6 +1,53 @@
 document.addEventListener('DOMContentLoaded', () => {
+  const PROGRAM_DOWNLOAD_URLS = {
+    naejari: '#',
+    thinkchain: '#',
+    tlog: '#',
+    mininori: '#',
+    batchnuki: '#',
+    ieon: '#',
+  };
+
   const tabButtons = document.querySelectorAll('.tab-btn');
   const portfolioCards = document.querySelectorAll('.portfolio-card');
+  const downloadLinks = document.querySelectorAll('[data-download-key]');
+  const themeToggle = document.getElementById('theme-toggle');
+  const themeToggleText = document.querySelector('.theme-toggle-text');
+  const themeToggleIcon = document.querySelector('.theme-toggle-icon');
+
+  function applyTheme(theme) {
+    document.documentElement.dataset.theme = theme;
+    localStorage.setItem('site-theme', theme);
+
+    const isLight = theme === 'light';
+    if (themeToggle) {
+      themeToggle.setAttribute('aria-label', isLight ? '다크 테마로 변경' : '라이트 테마로 변경');
+    }
+    if (themeToggleText) {
+      themeToggleText.textContent = isLight ? 'Dark' : 'Light';
+    }
+    if (themeToggleIcon) {
+      themeToggleIcon.textContent = isLight ? '●' : '○';
+    }
+  }
+
+  const savedTheme = localStorage.getItem('site-theme');
+  const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+  applyTheme(savedTheme || (prefersLight ? 'light' : 'dark'));
+
+  themeToggle?.addEventListener('click', () => {
+    const nextTheme = document.documentElement.dataset.theme === 'light' ? 'dark' : 'light';
+    applyTheme(nextTheme);
+  });
+
+  downloadLinks.forEach((link) => {
+    const downloadUrl = PROGRAM_DOWNLOAD_URLS[link.dataset.downloadKey];
+    link.href = downloadUrl || '#';
+    if (downloadUrl && downloadUrl !== '#') {
+      link.target = '_blank';
+      link.rel = 'noopener';
+    }
+  });
 
   tabButtons.forEach((button) => {
     button.addEventListener('click', () => {
