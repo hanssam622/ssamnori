@@ -67,29 +67,34 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   const heroLogo = document.querySelector('.hero-brand-logo');
-  const heroChars = document.querySelectorAll('.hero-char');
-  const heroSpeechBubble = document.getElementById('hero-speech-bubble');
-  const speechTexts = ['ㅎㅇ', 'ㅎㅎ', '?'];
+  const heroCharacter = document.getElementById('hero-random-char');
+  const heroSpeechImage = document.getElementById('hero-speech-image');
+  const heroCharacterSources = [
+    'assets/char_boy.png',
+    'assets/char_rabbit.png',
+    'assets/char_cat.png',
+    ...Array.from({ length: 23 }, (_, index) => `assets/hero-characters/character-${index + 1}.png`),
+  ];
+  const heroSpeechSources = Array.from({ length: 9 }, (_, index) => `assets/speech-bubbles/bubble-${index + 1}.png`);
   let heroCharacterVisible = false;
 
   function pickHeroCharacter() {
     if (heroCharacterVisible) return;
     heroCharacterVisible = true;
-    heroChars.forEach((char) => char.classList.remove('is-active'));
 
-    const selectedChar = heroChars[Math.floor(Math.random() * heroChars.length)];
-    const selectedSpeech = speechTexts[Math.floor(Math.random() * speechTexts.length)];
-
-    selectedChar.classList.add('is-active');
-    heroSpeechBubble.textContent = selectedSpeech;
+    heroCharacter.src = heroCharacterSources[Math.floor(Math.random() * heroCharacterSources.length)];
+    heroSpeechImage.src = heroSpeechSources[Math.floor(Math.random() * heroSpeechSources.length)];
+    heroCharacter.classList.add('is-active');
+    heroSpeechImage.classList.add('is-active');
   }
 
   function hideHeroCharacter() {
     heroCharacterVisible = false;
-    heroChars.forEach((char) => char.classList.remove('is-active'));
+    heroCharacter.classList.remove('is-active');
+    heroSpeechImage.classList.remove('is-active');
   }
 
-  if (heroLogo && heroChars.length > 0 && heroSpeechBubble) {
+  if (heroLogo && heroCharacter && heroSpeechImage) {
     heroLogo.addEventListener('pointerenter', pickHeroCharacter);
     heroLogo.addEventListener('mouseenter', pickHeroCharacter);
     heroLogo.addEventListener('focus', pickHeroCharacter);
