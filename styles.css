@@ -994,3 +994,89 @@ body {
     height: 95vh;
   }
 }
+
+/* ==========================================
+   11. Hero Brand Logo (Interactive Peeking Characters)
+   ========================================== */
+.hero-brand-logo {
+  position: relative;
+  margin: 0 auto 2.5rem;
+  width: fit-content;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+.hero-logo-badge {
+  background: var(--gradient-primary);
+  padding: 0.8rem 2.2rem;
+  border-radius: 50px;
+  font-family: var(--font-title);
+  font-weight: 800;
+  font-size: 2.2rem;
+  color: white;
+  box-shadow: 0 10px 30px rgba(139, 92, 246, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  z-index: 10;
+  letter-spacing: -0.5px;
+  transition: var(--transition-bounce);
+}
+
+.hero-char {
+  position: absolute;
+  z-index: 5;
+  bottom: 10px;
+  height: 60px;
+  width: auto;
+  opacity: 0;
+  pointer-events: none;
+  transform-origin: bottom center;
+  transform: translateY(20px) scale(0.3);
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s;
+}
+
+.char-boy {
+  left: 15px;
+  transition-delay: 0.03s;
+}
+
+.char-rabbit {
+  right: 15px;
+  transition-delay: 0.06s;
+}
+
+.char-cat {
+  left: 45%;
+  transform: translateY(20px) scale(0.3) translateX(-50%);
+  transition-delay: 0.09s;
+}
+
+/* Hover effects */
+.hero-brand-logo:hover .hero-logo-badge {
+  transform: scale(1.05);
+  box-shadow: 0 12px 35px rgba(139, 92, 246, 0.5);
+}
+
+.hero-brand-logo:hover .char-boy {
+  opacity: 1;
+  transform: translateY(-56px) translateX(-42px) rotate(-15deg) scale(1.1);
+}
+
+.hero-brand-logo:hover .char-rabbit {
+  opacity: 1;
+  transform: translateY(-54px) translateX(44px) rotate(15deg) scale(1.1);
+}
+
+.hero-brand-logo:hover .char-cat {
+  opacity: 1;
+  transform: translateY(-58px) translateX(-50%) rotate(5deg) scale(1.1);
+}
+
+/* Make sure touch screens can activate too */
+.hero-brand-logo:active .hero-logo-badge {
+  transform: scale(0.98);
+}
+

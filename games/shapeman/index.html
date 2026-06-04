@@ -1,0 +1,1671 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>도형맨 - 삼각형 분류 게임</title>
+<meta name="description" content="삼각형을 각의 크기와 변의 길이에 따라 분류하는 전자칠판용 게임">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #fdfbf7;
+  --card: #fff;
+  --line: rgba(0,0,0,0.1);
+  --text: #34343a;
+  --muted: #85858f;
+  --accent: #8f7ae5;
+  --orange: #ff9900;
+  --good: #60b86d;
+  --bad: #ef6b6b;
+  --font: 'Outfit', 'Malgun Gothic', 'Apple SD Gothic Neo', 'Segoe UI', sans-serif;
+}
+html, body { width: 100%; height: 100%; overflow: hidden; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+}
+button {
+  font-family: inherit;
+  border: 0;
+  cursor: pointer;
+}
+.screen {
+  display: none;
+  width: 100vw;
+  height: 100vh;
+}
+.screen.active { display: flex; }
+#home-screen,
+#select-screen,
+#result-screen {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  background: radial-gradient(ellipse at 50% 28%, rgba(143,122,229,0.14), transparent 68%), var(--bg);
+}
+#select-screen {
+  justify-content: flex-start;
+  overflow: auto;
+  padding: 28px 20px;
+}
+.home-title {
+  font-size: clamp(56px, 7vw, 94px);
+  font-weight: 900;
+  color: var(--accent);
+  letter-spacing: 0;
+}
+.home-subtitle {
+  font-size: 22px;
+  color: var(--muted);
+  font-weight: 700;
+}
+.primary-btn,
+.secondary-btn {
+  min-height: 56px;
+  padding: 0 28px;
+  border-radius: 8px;
+  font-size: 20px;
+  font-weight: 800;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+}
+.primary-btn { background: #60b5f7; color: #fff; }
+.secondary-btn { background: #fff; color: var(--text); border: 1px solid var(--line); }
+.select-title {
+  font-size: 38px;
+  font-weight: 900;
+}
+.setup-panel {
+  width: min(980px, calc(100vw - 40px));
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+.setup-card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 24px;
+}
+.setup-card h3 {
+  font-size: 20px;
+  margin-bottom: 14px;
+}
+.count-grid,
+.timer-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+}
+.timer-grid { grid-template-columns: repeat(4, 1fr); }
+.pill-btn {
+  height: 48px;
+  border-radius: 8px;
+  background: #f5f6f8;
+  color: var(--text);
+  font-size: 18px;
+  font-weight: 800;
+}
+.pill-btn.selected {
+  background: var(--accent);
+  color: #fff;
+}
+.game-cards {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: min(1440px, calc(100vw - 40px));
+}
+.game-card {
+  width: 300px;
+  min-height: 178px;
+  padding: 28px 24px;
+  border-radius: 8px;
+  background: #fff;
+  border: 1px solid var(--line);
+  text-align: center;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+.game-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--accent);
+}
+.game-card .emoji { font-size: 42px; margin-bottom: 10px; }
+.game-card h3 { font-size: 26px; margin-bottom: 8px; }
+.game-card p {
+  color: var(--muted);
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.45;
+}
+#game-screen {
+  flex-direction: column;
+  background: #fff;
+}
+#free-screen {
+  flex-direction: column;
+  background: #fff;
+}
+.game-topbar {
+  height: 112px;
+  flex: 0 0 112px;
+  display: grid;
+  grid-template-columns: 160px 130px 1fr 190px;
+  align-items: center;
+  gap: 18px;
+  padding: 16px 28px;
+  border-bottom: 1px solid #ececf1;
+}
+.back-btn {
+  justify-self: start;
+  height: 44px;
+  padding: 0 22px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--text);
+  font-size: 17px;
+  font-weight: 800;
+}
+.fullscreen-btn {
+  justify-self: start;
+  height: 44px;
+  padding: 0 18px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--text);
+  font-size: 17px;
+  font-weight: 800;
+}
+.topbar-meta { text-align: center; min-width: 0; }
+.topbar-title {
+  font-size: 32px;
+  font-weight: 900;
+}
+.topbar-caption {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 16px;
+  font-weight: 800;
+}
+.timer-wrap { justify-self: end; text-align: center; }
+.timer-label {
+  color: #76708f;
+  font-size: 16px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+}
+.timer {
+  color: #ff6666;
+  font-size: 50px;
+  font-weight: 900;
+  line-height: 1;
+}
+.finish-btn {
+  margin-top: 8px;
+  height: 42px;
+  padding: 0 22px;
+  border-radius: 999px;
+  background: #ffe7a6;
+  color: #7a5b00;
+  font-size: 16px;
+  font-weight: 900;
+}
+.game-grid {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+}
+.free-shell {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 18px;
+  padding: 18px;
+  background: #f8f7fb;
+}
+.free-board {
+  min-height: 0;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: #fff;
+  overflow: hidden;
+}
+.free-panel {
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: #fff;
+  padding: 22px;
+}
+.free-panel h3 {
+  font-size: 24px;
+  font-weight: 900;
+  margin-bottom: 10px;
+}
+.free-result {
+  min-height: 86px;
+  margin: 18px 0;
+  padding: 16px;
+  border-radius: 8px;
+  background: #f5f6f8;
+  color: var(--accent);
+  font-size: 24px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+}
+.free-copy {
+  color: var(--muted);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.45;
+}
+.player-cell {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border-right: 1px solid rgba(0,0,0,0.18);
+  overflow: hidden;
+}
+.player-cell:last-child { border-right: 0; }
+.color-theme-0 { background: #fff0f3; }
+.color-theme-1 { background: #eaf7ff; }
+.color-theme-2 { background: #faedff; }
+.color-theme-3 { background: #ecfaef; }
+.color-theme-4 { background: #fff7df; }
+.color-theme-5 { background: #eef2ff; }
+.player-header {
+  flex: 0 0 auto;
+  min-height: 150px;
+  padding: 24px 18px 6px;
+  text-align: center;
+}
+.player-name {
+  font-size: clamp(22px, 2.1vw, 34px);
+  font-weight: 900;
+}
+.score-line {
+  margin-top: 18px;
+  color: var(--orange);
+  font-size: clamp(22px, 2vw, 34px);
+  font-weight: 900;
+}
+.score-line + .score-line { margin-top: 8px; }
+.cell-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 14px 16px;
+}
+.prompt {
+  width: 100%;
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #9a86ea;
+  font-size: clamp(22px, 2.1vw, 32px);
+  font-weight: 900;
+  line-height: 1.15;
+  text-shadow: 0 3px 12px rgba(154,134,234,0.18);
+}
+.shape-area {
+  width: 100%;
+  flex: 1;
+  min-height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.build-area {
+  cursor: crosshair;
+}
+.build-controls {
+  width: min(100%, 360px);
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+.build-controls .choice-btn {
+  flex: 1;
+}
+.choice-btn.primary-action {
+  background: #60b5f7;
+  color: #fff;
+  border-color: rgba(74, 144, 226, 0.3);
+}
+canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.choice-grid {
+  width: min(100%, 360px);
+  display: grid;
+  gap: 8px;
+  margin-top: 8px;
+}
+.choice-grid.three { grid-template-columns: 1fr; }
+.choice-grid.two { grid-template-columns: 1fr; }
+.choice-btn {
+  min-height: 48px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.88);
+  border: 1px solid rgba(0,0,0,0.12);
+  color: var(--text);
+  font-size: clamp(16px, 1.2vw, 21px);
+  font-weight: 900;
+  word-break: keep-all;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.07);
+}
+.choice-btn:disabled { opacity: 0.62; cursor: default; }
+.tutorial-note {
+  width: min(100%, 360px);
+  margin-top: 8px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.72);
+  color: #6f58c9;
+  font-size: 15px;
+  font-weight: 900;
+  text-align: center;
+  line-height: 1.35;
+}
+.feedback {
+  position: absolute;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 4;
+  font-size: min(12vw, 120px);
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 0 4px 16px rgba(0,0,0,0.25);
+}
+.feedback.show { display: flex; }
+.feedback.good { background: rgba(96,184,109,0.72); }
+.feedback.bad { background: rgba(239,107,107,0.72); }
+.result-title {
+  font-size: 46px;
+  font-weight: 900;
+}
+.ranking-list {
+  width: min(780px, calc(100vw - 40px));
+  display: grid;
+  gap: 12px;
+}
+.rank-row {
+  min-height: 72px;
+  display: grid;
+  grid-template-columns: 72px 1fr 120px;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 20px;
+  border-radius: 8px;
+  background: #fff;
+  border: 1px solid var(--line);
+  font-size: 24px;
+  font-weight: 900;
+}
+.rank-pos { text-align: center; }
+.rank-score { color: var(--orange); text-align: right; }
+.result-actions { display: flex; gap: 12px; }
+@media (max-width: 980px) {
+  html, body { overflow: auto; }
+  .screen { min-height: 100vh; height: auto; }
+  #game-screen { height: 100vh; overflow: hidden; }
+  .setup-panel { grid-template-columns: 1fr; }
+  .free-shell { grid-template-columns: 1fr; overflow: auto; }
+  .free-board { min-height: 420px; }
+  .game-topbar {
+    height: 108px;
+    flex-basis: 108px;
+    grid-template-columns: 100px 92px 1fr 130px;
+    padding: 12px;
+  }
+  .topbar-title { font-size: 26px; }
+  .timer { font-size: 40px; }
+  .player-header { min-height: 136px; padding-top: 18px; }
+}
+@media (max-height: 760px) {
+  .game-topbar {
+    height: 116px;
+    flex-basis: 116px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+  .topbar-title { font-size: 28px; }
+  .topbar-caption { margin-top: 4px; font-size: 14px; }
+  .timer { font-size: 44px; }
+  .finish-btn { height: 34px; margin-top: 4px; }
+  .player-header {
+    min-height: 126px;
+    padding-top: 18px;
+  }
+  .player-name { font-size: 24px; }
+  .score-line {
+    margin-top: 12px;
+    font-size: 24px;
+  }
+  .score-line + .score-line { margin-top: 4px; }
+  .prompt {
+    min-height: 46px;
+    font-size: 23px;
+  }
+  .choice-btn {
+    min-height: 42px;
+    font-size: 17px;
+  }
+  .cell-body { padding-bottom: 10px; }
+}
+</style>
+</head>
+<body>
+<main id="home-screen" class="screen active">
+  <h1 class="home-title">🔺 도형맨</h1>
+  <p class="home-subtitle">삼각형을 보고 알맞게 분류해요</p>
+  <button class="primary-btn" type="button" onclick="showScreen('select-screen')">시작하기</button>
+</main>
+
+<section id="select-screen" class="screen">
+  <h2 class="select-title">게임과 참가 인원을 선택하세요</h2>
+  <div class="setup-panel">
+    <div class="setup-card">
+      <h3>참가 인원</h3>
+      <div class="count-grid" id="count-grid"></div>
+    </div>
+    <div class="setup-card">
+      <h3>타이머</h3>
+      <div class="timer-grid" id="timer-grid"></div>
+    </div>
+  </div>
+  <div class="game-cards">
+    <button class="game-card" type="button" onclick="startGame('angle')">
+      <div class="emoji">📐</div>
+      <h3>각의 크기</h3>
+      <p>예각삼각형, 직각삼각형, 둔각삼각형 중 하나를 골라요.</p>
+    </button>
+    <button class="game-card" type="button" onclick="startGame('side')">
+      <div class="emoji">📏</div>
+      <h3>변의 길이</h3>
+      <p>이등변삼각형, 정삼각형, 그냥 삼각형 중 하나로 분류해요.</p>
+    </button>
+    <button class="game-card" type="button" onclick="startGame('tutorial')">
+      <div class="emoji">🔎</div>
+      <h3>각 세기 튜토리얼</h3>
+      <p>예각, 직각, 둔각이 몇 개인지 세어 분류 기준을 익혀요.</p>
+    </button>
+    <button class="game-card" type="button" onclick="startGame('build')">
+      <div class="emoji">✏️</div>
+      <h3>점 찍어 만들기</h3>
+      <p>요구하는 삼각형이 되도록 모눈 교차점 세 곳을 찍어요.</p>
+    </button>
+    <button class="game-card" type="button" onclick="startGame('free')">
+      <div class="emoji">🧪</div>
+      <h3>자유 만들기</h3>
+      <p>점 세 개로 삼각형을 만들면 어떤 삼각형인지 바로 알려줘요.</p>
+    </button>
+  </div>
+  <button class="secondary-btn" type="button" onclick="showScreen('home-screen')">뒤로</button>
+</section>
+
+<section id="game-screen" class="screen">
+  <header class="game-topbar">
+    <button class="back-btn" type="button" onclick="exitGame()">게임 나가기</button>
+    <button class="fullscreen-btn" type="button" onclick="toggleFullscreen()">전체화면</button>
+    <div class="topbar-meta">
+      <div class="topbar-title" id="game-title">삼각형 분류</div>
+      <div class="topbar-caption" id="game-caption">삼각형을 보고 알맞은 이름을 고르세요.</div>
+    </div>
+    <div class="timer-wrap">
+      <div class="timer-label">TIMER</div>
+      <div class="timer" id="timer">1:20</div>
+      <button class="finish-btn" type="button" onclick="finishGame()">결과 보기</button>
+    </div>
+  </header>
+  <div class="game-grid" id="game-grid"></div>
+</section>
+
+<section id="free-screen" class="screen">
+  <header class="game-topbar">
+    <button class="back-btn" type="button" onclick="showScreen('select-screen')">게임 나가기</button>
+    <div class="topbar-meta">
+      <div class="topbar-title">🧪 자유 만들기</div>
+      <div class="topbar-caption">모눈 교차점 세 곳을 찍으면 삼각형의 각의 크기 분류를 바로 확인합니다.</div>
+    </div>
+    <div class="timer-wrap">
+      <button class="finish-btn" type="button" onclick="resetFreeMode()">다시 만들기</button>
+    </div>
+  </header>
+  <div class="free-shell">
+    <div class="free-board">
+      <canvas id="free-canvas"></canvas>
+    </div>
+    <aside class="free-panel">
+      <h3>분류 결과</h3>
+      <div class="free-result" id="free-result">교차점 3개를 찍어 보세요</div>
+      <p class="free-copy">세 교차점이 너무 한 줄에 가까우면 삼각형을 다시 만들어야 합니다. 만든 뒤에는 각도가 함께 표시됩니다.</p>
+      <button class="primary-btn" type="button" style="width:100%;margin-top:22px;" onclick="resetFreeMode()">다시 만들기</button>
+    </aside>
+  </div>
+</section>
+
+<section id="result-screen" class="screen">
+  <h2 class="result-title">최종 결과</h2>
+  <div class="ranking-list" id="ranking-list"></div>
+  <div class="result-actions">
+    <button class="secondary-btn" type="button" onclick="showScreen('select-screen')">게임 선택</button>
+    <button class="primary-btn" type="button" onclick="startGame(currentGame)">같은 게임 다시하기</button>
+  </div>
+</section>
+
+<script>
+const ANIMALS = [
+  { emoji: '🐶', name: '강아지' },
+  { emoji: '🐱', name: '고양이' },
+  { emoji: '🐰', name: '토끼' },
+  { emoji: '🦊', name: '여우' },
+  { emoji: '🐻', name: '곰' },
+  { emoji: '🐧', name: '펭귄' }
+];
+const GAME_META = {
+  angle: {
+    emoji: '📐',
+    title: '각의 크기',
+    caption: '삼각형을 보고 예각, 직각, 둔각 중 하나를 고르세요.',
+    prompt: '어떤 삼각형인가요?',
+    options: [
+      { key: 'acute', label: '예각삼각형' },
+      { key: 'right', label: '직각삼각형' },
+      { key: 'obtuse', label: '둔각삼각형' }
+    ]
+  },
+  side: {
+    emoji: '📏',
+    title: '변의 길이',
+    caption: '삼각형을 보고 변의 길이에 따라 알맞게 고르세요.',
+    prompt: '변의 길이로 분류해 보세요',
+    options: [
+      { key: 'isosceles', label: '이등변삼각형' },
+      { key: 'equilateral', label: '정삼각형' },
+      { key: 'scalene', label: '그냥 삼각형' }
+    ]
+  },
+  tutorial: {
+    emoji: '🔎',
+    title: '각 세기 튜토리얼',
+    caption: '각도를 세어 삼각형의 분류 기준을 익혀 보세요.',
+    prompt: '각의 종류를 세어 보세요',
+    options: [
+      { key: 'acute-count', label: '예각 3개' },
+      { key: 'right-count', label: '직각 1개 + 예각 2개' },
+      { key: 'obtuse-count', label: '둔각 1개 + 예각 2개' }
+    ]
+  },
+  build: {
+    emoji: '✏️',
+    title: '점 찍어 만들기',
+    caption: '요구하는 삼각형이 되도록 모눈 교차점 세 곳을 찍어 보세요.',
+    prompt: '교차점 3개로 만들어 보세요',
+    options: []
+  },
+  free: {
+    emoji: '🧪',
+    title: '자유 만들기',
+    caption: '모눈 교차점 세 곳을 찍으면 삼각형의 각의 크기 분류를 바로 확인합니다.',
+    prompt: '자유롭게 만들어 보세요',
+    options: []
+  }
+};
+const DEG = Math.PI / 180;
+const ANGLE_LABELS = {
+  acute: '예각삼각형',
+  right: '직각삼각형',
+  obtuse: '둔각삼각형'
+};
+let playerCount = 5;
+let timerSeconds = 80;
+let timeLeft = timerSeconds;
+let timerId = null;
+let gameActive = false;
+let currentGame = 'angle';
+let scores = [];
+let streaks = [];
+let playerData = [];
+let freePoints = [];
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach((screen) => screen.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function initSetup() {
+  const countGrid = document.getElementById('count-grid');
+  for (let count = 1; count <= 6; count += 1) {
+    const button = document.createElement('button');
+    button.className = 'pill-btn';
+    button.type = 'button';
+    button.textContent = String(count);
+    button.onclick = () => {
+      playerCount = count;
+      renderSetupButtons();
+    };
+    countGrid.appendChild(button);
+  }
+  const timers = [
+    { label: '30초', seconds: 30 },
+    { label: '1분', seconds: 60 },
+    { label: '1:20', seconds: 80 },
+    { label: '2분', seconds: 120 }
+  ];
+  const timerGrid = document.getElementById('timer-grid');
+  timers.forEach((timer) => {
+    const button = document.createElement('button');
+    button.className = 'pill-btn';
+    button.type = 'button';
+    button.textContent = timer.label;
+    button.onclick = () => {
+      timerSeconds = timer.seconds;
+      renderSetupButtons();
+    };
+    timerGrid.appendChild(button);
+  });
+  renderSetupButtons();
+}
+
+function renderSetupButtons() {
+  document.querySelectorAll('#count-grid .pill-btn').forEach((button, index) => {
+    button.classList.toggle('selected', index + 1 === playerCount);
+  });
+  document.querySelectorAll('#timer-grid .pill-btn').forEach((button) => {
+    const value = button.textContent === '30초' ? 30 : button.textContent === '1분' ? 60 : button.textContent === '1:20' ? 80 : 120;
+    button.classList.toggle('selected', value === timerSeconds);
+  });
+}
+
+function startGame(game) {
+  if (timerId) clearInterval(timerId);
+  timerId = null;
+  currentGame = game;
+  scores = Array(playerCount).fill(0);
+  streaks = Array(playerCount).fill(0);
+  playerData = Array(playerCount).fill(null);
+  gameActive = true;
+  const meta = GAME_META[currentGame];
+  document.getElementById('game-title').textContent = `${meta.emoji} ${meta.title}`;
+  document.getElementById('game-caption').textContent = currentGame === 'free'
+    ? `${meta.caption} · 시간 제한 없음`
+    : `${meta.caption} · ${formatTime(timerSeconds)} 제한`;
+  buildGrid();
+  if (currentGame === 'free') {
+    document.getElementById('timer').textContent = '∞';
+  } else {
+    startTimer();
+  }
+  showScreen('game-screen');
+}
+
+function buildGrid() {
+  const grid = document.getElementById('game-grid');
+  grid.style.gridTemplateColumns = `repeat(${playerCount}, minmax(0, 1fr))`;
+  grid.innerHTML = '';
+  for (let idx = 0; idx < playerCount; idx += 1) {
+    const animal = ANIMALS[idx];
+    const cell = document.createElement('section');
+    cell.className = `player-cell color-theme-${idx % 6}`;
+    cell.id = `cell-${idx}`;
+    cell.innerHTML = `
+      <div class="player-header">
+        <div class="player-name">${animal.emoji} ${animal.name}</div>
+        <div class="score-line">점수 <span id="score-${idx}">0</span></div>
+        <div class="score-line">연속 <span id="streak-${idx}">0</span></div>
+      </div>
+      <div class="cell-body" id="body-${idx}"></div>
+      <div class="feedback" id="feedback-${idx}"></div>
+    `;
+    grid.appendChild(cell);
+    nextQuestion(idx);
+  }
+}
+
+function startTimer() {
+  if (timerId) clearInterval(timerId);
+  timeLeft = timerSeconds;
+  updateTimer();
+  timerId = setInterval(() => {
+    if (!gameActive) return;
+    timeLeft -= 1;
+    updateTimer();
+    if (timeLeft <= 0) finishGame();
+  }, 1000);
+}
+
+function updateTimer() {
+  document.getElementById('timer').textContent = formatTime(Math.max(0, timeLeft));
+}
+
+function formatTime(seconds) {
+  const min = Math.floor(seconds / 60);
+  const sec = seconds % 60;
+  return `${min}:${String(sec).padStart(2, '0')}`;
+}
+
+function exitGame() {
+  gameActive = false;
+  if (timerId) clearInterval(timerId);
+  timerId = null;
+  showScreen('select-screen');
+}
+
+function toggleFullscreen() {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen?.();
+  } else {
+    document.exitFullscreen?.();
+  }
+}
+
+function finishGame() {
+  if (!gameActive) return;
+  gameActive = false;
+  if (timerId) clearInterval(timerId);
+  timerId = null;
+  renderResults();
+  showScreen('result-screen');
+}
+
+function startFreeMode() {
+  gameActive = false;
+  if (timerId) clearInterval(timerId);
+  timerId = null;
+  freePoints = [];
+  showScreen('free-screen');
+  requestAnimationFrame(() => {
+    const canvas = document.getElementById('free-canvas');
+    bindFreeCanvas(canvas);
+    sizeCanvas(canvas, canvas.parentElement);
+    drawFreeCanvas();
+  });
+}
+
+function resetFreeMode() {
+  freePoints = [];
+  const result = document.getElementById('free-result');
+  if (result) result.textContent = '교차점 3개를 찍어 보세요';
+  drawFreeCanvas();
+}
+
+function nextQuestion(idx) {
+  if (!gameActive) return;
+  const body = document.getElementById(`body-${idx}`);
+  const data = createQuestionForGame();
+  playerData[idx] = { ...data, answering: false };
+  body.innerHTML = '';
+  const prompt = document.createElement('div');
+  prompt.className = 'prompt';
+  prompt.textContent = data.targetLabel
+    ? `${data.targetLabel}을 만들어 보세요`
+    : GAME_META[currentGame].prompt;
+  body.appendChild(prompt);
+
+  const area = document.createElement('div');
+  area.className = `shape-area ${currentGame === 'build' ? 'build-area' : ''}`;
+  const canvas = document.createElement('canvas');
+  area.appendChild(canvas);
+  body.appendChild(area);
+
+  if (currentGame === 'build' || currentGame === 'free') {
+    const controls = document.createElement('div');
+    controls.className = 'build-controls';
+    controls.id = `controls-${idx}`;
+    controls.innerHTML = `
+      <button class="choice-btn" type="button" onclick="${currentGame === 'free' ? 'resetFreeQuestion' : 'resetBuildQuestion'}(${idx})">다시 만들기</button>
+    `;
+    body.appendChild(controls);
+  } else {
+    const choices = document.createElement('div');
+    choices.className = `choice-grid ${GAME_META[currentGame].options.length === 2 ? 'two' : 'three'}`;
+    GAME_META[currentGame].options.forEach((option) => {
+      const button = document.createElement('button');
+      button.className = 'choice-btn';
+      button.type = 'button';
+      button.textContent = option.label;
+      button.onclick = () => submitAnswer(idx, option.key);
+      choices.appendChild(button);
+    });
+    body.appendChild(choices);
+    if (currentGame === 'tutorial') {
+      const note = document.createElement('div');
+      note.className = 'tutorial-note';
+      note.textContent = '예각은 90°보다 작고, 직각은 90°, 둔각은 90°보다 큽니다.';
+      body.appendChild(note);
+    }
+  }
+
+  requestAnimationFrame(() => {
+    sizeCanvas(canvas, area);
+    if (currentGame === 'build') {
+      bindBuildCanvas(canvas, idx);
+      drawBuildCanvas(canvas, playerData[idx]);
+    } else if (currentGame === 'free') {
+      bindFreeQuestionCanvas(canvas, idx);
+      drawFreeQuestionCanvas(canvas, playerData[idx]);
+    } else {
+      drawTriangle(canvas, playerData[idx]);
+    }
+  });
+}
+
+function createQuestionForGame() {
+  if (currentGame === 'angle') return createAngleQuestion();
+  if (currentGame === 'side') return createSideQuestion();
+  if (currentGame === 'tutorial') return createTutorialQuestion();
+  if (currentGame === 'free') return createFreeQuestion();
+  return createBuildQuestion();
+}
+
+function sizeCanvas(canvas, area) {
+  const dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+  canvas.width = Math.max(1, Math.round(area.clientWidth * dpr));
+  canvas.height = Math.max(1, Math.round(area.clientHeight * dpr));
+}
+
+function submitAnswer(idx, answer) {
+  const data = playerData[idx];
+  if (!gameActive || !data || data.answering) return;
+  data.answering = true;
+  const correct = answer === data.answer;
+  document.querySelectorAll(`#body-${idx} .choice-btn`).forEach((button) => {
+    button.disabled = true;
+  });
+  if (correct) {
+    scores[idx] += 1;
+    streaks[idx] += 1;
+  } else {
+    streaks[idx] = 0;
+  }
+  document.getElementById(`score-${idx}`).textContent = String(scores[idx]);
+  document.getElementById(`streak-${idx}`).textContent = String(streaks[idx]);
+  const feedback = document.getElementById(`feedback-${idx}`);
+  feedback.textContent = correct ? 'O' : 'X';
+  feedback.className = `feedback show ${correct ? 'good' : 'bad'}`;
+  setTimeout(() => {
+    feedback.className = 'feedback';
+    feedback.textContent = '';
+    if (correct) nextQuestion(idx);
+    else {
+      data.answering = false;
+      document.querySelectorAll(`#body-${idx} .choice-btn`).forEach((button) => {
+        button.disabled = false;
+      });
+    }
+  }, correct ? 850 : 700);
+}
+
+function bindBuildCanvas(canvas, idx) {
+  if (canvas.dataset.bound === 'true') return;
+  canvas.dataset.bound = 'true';
+  const addPoint = (clientX, clientY) => {
+    const data = playerData[idx];
+    if (!gameActive || !data || data.answering || data.points.length >= 3) return;
+    const rect = canvas.getBoundingClientRect();
+    const point = snapCanvasPoint(
+      (clientX - rect.left) * (canvas.width / rect.width),
+      (clientY - rect.top) * (canvas.height / rect.height),
+      canvas
+    );
+    if (data.points.some((existing) => distance(existing, point) < 1)) return;
+    data.points.push(point);
+    if (data.points.length === 3) evaluateBuildTriangle(idx, canvas);
+    else drawBuildCanvas(canvas, data);
+  };
+  canvas.addEventListener('mousedown', (event) => addPoint(event.clientX, event.clientY));
+  canvas.addEventListener('touchstart', (event) => {
+    event.preventDefault();
+    const touch = event.touches[0];
+    addPoint(touch.clientX, touch.clientY);
+  }, { passive: false });
+}
+
+function evaluateBuildTriangle(idx, canvas) {
+  const data = playerData[idx];
+  if (!data || data.points.length !== 3) return;
+  const angles = anglesFromPoints(data.points);
+  if (!angles) {
+    data.result = { valid: false, label: '점이 한 줄에 너무 가까워요' };
+    data.answering = true;
+    drawBuildCanvas(canvas, data);
+    renderBuildControls(idx);
+    return;
+  }
+  const type = classifyAngles(angles, 0.5);
+  const correct = type === data.answer;
+  data.answering = true;
+  data.result = {
+    valid: true,
+    angles,
+    type,
+    label: ANGLE_LABELS[type]
+  };
+  drawBuildCanvas(canvas, data);
+  if (correct) {
+    scores[idx] += 1;
+    streaks[idx] += 1;
+  } else {
+    streaks[idx] = 0;
+  }
+  document.getElementById(`score-${idx}`).textContent = String(scores[idx]);
+  document.getElementById(`streak-${idx}`).textContent = String(streaks[idx]);
+  const feedback = document.getElementById(`feedback-${idx}`);
+  feedback.textContent = correct ? 'O' : 'X';
+  feedback.className = `feedback show ${correct ? 'good' : 'bad'}`;
+  setTimeout(() => {
+    feedback.className = 'feedback';
+    feedback.textContent = '';
+  }, 900);
+  renderBuildControls(idx);
+}
+
+function resetBuildQuestion(idx) {
+  const data = playerData[idx];
+  const canvas = document.querySelector(`#body-${idx} canvas`);
+  if (!data || !canvas) return;
+  data.points = [];
+  data.result = null;
+  data.answering = false;
+  drawBuildCanvas(canvas, data);
+  renderBuildControls(idx);
+}
+
+function drawBuildCanvas(canvas, data) {
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawCanvasGuide(ctx, data.points.length >= 3 ? '' : `${data.points.length + 1}번째 교차점을 찍으세요`);
+  drawPointTriangle(ctx, data.points, data.result?.angles || null);
+  if (data.result?.label) {
+    drawCanvasBadge(ctx, data.result.valid ? data.result.label : data.result.label, data.result.valid ? '#6f58c9' : '#b83232');
+  }
+}
+
+function renderBuildControls(idx) {
+  const controls = document.getElementById(`controls-${idx}`);
+  const data = playerData[idx];
+  if (!controls || !data || data.mode !== 'build') return;
+  const nextButton = data.answering
+    ? `<button class="choice-btn primary-action" type="button" onclick="nextQuestion(${idx})">다음 문제</button>`
+    : '';
+  controls.innerHTML = `
+    <button class="choice-btn" type="button" onclick="resetBuildQuestion(${idx})">다시 만들기</button>
+    ${nextButton}
+  `;
+}
+
+function bindFreeQuestionCanvas(canvas, idx) {
+  if (!canvas || canvas.dataset.bound === 'true') return;
+  canvas.dataset.bound = 'true';
+  const addPoint = (clientX, clientY) => {
+    const data = playerData[idx];
+    if (!gameActive || !data || data.points.length >= 3) return;
+    const rect = canvas.getBoundingClientRect();
+    const point = snapCanvasPoint(
+      (clientX - rect.left) * (canvas.width / rect.width),
+      (clientY - rect.top) * (canvas.height / rect.height),
+      canvas
+    );
+    if (data.points.some((existing) => distance(existing, point) < 1)) return;
+    data.points.push(point);
+    evaluateFreeQuestion(idx, canvas);
+  };
+  canvas.addEventListener('mousedown', (event) => addPoint(event.clientX, event.clientY));
+  canvas.addEventListener('touchstart', (event) => {
+    event.preventDefault();
+    const touch = event.touches[0];
+    addPoint(touch.clientX, touch.clientY);
+  }, { passive: false });
+}
+
+function evaluateFreeQuestion(idx, canvas) {
+  const data = playerData[idx];
+  if (!data) return;
+  if (data.points.length < 3) {
+    data.result = null;
+    drawFreeQuestionCanvas(canvas, data);
+    return;
+  }
+  const angles = anglesFromPoints(data.points);
+  if (!angles) {
+    data.result = { valid: false, label: '다시 만들어 보세요' };
+    drawFreeQuestionCanvas(canvas, data);
+    return;
+  }
+  const type = classifyAngles(angles, 0.5);
+  data.result = {
+    valid: true,
+    angles,
+    type,
+    label: ANGLE_LABELS[type]
+  };
+  drawFreeQuestionCanvas(canvas, data);
+}
+
+function resetFreeQuestion(idx) {
+  const data = playerData[idx];
+  const canvas = document.querySelector(`#body-${idx} canvas`);
+  if (!data || !canvas) return;
+  data.points = [];
+  data.result = null;
+  drawFreeQuestionCanvas(canvas, data);
+}
+
+function drawFreeQuestionCanvas(canvas, data) {
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawCanvasGuide(ctx, data.points.length >= 3 ? '' : `${data.points.length + 1}번째 교차점을 찍으세요`);
+  drawPointTriangle(ctx, data.points, data.result?.angles || null);
+  if (data.result?.label) {
+    drawCanvasBadge(ctx, data.result.label, data.result.valid ? '#6f58c9' : '#b83232');
+  }
+}
+
+function bindFreeCanvas(canvas) {
+  if (!canvas || canvas.dataset.bound === 'true') return;
+  canvas.dataset.bound = 'true';
+  const addPoint = (clientX, clientY) => {
+    if (freePoints.length >= 3) return;
+    const rect = canvas.getBoundingClientRect();
+    const point = snapCanvasPoint(
+      (clientX - rect.left) * (canvas.width / rect.width),
+      (clientY - rect.top) * (canvas.height / rect.height),
+      canvas
+    );
+    if (freePoints.some((existing) => distance(existing, point) < 1)) return;
+    freePoints.push(point);
+    drawFreeCanvas();
+  };
+  canvas.addEventListener('mousedown', (event) => addPoint(event.clientX, event.clientY));
+  canvas.addEventListener('touchstart', (event) => {
+    event.preventDefault();
+    const touch = event.touches[0];
+    addPoint(touch.clientX, touch.clientY);
+  }, { passive: false });
+}
+
+function drawFreeCanvas() {
+  const canvas = document.getElementById('free-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const angles = anglesFromPoints(freePoints);
+  drawCanvasGuide(ctx, freePoints.length >= 3 ? '' : `${freePoints.length + 1}번째 교차점을 찍으세요`);
+  drawPointTriangle(ctx, freePoints, angles);
+  const result = document.getElementById('free-result');
+  if (freePoints.length < 3) {
+    if (result) result.textContent = `점 ${3 - freePoints.length}개가 더 필요해요`;
+    return;
+  }
+  if (!angles) {
+    if (result) result.textContent = '삼각형이 너무 납작해요';
+    drawCanvasBadge(ctx, '다시 만들어 보세요', '#b83232');
+    return;
+  }
+  const type = classifyAngles(angles, 0.5);
+  const rounded = angles.map((angle) => Math.round(angle));
+  const label = `${ANGLE_LABELS[type]} · ${rounded.join('°, ')}°`;
+  if (result) result.textContent = label;
+  drawCanvasBadge(ctx, ANGLE_LABELS[type], '#6f58c9');
+}
+
+function createAngleQuestion() {
+  const types = ['acute', 'right', 'obtuse'];
+  const answer = types[Math.floor(Math.random() * types.length)];
+  if (answer === 'acute') {
+    return modelFromAngles(pick([
+      [60, 65, 55], [45, 75, 60], [50, 55, 75], [70, 60, 50], [35, 70, 75]
+    ]), answer);
+  }
+  if (answer === 'right') {
+    return modelFromAngles(pick([
+      [90, 45, 45], [90, 60, 30], [90, 55, 35], [90, 70, 20], [90, 40, 50]
+    ]), answer);
+  }
+  return modelFromAngles(pick([
+    [110, 35, 35], [120, 40, 20], [100, 50, 30], [125, 30, 25], [105, 45, 30]
+  ]), answer);
+}
+
+function createSideQuestion() {
+  const answer = pick(['isosceles', 'equilateral', 'scalene']);
+  if (answer === 'equilateral') {
+    return modelFromAngles([60, 60, 60], answer);
+  }
+  if (answer === 'scalene') {
+    return modelFromAngles(pick([
+      [45, 60, 75], [35, 65, 80], [40, 55, 85], [30, 70, 80], [50, 60, 70], [35, 45, 100]
+    ]), answer);
+  }
+  return modelFromAngles(pick([
+    [50, 50, 80], [70, 70, 40], [40, 40, 100], [35, 35, 110], [75, 75, 30]
+  ]), answer);
+}
+
+function createTutorialQuestion() {
+  const data = createAngleQuestion();
+  const angleType = classifyAngles(data.angles);
+  return {
+    ...data,
+    answer: `${angleType}-count`,
+    angleAnswer: angleType
+  };
+}
+
+function createBuildQuestion() {
+  const answer = pick(['acute', 'right', 'obtuse']);
+  return {
+    mode: 'build',
+    answer,
+    targetLabel: ANGLE_LABELS[answer],
+    points: [],
+    result: null
+  };
+}
+
+function createFreeQuestion() {
+  return {
+    mode: 'free',
+    answer: null,
+    points: [],
+    result: null
+  };
+}
+
+function modelFromAngles(angles, answer) {
+  const a = angles[0] * DEG;
+  const b = angles[1] * DEG;
+  const c = angles[2] * DEG;
+  const sideB = Math.sin(b) / Math.sin(c);
+  const rawVertices = [
+    [0, 0],
+    [1, 0],
+    [Math.cos(a) * sideB, Math.sin(a) * sideB]
+  ];
+  const sideLengths = edgeLengths(rawVertices);
+  return {
+    angles,
+    answer,
+    rawVertices,
+    sideLengths,
+    displaySideLengths: normalizeDisplayLengths(sideLengths, answer),
+    rotation: (Math.random() * 34 - 17) * DEG
+  };
+}
+
+function classifyAngles(angles, rightTolerance = 1) {
+  if (angles.some((angle) => Math.abs(angle - 90) <= rightTolerance)) return 'right';
+  if (angles.some((angle) => angle > 90)) return 'obtuse';
+  return 'acute';
+}
+
+function edgeLengths(vertices) {
+  return vertices.map((vertex, index) => distance(vertex, vertices[(index + 1) % vertices.length]));
+}
+
+function normalizeDisplayLengths(lengths, answer) {
+  const min = Math.min(...lengths);
+  const base = randLengthBase(answer);
+  let values = lengths.map((length) => Number(((length / min) * base).toFixed(1)));
+  if (answer === 'scalene') {
+    values = separateRoundedScaleneValues(values);
+  }
+  return values;
+}
+
+function randLengthBase(answer) {
+  if (answer === 'equilateral') return pick([5, 6, 7, 8, 9, 10, 11, 12]);
+  return pick([5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 10]);
+}
+
+function separateRoundedScaleneValues(values) {
+  const adjusted = values.slice();
+  for (let i = 0; i < adjusted.length; i += 1) {
+    for (let j = 0; j < i; j += 1) {
+      if (Math.abs(adjusted[i] - adjusted[j]) < 0.01) {
+        adjusted[i] = Number((adjusted[i] + 0.4 + i * 0.2).toFixed(1));
+      }
+    }
+  }
+  return adjusted;
+}
+
+function pick(items) {
+  return items[Math.floor(Math.random() * items.length)];
+}
+
+function drawTriangle(canvas, data) {
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const vertices = fitTriangle(data.rawVertices, data.rotation, canvas.width, canvas.height);
+  drawPolygon(ctx, vertices);
+  if (currentGame === 'angle' || currentGame === 'tutorial') {
+    drawAngleLabels(ctx, vertices, data.angles);
+    if (data.angles.some((angle) => angle === 90)) drawRightAngleMark(ctx, vertices, data.angles);
+  }
+  if (currentGame === 'side') {
+    drawSideMarks(ctx, vertices, data.displaySideLengths);
+    drawSideLengthLabels(ctx, vertices, data.displaySideLengths);
+  }
+}
+
+function drawPointTriangle(ctx, points, angles = null) {
+  if (points.length >= 2) {
+    ctx.beginPath();
+    ctx.moveTo(points[0][0], points[0][1]);
+    for (let i = 1; i < points.length; i += 1) ctx.lineTo(points[i][0], points[i][1]);
+    if (points.length === 3) ctx.closePath();
+    ctx.fillStyle = 'rgba(126, 87, 194, 0.12)';
+    if (points.length === 3) ctx.fill();
+    ctx.strokeStyle = '#6f58c9';
+    ctx.lineWidth = Math.max(2.5, Math.min(ctx.canvas.width, ctx.canvas.height) * 0.008);
+    ctx.lineJoin = 'round';
+    ctx.stroke();
+  }
+  points.forEach(([x, y], index) => {
+    ctx.beginPath();
+    ctx.arc(x, y, Math.max(7, Math.min(ctx.canvas.width, ctx.canvas.height) * 0.018), 0, Math.PI * 2);
+    ctx.fillStyle = '#fff';
+    ctx.fill();
+    ctx.strokeStyle = '#6f58c9';
+    ctx.lineWidth = 3;
+    ctx.stroke();
+    ctx.font = `bold ${Math.max(14, Math.min(ctx.canvas.width, ctx.canvas.height) * 0.045)}px Outfit`;
+    ctx.fillStyle = '#6f58c9';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(String(index + 1), x, y);
+  });
+  if (points.length === 3 && angles) {
+    drawAngleLabels(ctx, points, angles.map((angle) => Math.round(angle)), { fontRatio: 0.04, minFontSize: 13 });
+  }
+}
+
+function drawCanvasGuide(ctx, text) {
+  ctx.save();
+  ctx.fillStyle = '#fafafa';
+  ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+  const grid = getCanvasGridSize(ctx.canvas);
+  ctx.strokeStyle = 'rgba(111,88,201,0.08)';
+  ctx.lineWidth = 1;
+  for (let x = grid; x < ctx.canvas.width; x += grid) {
+    ctx.beginPath();
+    ctx.moveTo(x, 0);
+    ctx.lineTo(x, ctx.canvas.height);
+    ctx.stroke();
+  }
+  for (let y = grid; y < ctx.canvas.height; y += grid) {
+    ctx.beginPath();
+    ctx.moveTo(0, y);
+    ctx.lineTo(ctx.canvas.width, y);
+    ctx.stroke();
+  }
+  ctx.fillStyle = 'rgba(111,88,201,0.2)';
+  for (let x = grid; x < ctx.canvas.width; x += grid) {
+    for (let y = grid; y < ctx.canvas.height; y += grid) {
+      ctx.beginPath();
+      ctx.arc(x, y, 2, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+  if (text) {
+    ctx.font = `bold ${Math.max(14, Math.min(ctx.canvas.width, ctx.canvas.height) * 0.045)}px Outfit`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = 'rgba(111,88,201,0.74)';
+    ctx.fillText(text, ctx.canvas.width / 2, ctx.canvas.height / 2);
+  }
+  ctx.restore();
+}
+
+function getCanvasGridSize(canvas) {
+  return Math.max(18, Math.min(canvas.width, canvas.height) * 0.055);
+}
+
+function snapCanvasPoint(x, y, canvas) {
+  const grid = getCanvasGridSize(canvas);
+  return [
+    clamp(Math.round(x / grid) * grid, grid, canvas.width - grid),
+    clamp(Math.round(y / grid) * grid, grid, canvas.height - grid)
+  ];
+}
+
+function drawCanvasBadge(ctx, text, color) {
+  const fontSize = Math.max(15, Math.min(ctx.canvas.width, ctx.canvas.height) * 0.045);
+  ctx.save();
+  ctx.font = `bold ${fontSize}px Outfit`;
+  const paddingX = fontSize * 0.8;
+  const paddingY = fontSize * 0.55;
+  const width = Math.min(ctx.canvas.width - 24, ctx.measureText(text).width + paddingX * 2);
+  const height = fontSize + paddingY * 2;
+  const x = (ctx.canvas.width - width) / 2;
+  const y = 12;
+  roundedRect(ctx, x, y, width, height, 10);
+  ctx.fillStyle = 'rgba(255,255,255,0.92)';
+  ctx.fill();
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 2.5;
+  ctx.stroke();
+  ctx.fillStyle = color;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(text, ctx.canvas.width / 2, y + height / 2);
+  ctx.restore();
+}
+
+function roundedRect(ctx, x, y, width, height, radius) {
+  const r = Math.min(radius, width / 2, height / 2);
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + width - r, y);
+  ctx.quadraticCurveTo(x + width, y, x + width, y + r);
+  ctx.lineTo(x + width, y + height - r);
+  ctx.quadraticCurveTo(x + width, y + height, x + width - r, y + height);
+  ctx.lineTo(x + r, y + height);
+  ctx.quadraticCurveTo(x, y + height, x, y + height - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
+
+function fitTriangle(rawVertices, rotation, width, height) {
+  const cos = Math.cos(rotation);
+  const sin = Math.sin(rotation);
+  const rotated = rawVertices.map(([x, y]) => [x * cos - y * sin, x * sin + y * cos]);
+  const screen = rotated.map(([x, y]) => [x, -y]);
+  const xs = screen.map((point) => point[0]);
+  const ys = screen.map((point) => point[1]);
+  const minX = Math.min(...xs);
+  const maxX = Math.max(...xs);
+  const minY = Math.min(...ys);
+  const maxY = Math.max(...ys);
+  const padding = Math.max(28, Math.min(width, height) * 0.09);
+  const rawW = Math.max(0.001, maxX - minX);
+  const rawH = Math.max(0.001, maxY - minY);
+  const scale = Math.min((width - padding * 2) / rawW, (height - padding * 2) / rawH);
+  const tx = (width - (minX + maxX) * scale) / 2;
+  const ty = (height - (minY + maxY) * scale) / 2;
+  return screen.map(([x, y]) => [x * scale + tx, y * scale + ty]);
+}
+
+function drawPolygon(ctx, vertices) {
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(vertices[0][0], vertices[0][1]);
+  ctx.lineTo(vertices[1][0], vertices[1][1]);
+  ctx.lineTo(vertices[2][0], vertices[2][1]);
+  ctx.closePath();
+  ctx.fillStyle = 'rgba(126, 87, 194, 0.12)';
+  ctx.fill();
+  ctx.strokeStyle = '#6f58c9';
+  ctx.lineWidth = Math.max(2.5, Math.min(ctx.canvas.width, ctx.canvas.height) * 0.008);
+  ctx.lineJoin = 'round';
+  ctx.stroke();
+  vertices.forEach(([x, y]) => {
+    ctx.beginPath();
+    ctx.arc(x, y, Math.max(4, Math.min(ctx.canvas.width, ctx.canvas.height) * 0.012), 0, Math.PI * 2);
+    ctx.fillStyle = '#fff';
+    ctx.fill();
+    ctx.strokeStyle = '#6f58c9';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+  });
+  ctx.restore();
+}
+
+function drawRightAngleMark(ctx, vertices, angles) {
+  const rightIndex = angles.findIndex((angle) => angle === 90);
+  if (rightIndex < 0) return;
+  const vertex = vertices[rightIndex];
+  const prev = vertices[(rightIndex + 2) % 3];
+  const next = vertices[(rightIndex + 1) % 3];
+  const size = Math.min(distance(vertex, prev), distance(vertex, next), Math.min(ctx.canvas.width, ctx.canvas.height) * 0.2) * 0.34;
+  const u = unit(prev[0] - vertex[0], prev[1] - vertex[1]);
+  const v = unit(next[0] - vertex[0], next[1] - vertex[1]);
+  ctx.beginPath();
+  ctx.moveTo(vertex[0] + u[0] * size, vertex[1] + u[1] * size);
+  ctx.lineTo(vertex[0] + u[0] * size + v[0] * size, vertex[1] + u[1] * size + v[1] * size);
+  ctx.lineTo(vertex[0] + v[0] * size, vertex[1] + v[1] * size);
+  ctx.strokeStyle = '#e53935';
+  ctx.lineWidth = Math.max(3, size * 0.16);
+  ctx.stroke();
+}
+
+function drawAngleLabels(ctx, vertices, angles, options = {}) {
+  const sideLengths = vertices.map((vertex, i) => distance(vertex, vertices[(i + 1) % 3]));
+  const fontRatio = options.fontRatio || 0.07;
+  const minFontSize = options.minFontSize || 17;
+  const fontSize = Math.max(minFontSize, Math.min(ctx.canvas.width, ctx.canvas.height) * fontRatio);
+  const radius = Math.min(Math.min(...sideLengths) * 0.2, Math.min(ctx.canvas.width, ctx.canvas.height) * 0.1);
+  vertices.forEach((vertex, index) => {
+    const prev = vertices[(index + 2) % 3];
+    const next = vertices[(index + 1) % 3];
+    const angle = angles[index];
+    const arcColor = angle > 90 ? '#f0a000' : '#4caf50';
+    const textColor = angle === 90 ? '#e53935' : angle > 90 ? '#d17a00' : '#2e7d32';
+    if (angle === 90) {
+      drawAngleTextLabel(ctx, vertex, prev, next, radius, `${angle}°`, textColor, fontSize);
+      return;
+    }
+    drawAngleArcLabel(ctx, vertex, prev, next, radius, `${angle}°`, arcColor, textColor, fontSize);
+  });
+}
+
+function drawAngleTextLabel(ctx, vertex, prev, next, radius, label, textColor, fontSize) {
+  const prevUnit = unit(prev[0] - vertex[0], prev[1] - vertex[1]);
+  const nextUnit = unit(next[0] - vertex[0], next[1] - vertex[1]);
+  let bisector = [prevUnit[0] + nextUnit[0], prevUnit[1] + nextUnit[1]];
+  if (Math.hypot(bisector[0], bisector[1]) < 0.001) {
+    bisector = [-(prevUnit[1] - nextUnit[1]), prevUnit[0] - nextUnit[0]];
+  }
+  const bis = unit(bisector[0], bisector[1]);
+  const labelDistance = Math.min(radius + fontSize * 0.8, Math.min(distance(prev, vertex), distance(next, vertex)) * 0.36);
+  const x = vertex[0] + bis[0] * labelDistance;
+  const y = vertex[1] + bis[1] * labelDistance;
+  ctx.font = `bold ${fontSize}px Outfit`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.lineJoin = 'round';
+  ctx.strokeStyle = 'rgba(255,255,255,0.98)';
+  ctx.lineWidth = Math.max(4, fontSize * 0.35);
+  ctx.strokeText(label, x, y);
+  ctx.fillStyle = textColor;
+  ctx.fillText(label, x, y);
+}
+
+function drawAngleArcLabel(ctx, vertex, prev, next, radius, label, arcColor, textColor, fontSize) {
+  const prevUnit = unit(prev[0] - vertex[0], prev[1] - vertex[1]);
+  const nextUnit = unit(next[0] - vertex[0], next[1] - vertex[1]);
+  const startAngle = Math.atan2(prevUnit[1], prevUnit[0]);
+  const endAngle = Math.atan2(nextUnit[1], nextUnit[0]);
+  ctx.beginPath();
+  ctx.arc(vertex[0], vertex[1], radius, startAngle, endAngle, useShortArc(startAngle, endAngle));
+  ctx.strokeStyle = arcColor;
+  ctx.lineWidth = Math.max(2.2, fontSize * 0.13);
+  ctx.stroke();
+
+  let bisector = [prevUnit[0] + nextUnit[0], prevUnit[1] + nextUnit[1]];
+  if (Math.hypot(bisector[0], bisector[1]) < 0.001) {
+    bisector = [-(prevUnit[1] - nextUnit[1]), prevUnit[0] - nextUnit[0]];
+  }
+  const bis = unit(bisector[0], bisector[1]);
+  const labelDistance = Math.min(radius + fontSize * 0.8, Math.min(distance(prev, vertex), distance(next, vertex)) * 0.36);
+  const x = vertex[0] + bis[0] * labelDistance;
+  const y = vertex[1] + bis[1] * labelDistance;
+  ctx.font = `bold ${fontSize}px Outfit`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.lineJoin = 'round';
+  ctx.strokeStyle = 'rgba(255,255,255,0.98)';
+  ctx.lineWidth = Math.max(4, fontSize * 0.35);
+  ctx.strokeText(label, x, y);
+  ctx.fillStyle = textColor;
+  ctx.fillText(label, x, y);
+}
+
+function drawSideMarks(ctx, vertices, lengths) {
+  if (!Array.isArray(lengths)) return;
+  lengths.forEach((length, edgeIndex) => {
+    const sameCount = lengths.filter((candidate) => Math.abs(candidate - length) < 0.01).length;
+    if (sameCount < 2) return;
+    drawTick(ctx, vertices[edgeIndex], vertices[(edgeIndex + 1) % 3], sameCount === 3 ? 1 : 2);
+  });
+}
+
+function drawSideLengthLabels(ctx, vertices, lengths) {
+  if (!Array.isArray(lengths)) return;
+  const center = [
+    (vertices[0][0] + vertices[1][0] + vertices[2][0]) / 3,
+    (vertices[0][1] + vertices[1][1] + vertices[2][1]) / 3
+  ];
+  const fontSize = Math.max(17, Math.min(ctx.canvas.width, ctx.canvas.height) * 0.065);
+  lengths.forEach((length, edgeIndex) => {
+    const a = vertices[edgeIndex];
+    const b = vertices[(edgeIndex + 1) % 3];
+    const mid = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
+    let normal = unit(-(b[1] - a[1]), b[0] - a[0]);
+    const towardCenter = [center[0] - mid[0], center[1] - mid[1]];
+    if ((normal[0] * towardCenter[0]) + (normal[1] * towardCenter[1]) > 0) {
+      normal = [-normal[0], -normal[1]];
+    }
+    const x = mid[0] + normal[0] * fontSize * 1.15;
+    const y = mid[1] + normal[1] * fontSize * 1.15;
+    const label = String(length).replace(/\.0$/, '');
+    ctx.font = `bold ${fontSize}px Outfit`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    const width = ctx.measureText(label).width + fontSize * 0.95;
+    const height = fontSize * 1.45;
+    roundedRect(ctx, x - width / 2, y - height / 2, width, height, 8);
+    ctx.fillStyle = 'rgba(255,255,255,0.92)';
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(46,125,50,0.35)';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.fillStyle = '#2e7d32';
+    ctx.fillText(label, x, y);
+  });
+}
+
+function drawTick(ctx, a, b, count) {
+  const mid = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
+  const dir = unit(b[0] - a[0], b[1] - a[1]);
+  const normal = [-dir[1], dir[0]];
+  const tickLen = Math.max(14, Math.min(ctx.canvas.width, ctx.canvas.height) * 0.045);
+  const gap = tickLen * 0.38;
+  for (let i = 0; i < count; i += 1) {
+    const offset = (i - (count - 1) / 2) * gap;
+    const cx = mid[0] + dir[0] * offset;
+    const cy = mid[1] + dir[1] * offset;
+    ctx.beginPath();
+    ctx.moveTo(cx - normal[0] * tickLen * 0.5, cy - normal[1] * tickLen * 0.5);
+    ctx.lineTo(cx + normal[0] * tickLen * 0.5, cy + normal[1] * tickLen * 0.5);
+    ctx.strokeStyle = '#2e7d32';
+    ctx.lineWidth = Math.max(2.4, tickLen * 0.16);
+    ctx.lineCap = 'round';
+    ctx.stroke();
+  }
+}
+
+function unit(x, y) {
+  const len = Math.hypot(x, y) || 1;
+  return [x / len, y / len];
+}
+
+function clamp(value, min, max) {
+  return Math.min(max, Math.max(min, value));
+}
+
+function normalizeAngle(value) {
+  let result = value % (Math.PI * 2);
+  if (result < 0) result += Math.PI * 2;
+  return result;
+}
+
+function useShortArc(startAngle, endAngle) {
+  const cw = normalizeAngle(endAngle - startAngle);
+  const ccw = normalizeAngle(startAngle - endAngle);
+  return ccw < cw;
+}
+
+function distance(a, b) {
+  return Math.hypot(a[0] - b[0], a[1] - b[1]);
+}
+
+function triangleArea(points) {
+  return Math.abs(
+    (points[0][0] * (points[1][1] - points[2][1])) +
+    (points[1][0] * (points[2][1] - points[0][1])) +
+    (points[2][0] * (points[0][1] - points[1][1]))
+  ) / 2;
+}
+
+function anglesFromPoints(points) {
+  if (!Array.isArray(points) || points.length !== 3) return null;
+  const minSide = Math.min(distance(points[0], points[1]), distance(points[1], points[2]), distance(points[2], points[0]));
+  if (minSide < 28 || triangleArea(points) < 360) return null;
+  return points.map((vertex, index) => {
+    const prev = points[(index + 2) % 3];
+    const next = points[(index + 1) % 3];
+    const a = distance(vertex, prev);
+    const b = distance(vertex, next);
+    const c = distance(prev, next);
+    const cos = Math.min(1, Math.max(-1, ((a * a) + (b * b) - (c * c)) / (2 * a * b)));
+    return Math.acos(cos) / DEG;
+  });
+}
+
+function renderResults() {
+  const list = document.getElementById('ranking-list');
+  list.innerHTML = '';
+  Array.from({ length: playerCount }, (_, idx) => idx)
+    .sort((a, b) => scores[b] - scores[a])
+    .forEach((idx, position) => {
+      const animal = ANIMALS[idx];
+      const row = document.createElement('div');
+      row.className = 'rank-row';
+      row.innerHTML = `
+        <div class="rank-pos">${position < 3 ? ['🥇', '🥈', '🥉'][position] : position + 1}</div>
+        <div>${animal.emoji} ${animal.name}</div>
+        <div class="rank-score">${scores[idx]}점</div>
+      `;
+      list.appendChild(row);
+    });
+}
+
+window.addEventListener('resize', () => {
+  if (gameActive) {
+    playerData.forEach((data, idx) => {
+      const canvas = document.querySelector(`#body-${idx} canvas`);
+      const area = canvas?.parentElement;
+      if (!data || !canvas || !area) return;
+      sizeCanvas(canvas, area);
+      if (data.mode === 'build') drawBuildCanvas(canvas, data);
+      else drawTriangle(canvas, data);
+    });
+  }
+});
+
+initSetup();
+</script>
+</body>
+</html>

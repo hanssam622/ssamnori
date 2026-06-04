@@ -1,0 +1,2903 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>연산맨 - 곱셈과 나눗셈 과정 게임</title>
+<meta name="description" content="곱셈의 받아올림과 나눗셈의 과정을 색과 자리값으로 익히는 미니게임">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #fdfbf7;
+  --card: #ffffff;
+  --card-border: rgba(0,0,0,0.09);
+  --text: #33353d;
+  --text-dim: #818494;
+  --accent: #7568e8;
+  --accent-soft: rgba(117,104,232,0.13);
+  --accent-glow: rgba(117,104,232,0.28);
+  --orange: #ff9800;
+  --green: #2f8f46;
+  --blue: #2589d0;
+  --red: #e86b6b;
+  --teal: #0f9f9a;
+  --line: #ccd1da;
+  --radius: 14px;
+  --font: "Malgun Gothic", "Apple SD Gothic Neo", "Segoe UI", sans-serif;
+}
+html, body { width: 100%; height: 100%; overflow: hidden; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+button, select, textarea, input { font: inherit; }
+button { -webkit-tap-highlight-color: transparent; }
+.screen {
+  display: none;
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.screen.active { display: flex; animation: fadeIn 0.28s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: scale(0.985); } to { opacity: 1; transform: scale(1); } }
+.home-screen {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  background:
+    radial-gradient(ellipse at 42% 28%, rgba(117,104,232,0.14), transparent 62%),
+    linear-gradient(180deg, #fffaf0 0%, #eff8ff 100%);
+  text-align: center;
+}
+.home-title {
+  font-size: clamp(48px, 8vw, 86px);
+  font-weight: 900;
+  color: var(--accent);
+  text-shadow: 0 6px 24px var(--accent-glow);
+  letter-spacing: 0;
+}
+.home-subtitle {
+  font-size: clamp(18px, 2.5vw, 26px);
+  color: var(--text-dim);
+  font-weight: 700;
+}
+.primary-start {
+  min-width: 210px;
+  height: 64px;
+  padding: 0 32px;
+  border: 0;
+  border-radius: 14px;
+  color: #fff;
+  background: linear-gradient(135deg, var(--accent), #48a6e8);
+  box-shadow: 0 10px 34px var(--accent-glow);
+  font-size: 22px;
+  font-weight: 900;
+  cursor: pointer;
+}
+.back-btn {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  padding: 9px 18px;
+  border-radius: 10px;
+  border: 1px solid var(--card-border);
+  background: var(--card);
+  color: var(--text);
+  cursor: pointer;
+  z-index: 20;
+  font-weight: 800;
+}
+.back-btn:hover { border-color: var(--accent); background: var(--accent-soft); }
+.section-screen {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 28px;
+  background:
+    radial-gradient(ellipse at 50% 28%, rgba(117,104,232,0.1), transparent 68%),
+    var(--bg);
+}
+.section-title {
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 900;
+  color: var(--text);
+  text-align: center;
+}
+.setup-wrap {
+  width: min(1120px, 94vw);
+  display: grid;
+  grid-template-columns: minmax(280px, 0.9fr) minmax(320px, 1.1fr);
+  gap: 18px;
+}
+.setup-wrap.player-only {
+  width: min(520px, 94vw);
+  grid-template-columns: 1fr;
+}
+.setup-panel, .settings-panel {
+  background: rgba(255,255,255,0.92);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  padding: 22px;
+  box-shadow: 0 14px 40px rgba(28,28,40,0.08);
+}
+.panel-title {
+  font-size: 20px;
+  font-weight: 900;
+  margin-bottom: 14px;
+  color: var(--text);
+}
+.player-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.player-btn, .count-btn {
+  height: 72px;
+  border-radius: 12px;
+  border: 2px solid var(--card-border);
+  background: #fff;
+  color: var(--text);
+  font-size: 30px;
+  font-weight: 900;
+  cursor: pointer;
+  transition: transform 0.18s, border-color 0.18s, box-shadow 0.18s;
+}
+.player-btn:hover, .count-btn:hover {
+  transform: translateY(-3px);
+  border-color: var(--accent);
+  box-shadow: 0 10px 28px var(--accent-glow);
+}
+.player-btn.active {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+.field-row {
+  display: grid;
+  grid-template-columns: 132px 1fr;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+}
+.field-row label {
+  color: var(--text-dim);
+  font-weight: 900;
+}
+.select, .text-input {
+  width: 100%;
+  height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #fff;
+  padding: 0 12px;
+  color: var(--text);
+  font-weight: 800;
+}
+.student-textarea {
+  width: 100%;
+  min-height: 168px;
+  resize: vertical;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 12px;
+  color: var(--text);
+  line-height: 1.55;
+  font-weight: 700;
+}
+.secondary-btn {
+  height: 44px;
+  padding: 0 18px;
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  background: #f8f9fa;
+  color: var(--text);
+  font-weight: 900;
+  cursor: pointer;
+}
+.secondary-btn:hover { border-color: var(--accent); background: var(--accent-soft); }
+.row-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 10px;
+}
+.student-manager {
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid var(--card-border);
+}
+.student-manager summary {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  background: #f8f9fa;
+  color: var(--text);
+  font-weight: 900;
+  cursor: pointer;
+  list-style: none;
+}
+.student-manager summary::-webkit-details-marker { display: none; }
+.student-manager summary:hover {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.student-manager[open] summary { margin-bottom: 14px; }
+.student-manager .student-textarea { min-height: 132px; }
+.student-manager .field-row {
+  grid-template-columns: 1fr;
+  gap: 6px;
+}
+.animals-bar {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+.animal-tag {
+  min-height: 34px;
+  padding: 7px 13px;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid var(--card-border);
+  font-size: 14px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.next-btn {
+  height: 54px;
+  min-width: 170px;
+  padding: 0 24px;
+  border: 0;
+  border-radius: 13px;
+  color: #fff;
+  background: linear-gradient(135deg, var(--accent), #4aa8e8);
+  font-weight: 900;
+  font-size: 18px;
+  cursor: pointer;
+  box-shadow: 0 10px 28px var(--accent-glow);
+}
+.game-select-layout {
+  width: min(1160px, 94vw);
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 20px;
+  align-items: start;
+}
+.settings-panel {
+  position: relative;
+}
+.setting-group + .setting-group { margin-top: 18px; }
+.setting-note {
+  margin-top: 8px;
+  color: var(--text-dim);
+  line-height: 1.45;
+  font-weight: 700;
+  font-size: 14px;
+}
+.game-cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(220px, 1fr));
+  gap: 16px;
+}
+.game-card {
+  min-height: 190px;
+  padding: 24px 22px;
+  border-radius: var(--radius);
+  border: 1px solid var(--card-border);
+  background: rgba(255,255,255,0.94);
+  cursor: pointer;
+  transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s;
+  text-align: left;
+}
+.game-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--accent);
+  box-shadow: 0 14px 36px var(--accent-glow);
+}
+.game-card .emoji { font-size: 46px; margin-bottom: 10px; }
+.game-card h3 { font-size: 23px; font-weight: 900; margin-bottom: 9px; }
+.game-card p { color: var(--text-dim); line-height: 1.45; font-size: 15px; font-weight: 700; }
+#game-screen {
+  flex-direction: column;
+  background: #f1f3f5;
+}
+.game-topbar {
+  height: 82px;
+  display: grid;
+  grid-template-columns: 160px 140px 1fr 160px 160px;
+  align-items: center;
+  gap: 12px;
+  background: #fff;
+  border-bottom: 2px solid #e7e9ee;
+  padding: 0 18px;
+  flex-shrink: 0;
+}
+.topbar-back, .topbar-fullscreen, .topbar-finish {
+  height: 42px;
+  border-radius: 10px;
+  border: 1px solid var(--card-border);
+  background: #f8f9fa;
+  font-weight: 900;
+  cursor: pointer;
+  color: var(--text);
+}
+.topbar-back:hover, .topbar-fullscreen:hover, .topbar-finish:hover { background: var(--accent-soft); border-color: var(--accent); }
+.topbar-meta {
+  text-align: center;
+  min-width: 0;
+}
+.topbar-title {
+  font-size: clamp(18px, 2vw, 28px);
+  font-weight: 900;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.topbar-caption {
+  margin-top: 3px;
+  color: var(--text-dim);
+  font-size: 14px;
+  font-weight: 800;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.timer-display {
+  color: #ff6b6b;
+  font-size: 46px;
+  font-weight: 900;
+  text-align: center;
+}
+.game-grid {
+  flex: 1;
+  display: grid;
+  gap: 0;
+  overflow: hidden;
+  width: 100%;
+  min-height: 0;
+}
+.player-cell {
+  border-right: 1px solid rgba(0,0,0,0.18);
+  border-bottom: none;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+.player-cell:last-child { border-right: none; }
+.theme-0 { background: #eaf6ff; }
+.theme-1 { background: #fff1f3; }
+.theme-2 { background: #f3f0ff; }
+.theme-3 { background: #eaf8ef; }
+.theme-4 { background: #fff7df; }
+.theme-5 { background: #e7fbf8; }
+.player-header {
+  padding: 8px 8px 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  flex-shrink: 0;
+}
+.player-name {
+  display: none;
+  font-size: clamp(20px, 2vw, 32px);
+  font-weight: 900;
+  color: #2f3138;
+  line-height: 1.25;
+  margin-bottom: 8px;
+}
+.player-sub {
+  display: none;
+  min-height: 20px;
+  margin-bottom: 10px;
+  color: var(--text-dim);
+  font-size: clamp(13px, 1.1vw, 16px);
+  font-weight: 800;
+}
+.score-line {
+  margin-bottom: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--orange);
+  font-weight: 900;
+  font-size: clamp(15px, 1.35vw, 22px);
+}
+.life-line {
+  margin-bottom: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--red);
+  font-weight: 900;
+  font-size: clamp(15px, 1.35vw, 22px);
+}
+.life-line.zero { color: #7b8090; }
+.cell-body {
+  --problem-offset: clamp(18px, 6vh, 72px);
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 8px 16px;
+  overflow: hidden;
+}
+.problem-title {
+  text-align: center;
+  color: var(--text);
+  font-size: clamp(16px, 1.6vw, 24px);
+  font-weight: 900;
+  flex-shrink: 0;
+  margin-top: var(--problem-offset);
+}
+.board-scroll {
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  overflow: auto;
+  padding: 4px 0;
+}
+.mul-board {
+  --cell: clamp(24px, min(5.2vh, 3.4vw), 46px);
+  --op-cell: clamp(28px, 3vw, 40px);
+  --grid-line: rgba(123,128,144,0.24);
+  display: inline-grid;
+  grid-template-columns: var(--op-cell) repeat(var(--cols), var(--cell));
+  gap: 0;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  padding: 12px;
+  background:
+    repeating-linear-gradient(90deg, var(--grid-line) 0 1px, transparent 1px var(--cell)),
+    repeating-linear-gradient(0deg, var(--grid-line) 0 1px, transparent 1px var(--cell)),
+    rgba(255,255,255,0.72);
+  background-origin: content-box;
+  background-clip: content-box, content-box, border-box;
+  background-position: var(--op-cell) 0, var(--op-cell) 0, 0 0;
+  background-size: calc(var(--cell) * var(--cols)) 100%, calc(var(--cell) * var(--cols)) 100%, auto;
+  background-repeat: no-repeat, no-repeat, no-repeat;
+  border: 1px solid rgba(255,255,255,0.8);
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(20,25,35,0.08);
+}
+.math-cell, .op-cell, .carry-cell {
+  height: var(--cell);
+  min-width: var(--cell);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9px;
+  font-size: clamp(18px, calc(var(--cell) * 0.78), 36px);
+  font-weight: 900;
+  color: #25272d;
+  position: relative;
+}
+.math-cell {
+  background: transparent;
+}
+.op-cell {
+  min-width: max(24px, calc(var(--cell) * 0.85));
+  color: var(--text-dim);
+}
+.carry-cell {
+  height: max(22px, calc(var(--cell) * 0.72));
+  min-width: var(--cell);
+  border: 2px dashed #f0a23a;
+  color: #cf6d00;
+  background: #fff8e5;
+  font-size: clamp(12px, calc(var(--cell) * 0.45), 22px);
+}
+.carry-cell.empty { opacity: 0.45; color: transparent; }
+.carry-cell.crossed::after {
+  content: "";
+  position: absolute;
+  left: 12%;
+  right: 12%;
+  top: 50%;
+  height: 3px;
+  border-radius: 999px;
+  background: rgba(207,109,0,0.75);
+  transform: rotate(-22deg);
+}
+.digit-ones { color: #2f8f46; }
+.digit-tens { color: #2589d0; }
+.digit-hundreds { color: #8a4fc6; }
+.digit-thousands { color: #d46d28; }
+.highlight {
+  outline: 4px solid rgba(255,152,0,0.45);
+  background: #fff3d6;
+  box-shadow: 0 0 0 7px rgba(255,152,0,0.13);
+}
+.target {
+  outline: 4px solid rgba(117,104,232,0.4);
+  background: #f2efff;
+}
+.line-span {
+  grid-column: 1 / -1;
+  height: 3px;
+  background: #7b8090;
+  border-radius: 4px;
+}
+.partial-muted { color: transparent; }
+.division-wrap {
+  width: min(700px, 100%);
+  display: flex;
+  justify-content: center;
+  min-width: max-content;
+  margin: 0 auto;
+}
+.division-board {
+  --div-cell: clamp(24px, min(5.2vh, 3.4vw), 46px);
+  --div-op: calc(var(--div-cell) * 1.05);
+  --grid-line: rgba(123,128,144,0.24);
+  display: grid;
+  grid-template-columns: var(--div-op) repeat(var(--digits), var(--div-cell));
+  grid-auto-rows: var(--div-cell);
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  padding: 18px 18px 22px;
+  background:
+    repeating-linear-gradient(90deg, var(--grid-line) 0 1px, transparent 1px var(--div-cell)),
+    repeating-linear-gradient(0deg, var(--grid-line) 0 1px, transparent 1px var(--div-cell)),
+    rgba(255,255,255,0.72);
+  background-origin: content-box;
+  background-clip: content-box, content-box, border-box;
+  background-position: var(--div-op) 0, var(--div-op) 0, 0 0;
+  background-size: calc(var(--div-cell) * var(--digits)) 100%, calc(var(--div-cell) * var(--digits)) 100%, auto;
+  background-repeat: no-repeat, no-repeat, no-repeat;
+  border: 1px solid rgba(255,255,255,0.8);
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(20,25,35,0.08);
+  position: relative;
+}
+.division-divisor {
+  font-size: clamp(22px, calc(var(--div-cell) * 0.9), 42px);
+  font-weight: 900;
+  color: var(--blue);
+  justify-self: end;
+  padding-right: 8px;
+}
+.division-bracket {
+  grid-column: 2 / span var(--digits);
+  grid-row: 2;
+  border-top: 4px solid #343743;
+  border-left: 4px solid #343743;
+  border-radius: 11px 0 0 0;
+  width: 100%;
+  height: var(--div-cell);
+  align-self: start;
+  margin-top: 0;
+  pointer-events: none;
+  z-index: 3;
+}
+.division-grid-cell {
+  width: var(--div-cell);
+  height: var(--div-cell);
+  background: transparent;
+  z-index: 0;
+  pointer-events: none;
+}
+.q-digit, .div-digit, .work-digit {
+  width: var(--div-cell);
+  height: var(--div-cell);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9px;
+  font-size: clamp(19px, calc(var(--div-cell) * 0.78), 38px);
+  font-weight: 900;
+  background: rgba(255,255,255,0.72);
+  position: relative;
+  z-index: 2;
+}
+.div-digit { background: transparent; }
+.q-digit.blank, .work-digit.blank {
+  color: transparent;
+  border: 2px dashed var(--line);
+  background: rgba(255,255,255,0.42);
+}
+.work-digit {
+  font-size: clamp(16px, calc(var(--div-cell) * 0.62), 30px);
+}
+.division-op {
+  font-weight: 900;
+  color: #7b8090;
+  font-size: clamp(22px, 3vw, 34px);
+  justify-self: end;
+  padding-right: 8px;
+  z-index: 1;
+}
+.division-subline {
+  height: 3px;
+  background: #7b8090;
+  border-radius: 999px;
+  align-self: start;
+  z-index: 3;
+}
+.division-current {
+  outline: 3px solid rgba(255,152,0,0.32);
+  background: #fff3d6;
+}
+.division-factor {
+  outline: 4px solid rgba(255,152,0,0.45);
+  background: #fff3d6;
+  box-shadow: 0 0 0 7px rgba(255,152,0,0.13);
+}
+.division-brought { outline: 3px solid rgba(15,159,154,0.34); }
+.hint-panel {
+  width: min(360px, 92%);
+  margin: 0 auto 8px;
+  padding: 8px 10px;
+  border: 2px solid rgba(255,152,0,0.28);
+  border-radius: 12px;
+  background: #fff8e8;
+  color: var(--text);
+  font-weight: 900;
+  box-shadow: 0 6px 16px rgba(20,25,35,0.06);
+}
+.hint-title {
+  color: var(--accent);
+  font-size: clamp(13px, 1.1vw, 17px);
+  margin-bottom: 4px;
+}
+.hint-lines {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(82px, 1fr));
+  gap: 3px 8px;
+  font-size: clamp(12px, 1vw, 15px);
+  line-height: 1.25;
+}
+.step-panel {
+  width: 100%;
+  background: rgba(255,255,255,0.86);
+  border: 1px solid rgba(255,255,255,0.86);
+  border-radius: 14px;
+  padding: 10px;
+  box-shadow: 0 8px 20px rgba(20,25,35,0.07);
+  flex-shrink: 0;
+}
+.step-title {
+  color: var(--accent);
+  font-size: clamp(14px, 1.3vw, 20px);
+  font-weight: 900;
+  line-height: 1.35;
+}
+.step-desc {
+  margin-top: 5px;
+  color: var(--text);
+  font-size: clamp(12px, 1.05vw, 16px);
+  font-weight: 800;
+  line-height: 1.45;
+}
+.tutorial-actions, .practice-actions {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 9px;
+}
+.small-btn {
+  height: 38px;
+  min-width: 76px;
+  padding: 0 13px;
+  border: 1px solid var(--card-border);
+  border-radius: 9px;
+  background: #f8f9fa;
+  color: var(--text);
+  font-weight: 900;
+  cursor: pointer;
+}
+.small-btn.primary {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+.small-btn.danger {
+  background: var(--red);
+  color: #fff;
+  border-color: var(--red);
+}
+.small-btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.answer-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+.answer-display {
+  height: 38px;
+  border: 2px solid var(--line);
+  border-radius: 10px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  font-weight: 900;
+  color: var(--text);
+  min-width: 96px;
+  transition: background 0.12s ease, border-color 0.12s ease, color 0.12s ease, transform 0.12s ease;
+}
+.answer-display.wrong {
+  border-color: var(--red);
+  background: #fff0f0;
+  color: var(--red);
+  transform: scale(1.04);
+}
+.answer-backspace {
+  min-width: 48px;
+  height: 38px;
+  font-size: 22px;
+}
+.eliminated-panel {
+  width: min(360px, 92%);
+  padding: 18px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.86);
+  border: 1px solid var(--card-border);
+  text-align: center;
+  color: #7b8090;
+  font-weight: 900;
+  line-height: 1.5;
+}
+.numpad {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(34px, 48px));
+  gap: 5px;
+  justify-content: center;
+  margin-top: 8px;
+}
+.num-btn {
+  height: 38px;
+  border: 1px solid var(--card-border);
+  border-radius: 9px;
+  background: #f8f9fa;
+  font-size: 20px;
+  font-weight: 900;
+  cursor: pointer;
+  color: var(--text);
+}
+.feedback {
+  position: absolute;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 6;
+  font-size: clamp(44px, 8vw, 94px);
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 0 4px 18px rgba(0,0,0,0.23);
+  pointer-events: none;
+}
+.feedback.show { display: flex; animation: pop 0.58s ease; }
+.feedback.correct { background: rgba(47,143,70,0.76); }
+.feedback.wrong { background: rgba(232,107,107,0.78); }
+@keyframes pop {
+  0% { opacity: 0; transform: scale(0.85); }
+  20% { opacity: 1; transform: scale(1.06); }
+  100% { opacity: 0; transform: scale(1); }
+}
+#result-screen {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  background:
+    radial-gradient(ellipse at 50% 32%, rgba(255,152,0,0.14), transparent 65%),
+    var(--bg);
+}
+.result-title {
+  font-size: clamp(34px, 5vw, 56px);
+  font-weight: 900;
+}
+.ranking-list {
+  width: min(680px, 92vw);
+  display: grid;
+  gap: 10px;
+}
+.rank-item {
+  min-height: 64px;
+  display: grid;
+  grid-template-columns: 70px 1fr 120px;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  border-radius: 13px;
+  background: #fff;
+  border: 1px solid var(--card-border);
+  box-shadow: 0 8px 24px rgba(20,25,35,0.08);
+  font-weight: 900;
+}
+.rank-pos { font-size: 24px; color: var(--accent); }
+.rank-name { font-size: 20px; }
+.rank-score { text-align: right; color: var(--orange); font-size: 22px; }
+.result-buttons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.result-btn {
+  height: 50px;
+  padding: 0 22px;
+  border-radius: 11px;
+  border: 1px solid var(--card-border);
+  background: #fff;
+  color: var(--text);
+  font-weight: 900;
+  cursor: pointer;
+}
+.result-btn.primary {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fff;
+}
+.worksheet-layout {
+  width: min(1180px, 94vw);
+  display: grid;
+  grid-template-columns: minmax(280px, 340px) minmax(0, 1fr);
+  gap: 18px;
+  min-height: min(720px, 78vh);
+}
+.worksheet-panel {
+  background: rgba(255,255,255,0.92);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: 0 14px 40px rgba(28,28,40,0.08);
+}
+.worksheet-actions {
+  display: grid;
+  gap: 8px;
+  margin-top: 14px;
+}
+.worksheet-list {
+  display: grid;
+  gap: 8px;
+  max-height: 250px;
+  overflow: auto;
+}
+.worksheet-item {
+  display: grid;
+  gap: 4px;
+  padding: 10px 12px;
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  background: #fff;
+  text-align: left;
+  cursor: pointer;
+}
+.worksheet-item.active {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.worksheet-item strong { font-size: 15px; }
+.worksheet-item span {
+  color: var(--text-dim);
+  font-size: 12px;
+  font-weight: 800;
+}
+.worksheet-preview {
+  width: 100%;
+  height: 100%;
+  min-height: 560px;
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  background: #fff;
+}
+@media (max-width: 980px) {
+  .setup-wrap, .game-select-layout, .worksheet-layout { grid-template-columns: 1fr; }
+  .game-cards { grid-template-columns: 1fr; }
+  .section-screen { justify-content: flex-start; overflow: auto; }
+  html, body { overflow: auto; }
+  .screen { min-height: 100vh; height: auto; }
+  #game-screen { height: 100vh; overflow: hidden; }
+}
+@media (max-width: 720px) {
+  .game-topbar { grid-template-columns: 86px 76px 1fr 82px; height: 74px; padding: 0 8px; }
+  .topbar-finish { display: none; }
+  .topbar-caption { display: none; }
+  .timer-display { font-size: 34px; }
+  .topbar-back, .topbar-fullscreen { font-size: 12px; }
+  .player-grid { grid-template-columns: repeat(2, 1fr); }
+  .field-row { grid-template-columns: 1fr; gap: 6px; }
+  .cell-body { --problem-offset: clamp(8px, 2vh, 18px); padding: 0 8px 10px; }
+  .numpad { grid-template-columns: repeat(5, minmax(34px, 44px)); }
+  .num-btn { height: 38px; }
+}
+</style>
+</head>
+<body>
+<div id="home-screen" class="screen home-screen active">
+  <h1 class="home-title">🧮 연산맨</h1>
+  <p class="home-subtitle">곱셈의 받아올림과 나눗셈 과정을 눈으로 익혀요</p>
+  <button class="primary-start" type="button" onclick="showScreen('player-screen')">시작하기 →</button>
+</div>
+
+<div id="player-screen" class="screen section-screen">
+  <button class="back-btn" type="button" onclick="showScreen('home-screen')">← 뒤로</button>
+  <h2 class="section-title">👥 참여 인원을 선택하세요</h2>
+  <div class="setup-wrap player-only">
+    <section class="setup-panel">
+      <h3 class="panel-title">참여 인원</h3>
+      <div class="player-grid" id="player-grid"></div>
+      <div class="animals-bar" id="player-preview"></div>
+      <div class="row-actions">
+        <button class="next-btn" type="button" onclick="goGameSelect()">게임 선택 →</button>
+      </div>
+    </section>
+  </div>
+</div>
+
+<div id="game-select-screen" class="screen section-screen">
+  <button class="back-btn" type="button" onclick="showScreen('player-screen')">← 뒤로</button>
+  <h2 class="section-title">🎮 게임을 선택하세요</h2>
+  <div class="animals-bar" id="game-player-preview"></div>
+  <div class="game-select-layout">
+    <aside class="settings-panel">
+      <div class="setting-group">
+        <h3 class="panel-title">곱셈 자리수</h3>
+        <select id="mul-pattern" class="select"></select>
+        <p class="setting-note">곱해지는 수와 곱하는 수의 자리수를 말로 선택합니다.</p>
+      </div>
+      <div class="setting-group">
+        <h3 class="panel-title">곱셈 풀이 방식</h3>
+        <select id="mul-method" class="select">
+          <option value="partial">부분곱 펼치기</option>
+          <option value="carry">받아올림 한 줄씩</option>
+        </select>
+        <p class="setting-note">부분곱 펼치기는 곱셈 중 받아올림 없이 자리별 값을 펼쳐 더합니다.</p>
+      </div>
+      <div class="setting-group">
+        <h3 class="panel-title">나눗셈 자리수</h3>
+        <select id="div-pattern" class="select"></select>
+        <p class="setting-note">나눗셈 자리수와 나머지 출제 방식을 선택할 수 있습니다.</p>
+      </div>
+      <div class="setting-group">
+        <h3 class="panel-title">나눗셈 나머지</h3>
+        <select id="div-remainder-mode" class="select">
+          <option value="none">나머지 없음</option>
+          <option value="mixed">섞어서 출제</option>
+          <option value="with">나머지 있음</option>
+        </select>
+      </div>
+      <div class="setting-group">
+        <h3 class="panel-title">실전 제한 시간</h3>
+        <select id="timer-select" class="select">
+          <option value="30">30초</option>
+          <option value="60">60초</option>
+          <option value="90" selected>90초</option>
+          <option value="120">120초</option>
+          <option value="none">시간 제한 없음</option>
+        </select>
+      </div>
+      <div class="setting-group">
+        <h3 class="panel-title">실전 목숨</h3>
+        <select id="life-count" class="select">
+          <option value="1">1개</option>
+          <option value="2">2개</option>
+          <option value="3" selected>3개</option>
+          <option value="5">5개</option>
+          <option value="10">10개</option>
+          <option value="none">제한 없음</option>
+        </select>
+      </div>
+      <div class="worksheet-actions">
+        <button class="secondary-btn" type="button" onclick="showWorksheetScreen()">학습지 만들기</button>
+      </div>
+      <details class="student-manager" id="student-manager">
+        <summary>학생 관리</summary>
+        <textarea id="student-textarea" class="student-textarea" spellcheck="false" placeholder="한 줄에 한 명씩 입력하세요&#10;예)&#10;김민준&#10;이서연&#10;박도윤"></textarea>
+        <div class="field-row">
+          <label for="assignment-mode">배정 방식</label>
+          <select id="assignment-mode" class="select">
+            <option value="none">학생 이름 사용 안 함</option>
+            <option value="sequential">번호순</option>
+            <option value="random">랜덤</option>
+          </select>
+        </div>
+        <p class="setting-note">학생 이름 없이도 동물 이름으로 바로 플레이할 수 있습니다.</p>
+        <div class="row-actions">
+          <button class="secondary-btn" type="button" onclick="saveStudentSettings()">저장</button>
+        </div>
+      </details>
+    </aside>
+    <div class="game-cards">
+      <article class="game-card" onclick="startGame('mul-tutorial')">
+        <div class="emoji">🟧</div>
+        <h3>곱셈 튜토리얼</h3>
+        <p>자리값 색과 받아올림칸을 보며 세로셈 순서를 따라갑니다.</p>
+      </article>
+      <article class="game-card" onclick="startGame('mul-practice')">
+        <div class="emoji">✖️</div>
+        <h3>곱셈 실전</h3>
+        <p>강조된 칸에 들어갈 숫자를 차례로 입력하며 연습합니다.</p>
+      </article>
+      <article class="game-card" onclick="startGame('div-tutorial')">
+        <div class="emoji">🟦</div>
+        <h3>나눗셈 튜토리얼</h3>
+        <p>나누기, 곱하기, 빼기, 내려쓰기 과정을 단계별로 봅니다.</p>
+      </article>
+      <article class="game-card" onclick="startGame('div-practice')">
+        <div class="emoji">➗</div>
+        <h3>나눗셈 실전</h3>
+        <p>몫, 곱한 값, 남은 수를 직접 입력하며 긴 나눗셈을 익힙니다.</p>
+      </article>
+    </div>
+  </div>
+</div>
+
+<div id="worksheet-screen" class="screen section-screen">
+  <button class="back-btn" type="button" onclick="showScreen('game-select-screen')">← 뒤로</button>
+  <h2 class="section-title">📝 학습지 자동 생성</h2>
+  <div class="worksheet-layout">
+    <aside class="worksheet-panel">
+      <h3 class="panel-title">생성 조건</h3>
+      <div class="field-row">
+        <label for="worksheet-title">제목</label>
+        <input id="worksheet-title" class="text-input" type="text" value="연산맨 학습지">
+      </div>
+      <div class="field-row">
+        <label for="worksheet-operation">연산</label>
+        <select id="worksheet-operation" class="select" onchange="refreshWorksheetPatternSelect()">
+          <option value="mul">곱셈</option>
+          <option value="div">나눗셈</option>
+          <option value="mixed">곱셈 + 나눗셈</option>
+        </select>
+      </div>
+      <div class="field-row">
+        <label for="worksheet-pattern">자리수</label>
+        <select id="worksheet-pattern" class="select"></select>
+      </div>
+      <div class="field-row">
+        <label for="worksheet-remainder">나머지</label>
+        <select id="worksheet-remainder" class="select">
+          <option value="none">나머지 없음</option>
+          <option value="mixed">섞어서 출제</option>
+          <option value="with">나머지 있음</option>
+        </select>
+      </div>
+      <div class="field-row">
+        <label for="worksheet-count">문항 수</label>
+        <input id="worksheet-count" class="text-input" type="number" min="4" max="60" step="1" value="20">
+      </div>
+      <div class="worksheet-actions">
+        <button class="next-btn" type="button" onclick="createWorksheet()">학습지 생성</button>
+        <button class="secondary-btn" type="button" onclick="downloadSelectedWorksheet()">HTML 다운로드</button>
+      </div>
+      <h3 class="panel-title" style="margin-top:18px;">생성한 학습지</h3>
+      <div class="worksheet-list" id="worksheet-list"></div>
+    </aside>
+    <main class="worksheet-panel">
+      <iframe id="worksheet-preview" class="worksheet-preview" title="학습지 미리보기"></iframe>
+    </main>
+  </div>
+</div>
+
+<div id="game-screen" class="screen">
+  <div class="game-topbar">
+    <button class="topbar-back" type="button" onclick="exitGame()">게임 나가기</button>
+    <button class="topbar-fullscreen" type="button" onclick="toggleFullscreen()">전체화면</button>
+    <div class="topbar-meta">
+      <div class="topbar-title" id="game-title">연산맨</div>
+      <div class="topbar-caption" id="game-caption">과정을 보고 답을 입력하세요.</div>
+    </div>
+    <div class="timer-display" id="time-left">90</div>
+    <button class="topbar-finish" type="button" onclick="finishGame()">결과 보기</button>
+  </div>
+  <div class="game-grid" id="game-grid"></div>
+</div>
+
+<div id="result-screen" class="screen">
+  <h2 class="result-title">🏆 결과 발표</h2>
+  <div class="ranking-list" id="ranking-list"></div>
+  <div class="result-buttons">
+    <button class="result-btn" type="button" onclick="showScreen('home-screen')">처음으로</button>
+    <button class="result-btn" type="button" onclick="showScreen('game-select-screen')">게임 선택</button>
+    <button class="result-btn primary" type="button" onclick="startGame(currentGame)">같은 게임 다시하기</button>
+  </div>
+</div>
+
+<script>
+const ANIMALS = [
+  { emoji: '🐶', name: '강아지' },
+  { emoji: '🐱', name: '고양이' },
+  { emoji: '🐰', name: '토끼' },
+  { emoji: '🦊', name: '여우' },
+  { emoji: '🐻', name: '곰' },
+  { emoji: '🐧', name: '펭귄' }
+];
+const DEFAULT_PLAYER_COUNT = 5;
+const STORAGE_KEY = 'angleman-student-state-v1';
+const WORKSHEET_STORAGE_KEY = 'arithman-worksheets-v1';
+const MUL_PATTERNS = [
+  { key: 'mul-2x1', label: '두 자리 수 × 몇', aDigits: 2, bDigits: 1 },
+  { key: 'mul-2x2', label: '두 자리 수 × 몇십몇', aDigits: 2, bDigits: 2 },
+  { key: 'mul-3x1', label: '세 자리 수 × 몇', aDigits: 3, bDigits: 1 },
+  { key: 'mul-3x2', label: '세 자리 수 × 몇십몇', aDigits: 3, bDigits: 2 },
+  { key: 'mul-z2x1', label: '몇십 × 몇', aDigits: 2, bDigits: 1, trailingZero: 'a' },
+  { key: 'mul-z2x2', label: '두 자리 수 × 몇십', aDigits: 2, bDigits: 2, trailingZero: 'b' },
+  { key: 'mul-z3x1', label: '몇백몇십 × 몇', aDigits: 3, bDigits: 1, trailingZero: 'a' },
+  { key: 'mul-z3x2', label: '세 자리 수 × 몇십', aDigits: 3, bDigits: 2, trailingZero: 'b' }
+];
+const DIV_PATTERNS = [
+  { key: 'div-2d1', label: '두 자리 수 ÷ 몇', dividendDigits: 2, divisorDigits: 1 },
+  { key: 'div-2d2', label: '몇십몇 ÷ 몇십몇', dividendDigits: 2, divisorDigits: 2 },
+  { key: 'div-3d1', label: '세 자리 수 ÷ 몇', dividendDigits: 3, divisorDigits: 1 },
+  { key: 'div-3d2', label: '세 자리 수 ÷ 몇십몇', dividendDigits: 3, divisorDigits: 2 },
+  { key: 'div-4d2', label: '네 자리 수 ÷ 몇십몇', dividendDigits: 4, divisorDigits: 2 },
+  { key: 'div-z2d2', label: '두 자리 수 ÷ 몇십', dividendDigits: 2, divisorDigits: 2, trailingZero: 'divisor' },
+  { key: 'div-z3d2', label: '세 자리 수 ÷ 몇십', dividendDigits: 3, divisorDigits: 2, trailingZero: 'divisor' },
+  { key: 'div-z4d2', label: '네 자리 수 ÷ 몇십', dividendDigits: 4, divisorDigits: 2, trailingZero: 'divisor' }
+];
+const GAME_META = {
+  'mul-tutorial': { emoji: '🟧', title: '곱셈 튜토리얼', caption: '선택한 풀이 방식에 맞춰 곱셈 과정을 따라가요.', operation: 'mul', mode: 'tutorial' },
+  'mul-practice': { emoji: '✖️', title: '곱셈 실전', caption: '선택한 풀이 방식으로 강조된 칸의 숫자를 입력해요.', operation: 'mul', mode: 'practice' },
+  'div-tutorial': { emoji: '🟦', title: '나눗셈 튜토리얼', caption: '나누기, 곱하기, 빼기, 내려쓰기 순서를 익혀요.', operation: 'div', mode: 'tutorial' },
+  'div-practice': { emoji: '➗', title: '나눗셈 실전', caption: '몫과 과정 값을 직접 입력해요.', operation: 'div', mode: 'practice' }
+};
+const PLACE_CLASSES = ['digit-ones', 'digit-tens', 'digit-hundreds', 'digit-thousands'];
+
+let state = loadState();
+let playerCount = state.playerCount || 1;
+let participants = [];
+let currentGame = 'mul-tutorial';
+let scores = [];
+let streaks = [];
+let lives = [];
+let playerData = [];
+let gameActive = false;
+let timeLeft = 90;
+let timerId = null;
+
+function loadState() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+    return {
+      playerCount: normalizeCount(saved.playerCount, DEFAULT_PLAYER_COUNT),
+      assignmentMode: ['none', 'sequential', 'random'].includes(saved.assignmentMode) ? saved.assignmentMode : 'none',
+      students: Array.isArray(saved.students)
+        ? saved.students.map((student) => typeof student === 'string' ? student : student?.name).filter(Boolean).map(String)
+        : [],
+      timer: normalizeTimerFromSaved(saved),
+      mulMethod: normalizeMulMethod(saved.mulMethod),
+      divRemainderMode: normalizeDivRemainderMode(saved.divRemainderMode),
+      lifeCount: normalizeLifeCount(saved.lifeCount)
+    };
+  } catch (error) {
+    return { playerCount: DEFAULT_PLAYER_COUNT, assignmentMode: 'none', students: [], timer: '90', mulMethod: 'partial', divRemainderMode: 'none', lifeCount: 3 };
+  }
+}
+function saveState() {
+  state.playerCount = playerCount;
+  const previous = readRawStudentState();
+  const existingByName = new Map();
+  if (Array.isArray(previous.students)) {
+    previous.students.forEach((student) => {
+      const name = typeof student === 'string' ? student : student?.name;
+      if (!name || existingByName.has(name)) return;
+      existingByName.set(name, typeof student === 'string' ? { id: createStudentId(), name, records: [] } : student);
+    });
+  }
+  const students = state.students.map((name) => {
+    const existing = existingByName.get(name);
+    return existing ? { ...existing, name } : { id: createStudentId(), name, records: [] };
+  });
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({
+    ...previous,
+    playerCount,
+    students,
+    assignmentMode: state.assignmentMode,
+    mulMethod: state.mulMethod,
+    divRemainderMode: state.divRemainderMode,
+    lifeCount: state.lifeCount,
+    timerPreset: state.timer === 'none' ? 'none' : ['30', '60', '120'].includes(state.timer) ? state.timer : 'custom',
+    customTimerSeconds: state.timer === 'none' ? previous.customTimerSeconds || 90 : Number.parseInt(state.timer, 10) || 90
+  }));
+}
+function readRawStudentState() {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}') || {};
+  } catch (error) {
+    return {};
+  }
+}
+function createStudentId() {
+  if (window.crypto?.randomUUID) return window.crypto.randomUUID();
+  return `student-${Date.now()}-${Math.random().toString(16).slice(2, 8)}`;
+}
+function normalizeTimerFromSaved(saved) {
+  if (saved.timer) return String(saved.timer);
+  if (saved.timerPreset === 'none') return 'none';
+  if (['30', '60', '120'].includes(saved.timerPreset)) return saved.timerPreset;
+  if (Number.isFinite(saved.customTimerSeconds)) return String(saved.customTimerSeconds);
+  return '90';
+}
+function normalizeMulMethod(value) {
+  return value === 'carry' ? 'carry' : 'partial';
+}
+function normalizeDivRemainderMode(value) {
+  return ['none', 'mixed', 'with'].includes(value) ? value : 'none';
+}
+function normalizeLifeCount(value) {
+  if (value === 'none' || value === Infinity || value === 'Infinity') return 'none';
+  const number = Number.parseInt(value, 10);
+  return Number.isFinite(number) ? Math.min(10, Math.max(1, number)) : 3;
+}
+function isUnlimitedLife(value) {
+  return normalizeLifeCount(value) === 'none';
+}
+function formatLifeCount(value) {
+  return isUnlimitedLife(value) ? '∞' : String(normalizeLifeCount(value));
+}
+function normalizeCount(value, fallback = 1) {
+  const number = Number.parseInt(value, 10);
+  return Number.isFinite(number) ? Math.min(6, Math.max(1, number)) : fallback;
+}
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach((screen) => screen.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+function fillPatternSelects() {
+  const mul = document.getElementById('mul-pattern');
+  const div = document.getElementById('div-pattern');
+  mul.innerHTML = MUL_PATTERNS.map((item) => `<option value="${item.key}">${item.label}</option>`).join('');
+  div.innerHTML = DIV_PATTERNS.map((item) => `<option value="${item.key}">${item.label}</option>`).join('');
+  refreshWorksheetPatternSelect();
+}
+function refreshWorksheetPatternSelect() {
+  const select = document.getElementById('worksheet-pattern');
+  if (!select) return;
+  const operation = document.getElementById('worksheet-operation')?.value || 'mul';
+  const options = [];
+  options.push({ value: '', label: operation === 'mixed' ? '전체 자리수 섞기' : '선택한 연산 전체' });
+  if (operation === 'mul' || operation === 'mixed') {
+    MUL_PATTERNS.forEach((item) => options.push({ value: `mul:${item.key}`, label: `곱셈 ${item.label}` }));
+  }
+  if (operation === 'div' || operation === 'mixed') {
+    DIV_PATTERNS.forEach((item) => options.push({ value: `div:${item.key}`, label: `나눗셈 ${item.label}` }));
+  }
+  select.innerHTML = options.map((item) => `<option value="${item.value}">${item.label}</option>`).join('');
+}
+function initPlayerButtons() {
+  const grid = document.getElementById('player-grid');
+  grid.innerHTML = '';
+  for (let i = 1; i <= 6; i += 1) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = `player-btn${i === playerCount ? ' active' : ''}`;
+    button.textContent = String(i);
+    button.onclick = () => selectPlayers(i);
+    grid.appendChild(button);
+  }
+}
+function selectPlayers(count) {
+  playerCount = normalizeCount(count);
+  initPlayerButtons();
+  refreshParticipants();
+  saveState();
+}
+function saveStudentSettings() {
+  const names = document.getElementById('student-textarea').value
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+  state.students = names;
+  state.assignmentMode = document.getElementById('assignment-mode').value;
+  state.timer = document.getElementById('timer-select').value;
+  state.mulMethod = normalizeMulMethod(document.getElementById('mul-method')?.value);
+  state.divRemainderMode = normalizeDivRemainderMode(document.getElementById('div-remainder-mode')?.value);
+  state.lifeCount = normalizeLifeCount(document.getElementById('life-count')?.value || state.lifeCount);
+  refreshParticipants();
+  saveState();
+}
+function goGameSelect() {
+  saveStudentSettings();
+  showScreen('game-select-screen');
+}
+function shuffle(values) {
+  const result = values.slice();
+  for (let i = result.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+  return result;
+}
+function refreshParticipants() {
+  let names = [];
+  if (state.assignmentMode === 'sequential') names = state.students.slice(0, playerCount);
+  if (state.assignmentMode === 'random') names = shuffle(state.students).slice(0, playerCount);
+  participants = Array.from({ length: playerCount }, (_, idx) => {
+    const animal = ANIMALS[idx % ANIMALS.length];
+    const studentName = names[idx] || '';
+    const name = studentName || `${animal.name} 자리`;
+    const sub = studentName ? `${animal.name} 자리` : '';
+    return { name, sub, animal, studentName };
+  });
+  renderParticipantBars();
+}
+function renderParticipantBars() {
+  const html = participants.map((item, idx) => (
+    `<div class="animal-tag"><span>${item.animal.emoji}</span><span>${escapeHtml(item.name || `${idx + 1}번`)}</span></div>`
+  )).join('');
+  ['player-preview', 'game-player-preview'].forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = html;
+  });
+}
+function participantLabel(player) {
+  if (!player) return '';
+  const animal = player.animal || {};
+  const name = player.name || animal.name || '';
+  return `${animal.emoji ? `${animal.emoji} ` : ''}${name}`.trim();
+}
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, (char) => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[char]));
+}
+function escapeAttr(value) {
+  return escapeHtml(value).replace(/`/g, '&#96;');
+}
+function randomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+function pow10(exp) {
+  return 10 ** exp;
+}
+function digitCount(value) {
+  return Math.abs(value).toString().length;
+}
+function randomNumberWithDigits(digits, avoidZeroInside = true) {
+  let text = String(randomInt(1, 9));
+  for (let i = 1; i < digits; i += 1) {
+    text += String(randomInt(avoidZeroInside ? 1 : 0, 9));
+  }
+  return Number.parseInt(text, 10);
+}
+function trailingZeroNumberWithDigits(digits) {
+  if (digits <= 1) return randomInt(1, 9);
+  let text = String(randomInt(1, 9));
+  for (let i = 1; i < digits - 1; i += 1) {
+    text += String(randomInt(1, 9));
+  }
+  return Number.parseInt(`${text}0`, 10);
+}
+function chooseTrailingZeroTarget(items, mode) {
+  const candidates = items.filter((item) => item.digits >= 2);
+  if (!candidates.length) return null;
+  if (mode && mode !== 'any') return candidates.some((item) => item.key === mode) ? mode : null;
+  return candidates[randomInt(0, candidates.length - 1)].key;
+}
+function digitsRight(value, width = null) {
+  const raw = String(Math.abs(value));
+  const padded = width ? raw.padStart(width, ' ') : raw;
+  return padded.split('').reverse().map((char) => (char === ' ' ? null : Number.parseInt(char, 10)));
+}
+function digitsLeft(value, width = null) {
+  return digitsRight(value, width).reverse();
+}
+function shiftedEntryDigits(term, width) {
+  const digits = Array(width).fill(null);
+  digitsRight(term.entryValue).forEach((digit, offset) => {
+    const place = term.place + offset;
+    if (place < width) digits[place] = digit;
+  });
+  return digits;
+}
+function termRowDigits(term, width) {
+  if (term && Number.isFinite(term.entryValue) && Number.isInteger(term.place)) {
+    return shiftedEntryDigits(term, width);
+  }
+  return digitsRight(term?.value || 0, width);
+}
+function hasMultiplicationCarry(a, b) {
+  const aDigits = digitsRight(a);
+  const bDigits = digitsRight(b);
+  return bDigits.some((bDigit) => {
+    let carry = 0;
+    for (const aDigit of aDigits) {
+      const total = aDigit * bDigit + carry;
+      carry = Math.floor(total / 10);
+      if (carry > 0) return true;
+    }
+    return false;
+  });
+}
+function makeMulProblem() {
+  const pattern = MUL_PATTERNS.find((item) => item.key === document.getElementById('mul-pattern').value) || MUL_PATTERNS[0];
+  return makeMulProblemForPattern(pattern);
+}
+function makeMulProblemForPattern(pattern) {
+  const trailingZeroTarget = pattern.trailingZero
+    ? chooseTrailingZeroTarget([
+      { key: 'a', digits: pattern.aDigits },
+      { key: 'b', digits: pattern.bDigits }
+    ], pattern.trailingZero)
+    : null;
+  for (let attempt = 0; attempt < 200; attempt += 1) {
+    const a = trailingZeroTarget === 'a'
+      ? trailingZeroNumberWithDigits(pattern.aDigits)
+      : randomNumberWithDigits(pattern.aDigits, true);
+    const b = trailingZeroTarget === 'b'
+      ? trailingZeroNumberWithDigits(pattern.bDigits)
+      : randomNumberWithDigits(pattern.bDigits, true);
+    if (hasMultiplicationCarry(a, b)) return { a, b, pattern };
+  }
+  return {
+    a: trailingZeroTarget === 'a' ? trailingZeroNumberWithDigits(pattern.aDigits) : randomNumberWithDigits(pattern.aDigits, true),
+    b: trailingZeroTarget === 'b' ? trailingZeroNumberWithDigits(pattern.bDigits) : randomNumberWithDigits(pattern.bDigits, true),
+    pattern
+  };
+}
+function makeDivProblem() {
+  const pattern = DIV_PATTERNS.find((item) => item.key === document.getElementById('div-pattern').value) || DIV_PATTERNS[0];
+  const remainderMode = normalizeDivRemainderMode(document.getElementById('div-remainder-mode')?.value || state.divRemainderMode);
+  return makeDivProblemForPattern(pattern, remainderMode);
+}
+function makeDivProblemForPattern(pattern, remainderMode = 'none') {
+  remainderMode = normalizeDivRemainderMode(remainderMode);
+  const wantRemainder = remainderMode === 'with' || (remainderMode === 'mixed' && Math.random() < 0.5);
+  const qDigits = Math.max(1, pattern.dividendDigits - pattern.divisorDigits + 1);
+  for (let attempt = 0; attempt < 800; attempt += 1) {
+    const divisor = randomDivisorForPattern(pattern);
+    const quotient = randomNumberWithDigits(qDigits, true);
+    const remainder = wantRemainder ? randomInt(1, divisor - 1) : 0;
+    const dividend = divisor * quotient + remainder;
+    if (digitCount(dividend) === pattern.dividendDigits && dividend % divisor === remainder) {
+      return { dividend, divisor, quotient, remainder, pattern };
+    }
+  }
+  const divisor = randomDivisorForPattern(pattern);
+  const fallbackRemainder = wantRemainder ? randomInt(1, divisor - 1) : 0;
+  const minQ = Math.ceil((pow10(pattern.dividendDigits - 1) - fallbackRemainder) / divisor);
+  const maxQ = Math.floor((pow10(pattern.dividendDigits) - 1 - fallbackRemainder) / divisor);
+  const quotient = Math.max(1, randomInt(minQ, Math.max(minQ, maxQ)));
+  return { dividend: divisor * quotient + fallbackRemainder, divisor, quotient, remainder: fallbackRemainder, pattern };
+}
+function randomDivisorForPattern(pattern) {
+  if (pattern.divisorDigits === 1) return randomInt(2, 9);
+  if (pattern.trailingZero === 'divisor') return trailingZeroNumberWithDigits(pattern.divisorDigits);
+  return randomNumberWithDigits(pattern.divisorDigits, true);
+}
+function getMulMethod() {
+  return normalizeMulMethod(document.getElementById('mul-method')?.value || state.mulMethod);
+}
+function buildMulSteps(problem) {
+  return getMulMethod() === 'carry' ? buildMulCarrySteps(problem) : buildMulPartialSteps(problem);
+}
+function buildMulPartialSteps(problem) {
+  const { a, b } = problem;
+  const aDigits = digitsRight(a);
+  const bDigits = digitsRight(b);
+  const termRows = [];
+  const steps = [];
+  bDigits.forEach((bDigit, bPlace) => {
+    if (bDigit === 0) return;
+    const multiplierValue = bDigit * pow10(bPlace);
+    const rowLabel = bPlace === 0 ? '일의 자리 곱' : `${placeName(bPlace)} 자리 곱`;
+    if (bPlace > 0) {
+      steps.push({
+        type: 'info',
+        row: bPlace,
+        title: `${rowLabel} 준비`,
+        desc: `${bDigit}은 ${placeName(bPlace)} 자리 숫자이므로, 곱한 결과는 ${placeName(bPlace)} 자리부터 적어요.`,
+        highlightB: bPlace
+      });
+    }
+    aDigits.forEach((aDigit, aPlace) => {
+      if (aDigit === 0) return;
+      const entryValue = aDigit * bDigit;
+      const place = aPlace + bPlace;
+      const productValue = entryValue * pow10(place);
+      const entryDigitCount = digitCount(entryValue);
+      const termIndex = termRows.length;
+      termRows.push({ value: productValue, entryValue, place, aPlace, bPlace, method: 'partial' });
+      steps.push({
+        type: 'answer',
+        kind: 'mul-term',
+        row: bPlace,
+        aPlace,
+        bPlace,
+        termIndex,
+        answer: entryValue,
+        title: `${aDigit} × ${bDigit}`,
+        desc: describeMulPartialTerm(aDigit, bDigit, entryValue, productValue, place),
+        highlightA: aPlace,
+        highlightB: bPlace,
+        targetTerm: termIndex,
+        targetStartPlace: place,
+        targetEndPlace: place + entryDigitCount - 1
+      });
+    });
+  });
+  return finishMulBuild(problem, steps, termRows, 'partial');
+}
+function buildMulCarrySteps(problem) {
+  const { a, b } = problem;
+  const aDigits = digitsRight(a);
+  const bDigits = digitsRight(b);
+  const termRows = [];
+  const steps = [];
+  bDigits.forEach((bDigit, bPlace) => {
+    if (bDigit === 0) return;
+    const rowValue = a * bDigit * pow10(bPlace);
+    const rowEntryValue = a * bDigit;
+    const termIndex = termRows.length;
+    termRows.push({ value: rowValue, entryValue: rowEntryValue, place: bPlace, bPlace, method: 'carry' });
+    if (bPlace > 0) {
+      steps.push({
+        type: 'info',
+        row: bPlace,
+        title: `${placeName(bPlace)} 자리 곱 준비`,
+        desc: `${bDigit}은 ${placeName(bPlace)} 자리 숫자이므로 이번 줄은 ${placeName(bPlace)} 자리부터 씁니다.`,
+        highlightB: bPlace
+      });
+    }
+    const carryDepths = {};
+    const carrySums = {};
+    const resolvedPlaces = new Set();
+    const nextCarryDepth = (place) => {
+      const depth = carryDepths[place] || 0;
+      carryDepths[place] = depth + 1;
+      return depth;
+    };
+    const addCarryValue = (place, value) => {
+      carrySums[place] = (carrySums[place] || 0) + value;
+    };
+    const resolvePlace = (place) => {
+      if (resolvedPlaces.has(place) || carrySums[place] === undefined) return;
+      const value = carrySums[place];
+      const writeDigit = value % 10;
+      const nextCarry = Math.floor(value / 10);
+      resolvedPlaces.add(place);
+      steps.push({
+        type: 'answer',
+        kind: 'mul-row-sum-digit',
+        row: bPlace,
+        termIndex,
+        answer: writeDigit,
+        targetTerm: termIndex,
+        targetPlace: place,
+        targetStartPlace: place,
+        targetEndPlace: place,
+        revealTermDigit: { termIndex, place, value: writeDigit },
+        title: `${placeName(place)} 자리 더하기`,
+        desc: describeMulCarrySum(place, value, writeDigit, nextCarry)
+      });
+      if (nextCarry > 0) {
+        const carryPlace = place + 1;
+        const carryDepth = nextCarryDepth(carryPlace);
+        addCarryValue(carryPlace, nextCarry);
+        steps.push({
+          type: 'answer',
+          kind: 'mul-row-sum-carry',
+          row: bPlace,
+          termIndex,
+          answer: nextCarry,
+          carryTarget: carryPlace,
+          carryDepth,
+          revealCarryDigits: [{ place: carryPlace, value: nextCarry, depth: carryDepth }],
+          crossCarryDigits: Array.from({ length: carryDepths[place] || 0 }, (_, depth) => ({ place, depth })),
+          title: `덧셈 받아올림 ${nextCarry}`,
+          desc: `${placeName(place)} 자리 합 ${value}에서 ${writeDigit}${objectParticle(writeDigit)} 쓰고 ${nextCarry}${objectParticle(nextCarry)} ${carrySlotName(carryDepth)} 받아올림칸에 올립니다.`
+        });
+      }
+    };
+    aDigits.forEach((aDigit, aPlace) => {
+      const targetPlace = aPlace + bPlace;
+      if (aDigit === 0) {
+        resolvePlace(targetPlace);
+        return;
+      }
+      const product = aDigit * bDigit;
+      const productCarryDigits = digitsRight(product).map((digit, offset) => {
+        const place = targetPlace + offset;
+        const carryDepth = nextCarryDepth(place);
+        addCarryValue(place, digit);
+        return { place, value: digit, depth: carryDepth };
+      });
+      steps.push({
+        type: 'answer',
+        kind: 'mul-row-product',
+        row: bPlace,
+        aPlace,
+        bPlace,
+        termIndex,
+        answer: product,
+        revealCarryDigits: productCarryDigits,
+        title: `${aDigit} × ${bDigit}`,
+        desc: describeMulCarryProduct(aDigit, bDigit, product, productCarryDigits),
+        highlightA: aPlace,
+        highlightB: bPlace
+      });
+      resolvePlace(targetPlace);
+    });
+    while (Object.keys(carrySums).map(Number).some((place) => !resolvedPlaces.has(place))) {
+      Object.keys(carrySums).map(Number).sort((a, b) => a - b).forEach(resolvePlace);
+    }
+  });
+  return finishMulBuild(problem, steps, termRows, 'carry');
+}
+function finishMulBuild(problem, steps, termRows, method) {
+  const { a, b } = problem;
+  const result = a * b;
+  const resultDigits = digitsRight(result);
+  if (termRows.length <= 1) {
+    steps.push({
+      type: 'info',
+      kind: 'mul-final',
+      title: '곱셈 완성',
+      desc: termRows.length
+        ? `${termRows[0].value} = ${result}입니다. 더할 부분곱이 하나뿐이라 바로 답이 됩니다.`
+        : `${a} × ${b} = ${result}입니다.`,
+      showResult: true
+    });
+    return {
+      steps,
+      partials: termRows.map((term) => term.value),
+      termRows,
+      result,
+      method,
+      cols: Math.max(String(result).length, String(a).length, String(b).length + 1)
+    };
+  }
+  let carry = 0;
+  let pendingResultDigits = [];
+  for (let place = 0; place < resultDigits.length; place += 1) {
+    const columnDigits = termRows.map((term) => digitsRight(term.value)[place] || 0);
+    const columnBaseSum = columnDigits.reduce((sum, digit) => sum + digit, 0);
+    const columnSum = columnBaseSum + carry;
+    const resultDigit = columnSum % 10;
+    const nextCarry = Math.floor(columnSum / 10);
+    if (columnBaseSum === 0 && carry === 0) {
+      pendingResultDigits.push({ place, value: resultDigit });
+      continue;
+    }
+    steps.push({
+      type: 'answer',
+      kind: 'mul-sum-digit',
+      answer: resultDigit,
+      targetPlace: place,
+      carryIn: carry,
+      nextCarry,
+      columnDigits,
+      revealResultDigits: pendingResultDigits,
+      title: `${placeName(place)} 자리 더하기`,
+      desc: describeMulColumn(place, columnDigits, carry, columnSum, resultDigit, nextCarry)
+    });
+    pendingResultDigits = [];
+    if (nextCarry > 0) {
+      steps.push({
+        type: 'answer',
+        kind: 'mul-sum-carry',
+        answer: nextCarry,
+        targetPlace: place,
+        carryTarget: place + 1,
+        title: `받아올림 ${nextCarry}`,
+        desc: `${placeName(place)} 자리 합 ${columnSum}에서 ${resultDigit}을 남기고 ${nextCarry}을 ${placeName(place + 1)} 자리 받아올림칸에 올려요.`
+      });
+    }
+    carry = nextCarry;
+  }
+  steps.push({
+    type: 'info',
+    kind: 'mul-final',
+    title: '곱셈 완성',
+    desc: `${termRows.map((term) => term.value).join(' + ')} = ${result}입니다.`,
+    revealResultDigits: pendingResultDigits,
+    showResult: true
+  });
+  return {
+    steps,
+    partials: termRows.map((term) => term.value),
+    termRows,
+    result,
+    method,
+    cols: Math.max(String(result).length, String(a).length, String(b).length + 1)
+  };
+}
+function describeMulPartialTerm(aDigit, bDigit, entryValue, productValue, place) {
+  if (place > 0) {
+    return `${aDigit} × ${bDigit} = ${entryValue}. ${placeName(place)} 자리부터 쓰면 ${productValue}${objectParticle(productValue)} 나타냅니다.`;
+  }
+  return `${aDigit} × ${bDigit} = ${entryValue}. 일의 자리부터 더할 값 줄에 씁니다.`;
+}
+function describeMulCarryDigit(aDigit, bDigit, product, writeDigit, targetPlace, depth = 0, offset = 0) {
+  const expression = `${aDigit} × ${bDigit}`;
+  const slotName = carrySlotName(depth);
+  if (offset > 0) {
+    return `${expression} = ${product}. ${product}의 ${placeName(targetPlace)} 자리 ${writeDigit}${objectParticle(writeDigit)} ${slotName} 받아올림칸에 씁니다.`;
+  }
+  return `${expression} = ${product}. ${product}의 ${placeName(targetPlace)} 자리 ${writeDigit}${objectParticle(writeDigit)} ${slotName} 받아올림칸에 씁니다.`;
+}
+function describeMulCarryProduct(aDigit, bDigit, product, digits) {
+  const places = digits
+    .slice()
+    .sort((a, b) => b.place - a.place)
+    .map((digit) => `${placeName(digit.place)} 자리`)
+    .join(', ');
+  return `${aDigit} × ${bDigit} = ${product}. ${product}${objectParticle(product)} ${places} 받아올림칸에 자리 맞춰 씁니다.`;
+}
+function carrySlotName(depth) {
+  return depth <= 0 ? '아래쪽' : depth === 1 ? '위쪽' : `${depth + 1}번째`;
+}
+function describeMulCarrySum(place, value, writeDigit, nextCarry) {
+  if (nextCarry > 0) {
+    return `${placeName(place)} 자리 받아올림칸의 합 ${value}에서 ${writeDigit}${objectParticle(writeDigit)} 부분곱 줄에 씁니다.`;
+  }
+  return `${placeName(place)} 자리 받아올림칸의 수를 더해 ${writeDigit}${objectParticle(writeDigit)} 부분곱 줄에 씁니다.`;
+}
+function describeMulColumn(place, columnDigits, carry, columnSum, resultDigit, nextCarry) {
+  const parts = columnDigits.filter((digit) => digit > 0);
+  if (carry > 0) parts.push(carry);
+  const expression = parts.length ? parts.join(' + ') : '0';
+  if (nextCarry > 0) {
+    return `${placeName(place)} 자리의 ${expression} = ${columnSum}. 아래에는 ${resultDigit}${objectParticle(resultDigit)} 쓰고 ${nextCarry}${objectParticle(nextCarry)} 다음 자리로 올립니다.`;
+  }
+  return `${placeName(place)} 자리의 ${expression} = ${columnSum}. 아래에 ${resultDigit}${objectParticle(resultDigit)} 씁니다.`;
+}
+function objectParticle(value) {
+  const lastDigit = Math.abs(Number.parseInt(value, 10)) % 10;
+  return [0, 1, 3, 6, 7, 8].includes(lastDigit) ? '을' : '를';
+}
+function buildDivisionRecords(problem) {
+  const digits = String(problem.dividend).split('').map(Number);
+  const records = [];
+  let current = 0;
+  let startIndex = 0;
+  for (let index = 0; index < digits.length; index += 1) {
+    current = current * 10 + digits[index];
+    if (current < problem.divisor && records.length === 0) continue;
+    if (current < problem.divisor) {
+      records.push({
+        current,
+        qDigit: 0,
+        product: 0,
+        remainder: current,
+        brought: index + 1 < digits.length ? digits[index + 1] : null,
+        startIndex,
+        endIndex: index,
+        qIndex: index,
+        skipWork: true
+      });
+      startIndex = index + 1;
+      continue;
+    }
+    const qDigit = Math.floor(current / problem.divisor);
+    const product = qDigit * problem.divisor;
+    const remainder = current - product;
+    records.push({
+      current,
+      qDigit,
+      product,
+      remainder,
+      brought: index + 1 < digits.length ? digits[index + 1] : null,
+      startIndex,
+      endIndex: index,
+      qIndex: index
+    });
+    current = remainder;
+    startIndex = index + 1;
+  }
+  return records;
+}
+function buildDivSteps(problem) {
+  const records = buildDivisionRecords(problem);
+  const steps = [];
+  records.forEach((record, row) => {
+    steps.push({
+      type: 'answer',
+      kind: 'div-q',
+      row,
+      answer: record.qDigit,
+      title: `${record.current} ÷ ${problem.divisor}`,
+      desc: `${problem.divisor}가 ${record.current} 안에 몇 번 들어가는지 몫 자리에 씁니다.`
+    });
+    if (!record.skipWork) {
+      steps.push({
+        type: 'answer',
+        kind: 'div-product',
+        row,
+        answer: record.product,
+        title: `${record.qDigit} × ${problem.divisor}`,
+        desc: `방금 쓴 몫과 나누는 수를 곱해 아래에 씁니다.`
+      });
+      steps.push({
+        type: 'answer',
+        kind: 'div-remainder',
+        row,
+        answer: record.remainder,
+        title: `${record.current} - ${record.product}`,
+        desc: `빼고 남은 수를 확인합니다.`
+      });
+    }
+    if (record.brought !== null) {
+      steps.push({
+        type: 'info',
+        kind: 'div-bring',
+        row,
+        title: `다음 숫자 ${record.brought} 내려쓰기`,
+        desc: `남은 수 옆으로 다음 자리 숫자 ${record.brought}을 내려 다음 나눗셈을 준비합니다.`
+      });
+    }
+  });
+  steps.push({
+    type: 'info',
+    kind: 'div-final',
+    row: records.length - 1,
+    title: '나눗셈 완성',
+    desc: problem.remainder
+      ? `${problem.dividend} ÷ ${problem.divisor} = ${problem.quotient} 나머지 ${problem.remainder}입니다.`
+      : `${problem.dividend} ÷ ${problem.divisor} = ${problem.quotient}입니다.`
+  });
+  return { records, steps };
+}
+function placeName(place) {
+  return ['일', '십', '백', '천', '만'][place] || `${10 ** place}`;
+}
+function startGame(gameKey) {
+  saveStudentSettings();
+  currentGame = gameKey || currentGame;
+  const meta = GAME_META[currentGame];
+  scores = Array(playerCount).fill(0);
+  streaks = Array(playerCount).fill(0);
+  lives = Array(playerCount).fill(isUnlimitedLife(state.lifeCount) ? 'none' : normalizeLifeCount(state.lifeCount));
+  playerData = [];
+  gameActive = true;
+  document.getElementById('game-title').textContent = `${meta.emoji} ${meta.title}`;
+  document.getElementById('game-caption').textContent = meta.caption;
+  buildGameGrid();
+  for (let idx = 0; idx < playerCount; idx += 1) newProblem(idx);
+  showScreen('game-screen');
+  startTimer(meta.mode === 'practice');
+}
+function buildGameGrid() {
+  const grid = document.getElementById('game-grid');
+  const template = getGridTemplate(playerCount);
+  grid.style.gridTemplateColumns = template.cols;
+  grid.style.gridTemplateRows = template.rows;
+  grid.innerHTML = participants.map((player, idx) => `
+    <section class="player-cell theme-${idx % 6}">
+      <div class="player-header">
+        <div class="player-name">${escapeHtml(participantLabel(player))}</div>
+        <div class="player-sub">${escapeHtml(player.sub || '')}</div>
+        <div class="score-line">점수 <span id="score-${idx}">0</span></div>
+        <div class="score-line">연속 <span id="streak-${idx}">0</span></div>
+        <div class="life-line" id="life-line-${idx}">♥ <span id="lives-${idx}">${formatLifeCount(lives[idx] ?? state.lifeCount)}</span></div>
+      </div>
+      <div class="cell-body" id="body-${idx}"></div>
+      <div class="feedback" id="feedback-${idx}"></div>
+    </section>
+  `).join('');
+}
+function getGridTemplate(count) {
+  return { cols: `repeat(${count}, minmax(0, 1fr))`, rows: '1fr' };
+}
+function newProblem(idx) {
+  const meta = GAME_META[currentGame];
+  if (meta.operation === 'mul') {
+    const problem = makeMulProblem();
+    const built = buildMulSteps(problem);
+    playerData[idx] = { operation: 'mul', problem, ...built, step: 0, input: '', solved: false };
+  } else {
+    const problem = makeDivProblem();
+    const built = buildDivSteps(problem);
+    playerData[idx] = { operation: 'div', problem, ...built, step: 0, input: '', solved: false };
+  }
+  renderPlayer(idx);
+}
+function activeStep(data) {
+  return data.steps[Math.min(data.step, data.steps.length - 1)] || data.steps[0];
+}
+function renderPlayer(idx) {
+  const data = playerData[idx];
+  const body = document.getElementById(`body-${idx}`);
+  if (!body || !data) return;
+  if (data.eliminated) {
+    body.innerHTML = `
+      <div class="problem-title">${renderProblemTitle(data)}</div>
+      <div class="eliminated-panel">목숨을 모두 사용했습니다.</div>
+    `;
+    return;
+  }
+  const meta = GAME_META[currentGame];
+  const step = activeStep(data);
+  body.innerHTML = `
+    <div class="problem-title">${renderProblemTitle(data)}</div>
+    ${renderDivisionHintPanel(data, step)}
+    <div class="board-scroll">${data.operation === 'mul' ? renderMulBoard(data, step) : renderDivBoard(data, step)}</div>
+    <div class="step-panel">
+      <div class="step-title">${escapeHtml(formatStepTitle(step, meta.mode))}</div>
+      <div class="step-desc">${escapeHtml(formatStepDesc(step, meta.mode))}</div>
+      ${meta.mode === 'tutorial' ? renderTutorialControls(idx, data) : renderPracticeControls(idx, data, step)}
+    </div>
+  `;
+}
+function formatStepTitle(step, mode) {
+  if (mode !== 'practice') return step.title;
+  if (step.kind === 'mul-term') return '더할 값 만들기';
+  if (step.kind === 'mul-row-product') return '곱한 값 입력';
+  if (step.kind === 'mul-row-digit') return `${carrySlotName(step.carryDepth || 0)} 받아올림칸`;
+  if (step.kind === 'mul-row-carry') return `${carrySlotName(step.carryDepth || 0)} 받아올림칸`;
+  if (step.kind === 'mul-row-sum-digit') return `${placeName(step.targetPlace)} 자리 정리`;
+  if (step.kind === 'mul-row-sum-carry') return `${carrySlotName(step.carryDepth || 0)} 받아올림칸`;
+  if (step.kind === 'mul-row-final-carry') return '마지막 받아올림';
+  if (step.kind === 'mul-sum-digit') return `${placeName(step.targetPlace)} 자리 결과`;
+  if (step.kind === 'mul-sum-carry') return '받아올림칸';
+  if (step.kind === 'mul-final') return '부분곱 더하기';
+  if (step.kind === 'div-q') return '몫 자리 입력';
+  if (step.kind === 'div-product') return '곱한 값 입력';
+  if (step.kind === 'div-remainder') return '남은 수 입력';
+  return step.title;
+}
+function formatStepDesc(step, mode) {
+  if (mode !== 'practice') return step.desc;
+  if (step.kind === 'mul-term') return '강조된 자리부터 들어갈 곱셈 결과의 숫자만 입력하세요.';
+  if (step.kind === 'mul-row-product') return '서로 곱한 결과 전체를 강조된 받아올림칸에 자리 맞춰 입력하세요.';
+  if (step.kind === 'mul-row-digit') return '곱한 값의 현재 자리 숫자를 강조된 받아올림칸에 입력하세요.';
+  if (step.kind === 'mul-row-carry') return '곱한 값의 다음 자리 숫자를 강조된 받아올림칸에 입력하세요.';
+  if (step.kind === 'mul-row-sum-digit') return '강조된 자리의 받아올림칸 숫자들을 더해 부분곱 줄에 입력하세요.';
+  if (step.kind === 'mul-row-sum-carry') return '받아올림칸 숫자들을 더해 생긴 다음 자리 숫자를 강조된 받아올림칸에 입력하세요.';
+  if (step.kind === 'mul-row-final-carry') return '곱셈 줄 맨 앞에 남은 받아올림 숫자를 입력하세요.';
+  if (step.kind === 'mul-sum-digit') return '강조된 자리의 합에서 아래에 남길 숫자를 입력하세요.';
+  if (step.kind === 'mul-sum-carry') return '다음 자리 받아올림칸에 올릴 숫자를 입력하세요.';
+  if (step.kind === 'mul-final') return '부분곱을 모두 더한 최종 답을 입력하세요.';
+  if (step.kind === 'div-q') return '현재 수를 나누는 수로 나누었을 때 몫 자리에 들어갈 숫자를 입력하세요.';
+  if (step.kind === 'div-product') return '방금 쓴 몫과 나누는 수를 곱한 값을 입력하세요.';
+  if (step.kind === 'div-remainder') return '현재 수에서 곱한 값을 뺀 뒤 남은 수를 입력하세요.';
+  return step.desc;
+}
+function renderProblemTitle(data) {
+  if (data.operation === 'mul') return `${data.problem.a} × ${data.problem.b}`;
+  return `${data.problem.dividend} ÷ ${data.problem.divisor}`;
+}
+function canShowDivisionHint(data, step) {
+  return data?.operation === 'div'
+    && step?.kind === 'div-q'
+    && GAME_META[currentGame]?.mode === 'practice';
+}
+function renderDivisionHintPanel(data, step) {
+  if (!canShowDivisionHint(data, step) || !data.divHints?.[step.row]) return '';
+  const record = data.records[step.row];
+  if (!record) return '';
+  const lines = divisionHintLines(data.problem.divisor, record.current);
+  return `
+    <div class="hint-panel">
+      <div class="hint-title">${escapeHtml(record.current)} 안에 들어가는 몫 확인</div>
+      <div class="hint-lines">
+        ${lines.map((line) => `<div>${escapeHtml(line)}</div>`).join('')}
+      </div>
+    </div>
+  `;
+}
+function divisionHintLines(divisor, current) {
+  const max = Math.floor(current / divisor);
+  return Array.from({ length: Math.max(0, max) }, (_, index) => {
+    const factor = index + 1;
+    return `${divisor} × ${factor} = ${divisor * factor}`;
+  });
+}
+function getVisibleMulState(data, step) {
+  const tutorial = GAME_META[currentGame].mode === 'tutorial';
+  const lastVisibleStep = tutorial ? data.step : data.step - 1;
+  const termDigits = data.termRows.map(() => Array(data.cols).fill(null));
+  const resultDigits = [];
+  const multiplicationCarries = {};
+  const additionCarries = {};
+  const multiplicationCarryRow = step.kind && step.kind.startsWith('mul-row') ? step.row : null;
+  const revealTerm = (termIndex) => {
+    if (!Number.isInteger(termIndex) || !data.termRows[termIndex]) return;
+    termDigits[termIndex] = termRowDigits(data.termRows[termIndex], data.cols);
+  };
+  const revealTermDigit = (digit) => {
+    if (!digit || !Number.isInteger(digit.termIndex) || !Number.isInteger(digit.place)) return;
+    if (!termDigits[digit.termIndex]) return;
+    termDigits[digit.termIndex][digit.place] = digit.value;
+  };
+  const revealCarryDigits = (s) => {
+    if (!Array.isArray(s.revealCarryDigits) || s.row !== multiplicationCarryRow) return;
+    s.revealCarryDigits.forEach((digit) => {
+      pushCarry(multiplicationCarries, digit.place, digit.value, digit.depth);
+    });
+  };
+  const crossCarryDigits = (s) => {
+    if (!Array.isArray(s.crossCarryDigits) || s.row !== multiplicationCarryRow) return;
+    s.crossCarryDigits.forEach((digit) => {
+      markCarryCrossed(multiplicationCarries, digit.place, digit.depth);
+    });
+  };
+  for (let i = 0; i <= lastVisibleStep; i += 1) {
+    const s = data.steps[i];
+    if (!s) continue;
+    if (s.kind === 'mul-term') revealTerm(s.termIndex);
+    if (s.revealTermDigit) revealTermDigit(s.revealTermDigit);
+    revealCarryDigits(s);
+    crossCarryDigits(s);
+    if (Array.isArray(s.revealResultDigits)) {
+      s.revealResultDigits.forEach((digit) => {
+        if (Number.isInteger(digit.place)) resultDigits[digit.place] = digit.value;
+      });
+    }
+    if (s.kind === 'mul-sum-digit') resultDigits[s.targetPlace] = s.answer;
+    if (s.kind === 'mul-sum-carry') pushCarry(additionCarries, s.carryTarget, s.answer);
+    if (s.showResult) {
+      digitsRight(data.result).forEach((digit, place) => { resultDigits[place] = digit; });
+      data.termRows.forEach((_, index) => revealTerm(index));
+    }
+  }
+  if (!tutorial) crossCarryDigits(step);
+  if (data.solved) {
+    digitsRight(data.result).forEach((digit, place) => { resultDigits[place] = digit; });
+    data.termRows.forEach((_, index) => revealTerm(index));
+  }
+  const carries = multiplicationCarryRow === null ? additionCarries : multiplicationCarries;
+  return { termDigits, resultDigits, carries };
+}
+function pushCarry(carries, place, value, depth = null) {
+  if (!Number.isInteger(place) || value === null || value === undefined || value === '') return;
+  if (!Array.isArray(carries[place])) carries[place] = [];
+  const entry = Number.isInteger(depth) ? { value, fixed: true } : { value, fixed: false };
+  if (Number.isInteger(depth)) carries[place][depth] = entry;
+  else carries[place].push(entry);
+}
+function markCarryCrossed(carries, place, depth) {
+  if (!Number.isInteger(place) || !Number.isInteger(depth) || !Array.isArray(carries[place])) return;
+  const entry = carries[place][depth];
+  if (!entry || typeof entry !== 'object') return;
+  entry.crossed = true;
+}
+function renderMulBoard(data, step) {
+  const { a, b } = data.problem;
+  const cols = data.cols;
+  const stateForBoard = getVisibleMulState(data, step);
+  const rows = [];
+  const carryTargetActive = step.kind === 'mul-sum-carry'
+    || step.kind === 'mul-row-product'
+    || step.kind === 'mul-row-digit'
+    || step.kind === 'mul-row-carry'
+    || step.kind === 'mul-row-sum-carry';
+  const activeCarryStack = carryTargetActive ? stateForBoard.carries[step.carryTarget] : null;
+  const activeCarryDepth = carryTargetActive
+    ? getActiveCarryDepth(step, activeCarryStack)
+    : null;
+  rows.push(...renderCarryRows(cols, stateForBoard.carries, getActiveCarrySlots(step, stateForBoard.carries, activeCarryDepth)));
+  rows.push(renderNumberGridRow('', digitsLeft(a, cols), step.highlightA, 'top'));
+  rows.push(renderNumberGridRow('×', digitsLeft(b, cols), step.highlightB, 'bottom'));
+  rows.push('<div class="line-span"></div>');
+  data.termRows.forEach((term, row) => {
+    const visibleDigits = stateForBoard.termDigits[row] || [];
+    const cells = Array.from({ length: cols }, (_, col) => {
+      const place = cols - col - 1;
+      const digit = visibleDigits[place];
+      const isTarget = step.kind !== 'mul-row-digit'
+        && step.targetTerm === row
+        && place >= step.targetStartPlace
+        && place <= step.targetEndPlace;
+      const classes = ['math-cell', PLACE_CLASSES[place] || ''];
+      if (isTarget) classes.push('target');
+      if (digit === undefined || digit === null) classes.push('partial-muted');
+      return `<div class="${classes.join(' ')}">${digit ?? ''}</div>`;
+    }).join('');
+    rows.push(`<div class="op-cell">${row === 0 ? '' : '+'}</div>${cells}`);
+  });
+  rows.push('<div class="line-span"></div>');
+  const resultDigits = Array.from({ length: cols }, (_, col) => {
+    const place = cols - col - 1;
+    return stateForBoard.resultDigits[place] ?? null;
+  });
+  rows.push(renderNumberGridRow('', resultDigits, step.kind === 'mul-sum-digit' ? step.targetPlace : null, 'result', step.kind === 'mul-final'));
+  const cellSize = getBoardCellSize(cols + 1, rows.length + 1, { max: 46, min: 22 });
+  return `<div class="mul-board" style="--cols:${cols};--cell:${cellSize}px">${rows.join('')}</div>`;
+}
+function getActiveCarryDepth(step, stack) {
+  if (Number.isInteger(step.carryDepth)) return step.carryDepth;
+  const stackLength = Array.isArray(stack) ? stack.length : 0;
+  return GAME_META[currentGame].mode === 'tutorial' ? Math.max(0, stackLength - 1) : stackLength;
+}
+function getActiveCarrySlots(step, carries, activeDepth = null) {
+  if (step.kind === 'mul-row-product' && Array.isArray(step.revealCarryDigits)) {
+    return step.revealCarryDigits.map((digit) => ({ place: digit.place, depth: digit.depth }));
+  }
+  if (!Number.isInteger(step.carryTarget)) return [];
+  const stack = carries[step.carryTarget];
+  const depth = Number.isInteger(activeDepth) ? activeDepth : getActiveCarryDepth(step, stack);
+  return [{ place: step.carryTarget, depth }];
+}
+function renderCarryRows(cols, carries, activeSlots = []) {
+  const activeDepthSize = activeSlots.reduce((max, slot) => Math.max(max, Number.isInteger(slot.depth) ? slot.depth + 1 : 0), 0);
+  const maxDepth = Math.max(2, activeDepthSize, ...Object.values(carries).map((items) => Array.isArray(items) ? items.length : 0));
+  return Array.from({ length: maxDepth }, (_, rowIndex) => {
+    const depth = maxDepth - rowIndex - 1;
+    return `<div class="op-cell"></div>${Array.from({ length: cols }, (_, col) => {
+      const place = cols - col - 1;
+      const stack = carries[place] || [];
+      const entry = stack[depth];
+      const value = entry && typeof entry === 'object' ? entry.value : entry;
+      const isFixed = Boolean(entry && typeof entry === 'object' && entry.fixed);
+      const isMarkedCrossed = Boolean(entry && typeof entry === 'object' && entry.crossed);
+      const isCrossed = value !== undefined && value !== null && (isMarkedCrossed || (!isFixed && depth < stack.length - 1));
+      const isActive = activeSlots.some((slot) => slot.place === place && slot.depth === depth);
+      const cls = ['carry-cell'];
+      if (value === undefined || value === null) cls.push('empty');
+      if (isCrossed) cls.push('crossed');
+      if (isActive) cls.push('target');
+      return `<div class="${cls.join(' ')}">${value ?? ''}</div>`;
+    }).join('')}`
+  });
+}
+function renderNumberGridRow(operator, digits, highlightPlace, role, forceTarget = false) {
+  const cols = digits.length;
+  const cells = digits.map((digit, col) => {
+    const place = cols - col - 1;
+    const classes = ['math-cell', PLACE_CLASSES[place] || ''];
+    if (highlightPlace === place || forceTarget) classes.push(role === 'result' ? 'target' : 'highlight');
+    return `<div class="${classes.join(' ')}">${digit ?? ''}</div>`;
+  }).join('');
+  return `<div class="op-cell">${operator}</div>${cells}`;
+}
+function getBoardCellSize(columns, rows, options = {}) {
+  const max = options.max || 46;
+  const min = options.min || 22;
+  const viewportWidth = window.innerWidth || document.documentElement?.clientWidth || 1024;
+  const viewportHeight = window.innerHeight || document.documentElement?.clientHeight || 768;
+  const playerWidth = viewportWidth / Math.max(1, playerCount || 1);
+  const byWidth = Math.floor((playerWidth - 54) / Math.max(1, columns));
+  const byHeight = Math.floor((viewportHeight - 330) / Math.max(1, rows));
+  const candidate = Math.min(max, byWidth || max, byHeight || max);
+  return Math.max(min, candidate);
+}
+function getVisibleDivState(data, step) {
+  const tutorial = GAME_META[currentGame].mode === 'tutorial';
+  const lastVisibleStep = tutorial ? data.step : data.step - 1;
+  const state = { quotients: {}, products: {}, remainders: {}, brought: {} };
+  for (let i = 0; i <= lastVisibleStep; i += 1) {
+    const s = data.steps[i];
+    if (!s) continue;
+    const record = data.records[s.row];
+    if (s.kind === 'div-q' && record) state.quotients[record.qIndex] = s.answer;
+    if (s.kind === 'div-product') state.products[s.row] = s.answer;
+    if (s.kind === 'div-remainder') state.remainders[s.row] = s.answer;
+    if (s.kind === 'div-bring' && record) state.brought[s.row] = record.brought;
+    if (s.kind === 'div-final') revealAllDivState(data, state);
+  }
+  if (data.solved) revealAllDivState(data, state);
+  return state;
+}
+function revealAllDivState(data, state) {
+  data.records.forEach((record, row) => {
+    state.quotients[record.qIndex] = record.qDigit;
+    state.products[row] = record.product;
+    state.remainders[row] = record.remainder;
+    if (record.brought !== null) state.brought[row] = record.brought;
+  });
+}
+function renderDivBoard(data, step) {
+  const { dividend, divisor } = data.problem;
+  const digits = String(dividend).split('').map(Number);
+  const state = getVisibleDivState(data, step);
+  const qRecordByIndex = new Map(data.records.map((record, row) => [record.qIndex, row]));
+  const totalRows = Math.max(5, 2 + data.records.length * 2);
+  const cellSize = getBoardCellSize(digits.length + 1, totalRows, { max: 46, min: 22 });
+  const pieces = [];
+  for (let row = 1; row <= totalRows; row += 1) {
+    for (let col = 0; col < digits.length; col += 1) {
+      pieces.push(`<div class="division-grid-cell" style="grid-column:${col + 2};grid-row:${row};"></div>`);
+    }
+  }
+  pieces.push(`<div class="division-bracket"></div>`);
+  const factorRow = step.kind === 'div-product' ? step.row : null;
+  pieces.push(`<div class="division-divisor ${Number.isInteger(factorRow) ? 'division-factor' : ''}" style="grid-column:1;grid-row:2;">${divisor}</div>`);
+  digits.forEach((digit, index) => {
+    const record = data.records[step.row];
+    const activeCurrent = step.kind === 'div-q' && record && index >= record.startIndex && index <= record.endIndex;
+    const cls = ['div-digit', PLACE_CLASSES[digits.length - index - 1] || ''];
+    if (activeCurrent) cls.push('division-current');
+    pieces.push(`<div class="${cls.join(' ')}" style="grid-column:${index + 2};grid-row:2;">${digit}</div>`);
+  });
+  digits.forEach((_, index) => {
+    const row = qRecordByIndex.get(index);
+    if (row === undefined) return;
+    const record = data.records[row];
+    const active = step.kind === 'div-q' && step.row === row;
+    const factorActive = factorRow === row;
+    const visible = state.quotients[index] !== undefined;
+    pieces.push(`<div class="q-digit ${visible ? '' : 'blank'} ${active ? 'target' : ''} ${factorActive ? 'division-factor' : ''}" style="grid-column:${index + 2};grid-row:1;">${visible ? record.qDigit : ''}</div>`);
+  });
+  data.records.forEach((record, row) => {
+    const productRow = 3 + row * 2;
+    const remainderRow = productRow + 1;
+    const productActive = step.kind === 'div-product' && step.row === row;
+    const remainderActive = step.kind === 'div-remainder' && step.row === row;
+    const bringActive = step.kind === 'div-bring' && step.row === row;
+    const productVisible = state.products[row] !== undefined;
+    const remainderVisible = state.remainders[row] !== undefined;
+    const showProductWork = !record.skipWork && (productVisible || productActive || remainderVisible || remainderActive || state.brought[row] !== undefined);
+    if (showProductWork) {
+      pieces.push(`<div class="division-op" style="grid-column:1;grid-row:${productRow};">−</div>`);
+      pieces.push(renderDivisionValueCells({
+        value: state.products[row],
+        expected: record.product,
+        row: productRow,
+        endIndex: record.endIndex,
+        visible: productVisible,
+        active: productActive
+      }));
+      pieces.push(`<div class="division-subline" style="grid-column:1 / -1;grid-row:${productRow + 1};"></div>`);
+    }
+    if (remainderVisible || remainderActive || state.brought[row] !== undefined || bringActive) {
+      pieces.push(renderDivisionValueCells({
+        value: state.remainders[row],
+        expected: record.remainder,
+        row: remainderRow,
+        endIndex: record.endIndex,
+        visible: remainderVisible,
+        active: remainderActive
+      }));
+    }
+    if (record.brought !== null && (state.brought[row] !== undefined || bringActive)) {
+      pieces.push(`<div class="work-digit division-brought ${bringActive ? 'target' : ''}" style="grid-column:${record.endIndex + 3};grid-row:${remainderRow};">${record.brought}</div>`);
+    }
+  });
+  return `
+    <div class="division-wrap">
+      <div class="division-board" style="--digits:${digits.length};--div-cell:${cellSize}px;grid-template-rows:repeat(${totalRows}, var(--div-cell));">
+        ${pieces.join('')}
+      </div>
+    </div>
+  `;
+}
+function renderDivisionValueCells({ value, expected, row, endIndex, visible, active }) {
+  const text = String(visible ? value : expected);
+  const startIndex = Math.max(0, endIndex - text.length + 1);
+  return text.split('').map((digit, offset) => {
+    const cls = ['work-digit'];
+    if (!visible) cls.push('blank');
+    if (active) cls.push('target');
+    return `<div class="${cls.join(' ')}" style="grid-column:${startIndex + offset + 2};grid-row:${row};">${visible ? digit : ''}</div>`;
+  }).join('');
+}
+function renderTutorialControls(idx, data) {
+  return `
+    <div class="tutorial-actions">
+      <button class="small-btn" type="button" onclick="moveStep(${idx}, -1)" ${data.step <= 0 ? 'disabled' : ''}>이전</button>
+      <button class="small-btn primary" type="button" onclick="moveStep(${idx}, 1)" ${data.step >= data.steps.length - 1 ? 'disabled' : ''}>다음</button>
+      <button class="small-btn" type="button" onclick="newProblem(${idx})">새 문제</button>
+    </div>
+  `;
+}
+function renderPracticeControls(idx, data, step) {
+  if (data.eliminated) return '';
+  if (data.solved) {
+    return `
+      <div class="tutorial-actions">
+        <button class="small-btn primary" type="button" onclick="newProblem(${idx})">다음 문제</button>
+      </div>
+    `;
+  }
+  const answerable = step.type === 'answer';
+  const hintButton = canShowDivisionHint(data, step)
+    ? `<button class="small-btn" type="button" onclick="useDivisionHint(${idx})" ${data.divHints?.[step.row] ? 'disabled' : ''}>힌트 ♥-2</button>`
+    : '';
+  return `
+    ${hintButton ? `<div class="practice-actions">${hintButton}</div>` : ''}
+    <div class="answer-row">
+      <div class="answer-display" id="answer-${idx}">${escapeHtml(data.input || '')}</div>
+      ${answerable
+        ? `<button class="small-btn answer-backspace" type="button" onclick="backspaceInput(${idx})">←</button>`
+        : `<button class="small-btn primary" type="button" onclick="moveStep(${idx}, 1)">넘기기</button>`}
+    </div>
+    <div class="numpad">
+      ${[1,2,3,4,5,6,7,8,9,0].map((n) => `<button class="num-btn" type="button" onclick="pressNum(${idx}, '${n}')">${n}</button>`).join('')}
+    </div>
+  `;
+}
+function useDivisionHint(idx) {
+  const data = playerData[idx];
+  if (!data || data.solved || data.eliminated || data.inputLocked) return;
+  const step = activeStep(data);
+  if (!canShowDivisionHint(data, step) || data.divHints?.[step.row]) return;
+  data.divHints = { ...(data.divHints || {}), [step.row]: true };
+  const unlimitedLife = isUnlimitedLife(lives[idx] ?? state.lifeCount);
+  if (!unlimitedLife) {
+    lives[idx] = Math.max(0, (lives[idx] ?? normalizeLifeCount(state.lifeCount)) - 2);
+  }
+  updateScore(idx);
+  if (!unlimitedLife && lives[idx] <= 0) {
+    data.eliminated = true;
+    showFeedback(idx, false, '목숨 끝');
+    renderPlayer(idx);
+    if (GAME_META[currentGame]?.mode === 'practice' && playerData.every((item) => item?.eliminated)) finishGame();
+    return;
+  }
+  showFeedback(idx, false, '힌트 사용');
+  renderPlayer(idx);
+}
+function moveStep(idx, delta) {
+  const data = playerData[idx];
+  if (!data) return;
+  data.step = Math.min(data.steps.length - 1, Math.max(0, data.step + delta));
+  data.input = '';
+  renderPlayer(idx);
+}
+function pressNum(idx, value) {
+  const data = playerData[idx];
+  if (!data || data.solved || data.eliminated || data.inputLocked) return;
+  const step = activeStep(data);
+  if (!step || step.type !== 'answer') return;
+  const expected = String(step.answer);
+  const nextInput = `${data.input || ''}${value}`.slice(0, Math.max(1, expected.length));
+  data.input = nextInput;
+  const display = document.getElementById(`answer-${idx}`);
+  if (display) {
+    display.classList.remove('wrong');
+    display.textContent = data.input;
+  }
+  if (!expected.startsWith(nextInput)) {
+    handleWrongAnswer(idx, nextInput);
+    return;
+  }
+  if (nextInput === expected) handleCorrectAnswer(idx, step);
+}
+function backspaceInput(idx) {
+  const data = playerData[idx];
+  if (!data || data.inputLocked || data.eliminated) return;
+  data.input = (data.input || '').slice(0, -1);
+  const display = document.getElementById(`answer-${idx}`);
+  if (display) display.textContent = data.input;
+}
+function clearInput(idx) {
+  const data = playerData[idx];
+  if (!data || data.inputLocked || data.eliminated) return;
+  data.input = '';
+  const display = document.getElementById(`answer-${idx}`);
+  if (display) display.textContent = '';
+}
+function submitAnswer(idx) {
+  const data = playerData[idx];
+  const step = activeStep(data);
+  if (!step || step.type !== 'answer') {
+    moveStep(idx, 1);
+    return;
+  }
+  const value = Number.parseInt(data.input, 10);
+  if (value === step.answer) handleCorrectAnswer(idx, step);
+  else handleWrongAnswer(idx, data.input || '');
+}
+function handleCorrectAnswer(idx, step) {
+  const data = playerData[idx];
+  if (!data || data.eliminated) return;
+  scores[idx] += step.kind === 'mul-final' || step.kind === 'div-final' ? 20 : 10;
+  streaks[idx] += 1;
+  updateScore(idx);
+  showFeedback(idx, true);
+  data.input = '';
+  data.inputLocked = true;
+  data.step += 1;
+  while (data.step < data.steps.length && data.steps[data.step].type !== 'answer') {
+    data.step += 1;
+  }
+  if (data.step >= data.steps.length) {
+    data.solved = true;
+    scores[idx] += 15;
+    updateScore(idx);
+    setTimeout(() => {
+      data.inputLocked = false;
+      renderPlayer(idx);
+    }, 180);
+  } else {
+    setTimeout(() => {
+      data.inputLocked = false;
+      renderPlayer(idx);
+    }, 180);
+  }
+}
+function handleWrongAnswer(idx, attempted) {
+  const data = playerData[idx];
+  if (!data || data.eliminated) return;
+  data.inputLocked = true;
+  streaks[idx] = 0;
+  const unlimitedLife = isUnlimitedLife(lives[idx] ?? state.lifeCount);
+  if (!unlimitedLife) {
+    lives[idx] = Math.max(0, (lives[idx] ?? normalizeLifeCount(state.lifeCount)) - 1);
+  }
+  updateScore(idx);
+  flashWrongInput(idx, attempted);
+  showFeedback(idx, false, !unlimitedLife && lives[idx] <= 0 ? '목숨 끝' : '틀렸어요');
+  if (!unlimitedLife && lives[idx] <= 0) {
+    data.eliminated = true;
+    setTimeout(() => {
+      renderPlayer(idx);
+      if (GAME_META[currentGame]?.mode === 'practice' && playerData.every((item) => item?.eliminated)) finishGame();
+    }, 620);
+    return;
+  }
+  setTimeout(() => {
+    if (playerData[idx] !== data) return;
+    data.input = '';
+    data.inputLocked = false;
+    const display = document.getElementById(`answer-${idx}`);
+    if (display) {
+      display.classList.remove('wrong');
+      display.textContent = '';
+    }
+  }, 260);
+}
+function flashWrongInput(idx, attempted) {
+  const display = document.getElementById(`answer-${idx}`);
+  if (!display) return;
+  display.textContent = attempted;
+  display.classList.add('wrong');
+}
+function updateScore(idx) {
+  const score = document.getElementById(`score-${idx}`);
+  const streak = document.getElementById(`streak-${idx}`);
+  const life = document.getElementById(`lives-${idx}`);
+  const lifeLine = document.getElementById(`life-line-${idx}`);
+  if (score) score.textContent = String(scores[idx]);
+  if (streak) streak.textContent = String(streaks[idx]);
+  if (life) life.textContent = formatLifeCount(lives[idx] ?? state.lifeCount);
+  if (lifeLine) lifeLine.classList.toggle('zero', !isUnlimitedLife(lives[idx] ?? state.lifeCount) && (lives[idx] ?? 0) <= 0);
+}
+function showFeedback(idx, correct, message = '') {
+  const el = document.getElementById(`feedback-${idx}`);
+  if (!el) return;
+  el.className = `feedback show ${correct ? 'correct' : 'wrong'}`;
+  el.textContent = message || (correct ? '정답!' : '틀렸어요');
+  setTimeout(() => {
+    el.className = 'feedback';
+    el.textContent = '';
+  }, 560);
+}
+function startTimer(useTimer) {
+  if (timerId) clearInterval(timerId);
+  const selected = document.getElementById('timer-select').value;
+  if (!useTimer || selected === 'none') {
+    document.getElementById('time-left').textContent = '∞';
+    return;
+  }
+  timeLeft = Number.parseInt(selected, 10) || 90;
+  document.getElementById('time-left').textContent = String(timeLeft);
+  timerId = setInterval(() => {
+    if (!gameActive) return;
+    timeLeft -= 1;
+    document.getElementById('time-left').textContent = String(timeLeft);
+    if (timeLeft <= 0) finishGame();
+  }, 1000);
+}
+function exitGame() {
+  gameActive = false;
+  if (timerId) clearInterval(timerId);
+  showScreen('game-select-screen');
+}
+function toggleFullscreen() {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen?.();
+  } else {
+    document.exitFullscreen?.();
+  }
+}
+function finishGame() {
+  if (!gameActive && document.getElementById('result-screen').classList.contains('active')) return;
+  gameActive = false;
+  if (timerId) clearInterval(timerId);
+  const ranking = scores.map((score, idx) => ({ score, idx, player: participants[idx] }))
+    .sort((a, b) => b.score - a.score);
+  document.getElementById('ranking-list').innerHTML = ranking.map((item, position) => `
+    <div class="rank-item">
+      <div class="rank-pos">${position + 1}위</div>
+      <div class="rank-name">${escapeHtml(participantLabel(item.player))}</div>
+      <div class="rank-score">${item.score}점</div>
+    </div>
+  `).join('');
+  postGameResult(ranking);
+  showScreen('result-screen');
+}
+function postGameResult(ranking) {
+  const payload = {
+    type: 'game_result',
+    gameId: 'arithman',
+    gameMode: currentGame,
+    scores: ranking.map((item) => ({
+      rank: ranking.indexOf(item) + 1,
+      playerIndex: item.idx,
+      name: participantLabel(item.player),
+      score: item.score
+    })),
+    createdAt: new Date().toISOString()
+  };
+  const message = JSON.stringify(payload);
+  try { window.FlutterChannel?.postMessage(message); } catch (error) {}
+  try { window.ArithmeticChannel?.postMessage(message); } catch (error) {}
+  try { window.parent?.postMessage(payload, '*'); } catch (error) {}
+}
+function showWorksheetScreen() {
+  refreshWorksheetPatternSelect();
+  renderWorksheetList();
+  const worksheets = loadWorksheets();
+  if (worksheets[0]) previewWorksheet(worksheets[0].id);
+  else setWorksheetPreview(emptyWorksheetHtml());
+  showScreen('worksheet-screen');
+}
+function loadWorksheets() {
+  try {
+    const items = JSON.parse(localStorage.getItem(WORKSHEET_STORAGE_KEY) || '[]');
+    return Array.isArray(items) ? items : [];
+  } catch (error) {
+    return [];
+  }
+}
+function saveWorksheets(items) {
+  localStorage.setItem(WORKSHEET_STORAGE_KEY, JSON.stringify(items.slice(0, 20)));
+}
+function createWorksheet() {
+  const title = document.getElementById('worksheet-title').value.trim() || '연산맨 학습지';
+  const count = Math.min(60, Math.max(4, Number.parseInt(document.getElementById('worksheet-count').value, 10) || 20));
+  const operation = document.getElementById('worksheet-operation').value;
+  const patternValue = document.getElementById('worksheet-pattern').value;
+  const remainderMode = normalizeDivRemainderMode(document.getElementById('worksheet-remainder').value);
+  const problems = generateWorksheetProblems({ count, operation, patternValue, remainderMode });
+  const worksheet = {
+    id: `worksheet-${Date.now()}-${Math.random().toString(16).slice(2, 8)}`,
+    title,
+    count: problems.length,
+    operation,
+    patternLabel: worksheetPatternLabel(patternValue, operation),
+    createdAt: new Date().toISOString(),
+    html: buildWorksheetHtml({ title, problems, remainderMode })
+  };
+  const worksheets = [worksheet, ...loadWorksheets()];
+  saveWorksheets(worksheets);
+  renderWorksheetList(worksheet.id);
+  setWorksheetPreview(worksheet.html);
+}
+function generateWorksheetProblems({ count, operation, patternValue, remainderMode }) {
+  const problems = [];
+  const allowed = worksheetPatternPool(operation, patternValue);
+  for (let index = 0; index < count; index += 1) {
+    const pick = allowed[index % allowed.length];
+    if (pick.type === 'mul') {
+      const pattern = MUL_PATTERNS.find((item) => item.key === pick.key) || MUL_PATTERNS[0];
+      const problem = makeMulProblemForPattern(pattern);
+      problems.push({
+        type: 'mul',
+        a: problem.a,
+        b: problem.b,
+        prompt: `${problem.a} × ${problem.b}`,
+        answer: String(problem.a * problem.b),
+        detail: `${problem.a} × ${problem.b} = ${problem.a * problem.b}`
+      });
+    } else {
+      const pattern = DIV_PATTERNS.find((item) => item.key === pick.key) || DIV_PATTERNS[0];
+      const problem = makeDivProblemForPattern(pattern, remainderMode);
+      const answer = problem.remainder ? `${problem.quotient} 나머지 ${problem.remainder}` : String(problem.quotient);
+      problems.push({
+        type: 'div',
+        dividend: problem.dividend,
+        divisor: problem.divisor,
+        quotient: problem.quotient,
+        remainder: problem.remainder || 0,
+        prompt: `${problem.dividend} ÷ ${problem.divisor}`,
+        answer,
+        detail: `${problem.dividend} ÷ ${problem.divisor} = ${answer}`
+      });
+    }
+  }
+  return problems;
+}
+function worksheetPatternPool(operation, patternValue) {
+  if (patternValue) {
+    const [type, key] = patternValue.split(':');
+    if (type && key) return [{ type, key }];
+  }
+  if (operation === 'mul') return MUL_PATTERNS.map((item) => ({ type: 'mul', key: item.key }));
+  if (operation === 'div') return DIV_PATTERNS.map((item) => ({ type: 'div', key: item.key }));
+  return [
+    ...MUL_PATTERNS.map((item) => ({ type: 'mul', key: item.key })),
+    ...DIV_PATTERNS.map((item) => ({ type: 'div', key: item.key }))
+  ];
+}
+function worksheetPatternLabel(patternValue, operation) {
+  if (!patternValue) return operation === 'mixed' ? '혼합' : operation;
+  const [type, key] = patternValue.split(':');
+  const source = type === 'mul' ? MUL_PATTERNS : DIV_PATTERNS;
+  const item = source.find((pattern) => pattern.key === key);
+  return item ? `${type === 'mul' ? '곱셈' : '나눗셈'} ${item.label}` : '혼합';
+}
+function buildWorksheetHtml({ title, problems, remainderMode }) {
+  const problemRows = problems.map((problem, index) => `
+    <div class="problem">
+      <div class="num">${index + 1}</div>
+      <div class="worksheet-grid-wrap">${renderWorksheetProblemGrid(problem, false)}</div>
+    </div>
+  `).join('');
+  const answerRows = problems.map((problem, index) => `
+    <div class="answer">
+      <div class="num">${index + 1}</div>
+      <div>
+        ${renderWorksheetProblemGrid(problem, true)}
+        <div class="answer-detail">${escapeHtml(problem.detail)}</div>
+      </div>
+    </div>
+  `).join('');
+  const subtitle = `문항 ${problems.length}개 · ${remainderMode === 'none' ? '나머지 없음' : remainderMode === 'with' ? '나머지 있음' : '나머지 혼합'}`;
+  return `<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${escapeHtml(title)}</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  @page { size: A4; margin: 0; }
+  body { font-family: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif; color: #25272d; margin: 0; background: #f4f8fb; }
+  .page { width: 210mm; min-height: 297mm; max-width: 100%; margin: 0 auto 16px; padding: 18mm; background: #fff; }
+  .answer-page { break-before: page; page-break-before: always; }
+  h1 { margin: 0; font-size: 28px; }
+  .meta { margin-top: 8px; color: #667085; font-weight: 700; }
+  .page-label { float: right; color: #667085; font-weight: 900; }
+  .problems { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 10px 14px; margin-top: 18px; }
+  .problem, .answer { min-height: 176px; display: grid; grid-template-columns: 32px 1fr; gap: 8px; align-items: start; padding: 10px; border: 1px solid #d8dee8; border-radius: 8px; break-inside: avoid; }
+  .num { width: 28px; height: 28px; border-radius: 50%; background: #7568e8; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 900; }
+  .worksheet-grid-wrap { overflow-x: auto; }
+  .ws-grid { --cell: 28px; --op: 26px; --grid-line: #cfd6e2; display: inline-grid; grid-template-columns: var(--op) repeat(var(--cols), var(--cell)); grid-template-rows: repeat(var(--rows), var(--cell)); gap: 0; align-items: center; margin: 0 auto; background: repeating-linear-gradient(90deg, var(--grid-line) 0 1px, transparent 1px var(--cell)), repeating-linear-gradient(0deg, var(--grid-line) 0 1px, transparent 1px var(--cell)); background-position: var(--op) 0, var(--op) 0; background-size: calc(var(--cell) * var(--cols)) calc(var(--cell) * var(--rows)), calc(var(--cell) * var(--cols)) calc(var(--cell) * var(--rows)); background-repeat: no-repeat; }
+  .ws-cell, .ws-op { min-width: var(--cell); height: var(--cell); display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 20px; }
+  .ws-cell { background: transparent; }
+  .ws-op { min-width: var(--op); color: #667085; font-size: 22px; }
+  .ws-line { grid-column: 1 / -1; height: 3px; background: #7b8090; align-self: start; z-index: 4; }
+  .ws-answer { color: #111827; }
+  .ws-empty { color: transparent; }
+  .ws-divisor { color: #667085; justify-content: flex-end; padding-right: 4px; }
+  .ws-div-bracket { height: var(--cell); border-top: 3px solid #333743; border-left: 3px solid #333743; border-radius: 7px 0 0 0; z-index: 3; pointer-events: none; }
+  .answer-detail { margin-top: 8px; font-weight: 900; color: #333743; }
+  .answers { margin-top: 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 14px 18px; }
+  .answer { min-height: 150px; }
+  @media screen {
+    .page { width: min(210mm, calc(100vw - 24px)); min-height: unset; aspect-ratio: 210 / 297; padding: clamp(12px, 4vw, 18mm); }
+  }
+  @media print {
+    body { background: #fff; }
+    .page { width: 210mm; min-height: 297mm; margin: 0; box-shadow: none; padding: 18mm; }
+    .problems { grid-template-columns: repeat(4, 1fr); }
+    .answers { grid-template-columns: repeat(2, 1fr); }
+    .problem, .answer { grid-template-columns: 24px 1fr; gap: 4px; }
+    .problem { min-height: 39mm; padding: 6px; }
+    .num { width: 24px; height: 24px; font-size: 14px; }
+    .ws-grid { --cell: 17px; --op: 16px; grid-template-columns: var(--op) repeat(var(--cols), var(--cell)); }
+    .ws-cell, .ws-op { min-width: var(--cell); height: var(--cell); font-size: 14px; }
+    .ws-op { min-width: 16px; font-size: 16px; }
+    .ws-line { height: 2px; }
+  }
+</style>
+</head>
+<body>
+<section class="page">
+  <div class="page-label">1페이지 · 문제</div>
+  <h1>${escapeHtml(title)}</h1>
+  <div class="meta">${escapeHtml(subtitle)}</div>
+  <div class="problems">${problemRows}</div>
+</section>
+<section class="page answer-page">
+  <div class="page-label">2페이지 · 답지</div>
+  <h1>${escapeHtml(title)} 정답</h1>
+  <div class="meta">${escapeHtml(subtitle)}</div>
+  <div class="answers">
+    ${answerRows}
+  </div>
+</section>
+</body>
+</html>`;
+}
+function renderWorksheetProblemGrid(problem, showAnswer) {
+  return problem.type === 'mul' ? renderWorksheetMulGrid(problem, showAnswer) : renderWorksheetDivGrid(problem, showAnswer);
+}
+function renderWorksheetMulGrid(problem, showAnswer) {
+  const result = problem.a * problem.b;
+  const cols = Math.max(String(problem.a).length, String(problem.b).length + 1, String(result).length);
+  const top = digitsLeft(problem.a, cols);
+  const bottom = digitsLeft(problem.b, cols);
+  const multiplierDigits = digitsRight(problem.b).map((digit, place) => ({ digit, place })).filter((item) => item.digit !== null);
+  const processRows = multiplierDigits.length || 1;
+  const problemTopRow = 3;
+  const problemBottomRow = 4;
+  const processStartRow = 5;
+  const resultRow = processStartRow + processRows;
+  const totalRows = resultRow;
+  const workRows = multiplierDigits.map(({ digit, place }) => (
+    showAnswer ? digitsLeft(problem.a * digit * pow10(place), cols) : Array(cols).fill(null)
+  ));
+  if (!workRows.length) workRows.push(Array(cols).fill(null));
+  const answer = showAnswer ? digitsLeft(result, cols) : Array(cols).fill(null);
+  return `<div class="ws-grid" style="--cols:${cols};--rows:${totalRows}">
+    ${worksheetPositionedRow(problemTopRow, '', top)}
+    ${worksheetPositionedRow(problemBottomRow, '×', bottom)}
+    ${worksheetLine(processStartRow)}
+    ${workRows.map((row, index) => worksheetPositionedRow(processStartRow + index, index === 0 ? '' : '+', row, showAnswer)).join('')}
+    ${worksheetLine(resultRow)}
+    ${worksheetPositionedRow(resultRow, '', answer, showAnswer)}
+  </div>`;
+}
+function renderWorksheetDivGrid(problem, showAnswer) {
+  const digits = String(problem.dividend).split('').map(Number);
+  const dividendLength = digits.length;
+  const records = buildDivisionRecords(problem);
+  const cols = dividendLength;
+  const opWidth = Math.max(26, String(problem.divisor).length * 16 + 10);
+  const quotientDigits = Array(cols).fill(null);
+  records.forEach((record) => {
+    if (record.qIndex >= 0 && record.qIndex < cols) quotientDigits[record.qIndex] = showAnswer ? record.qDigit : null;
+  });
+  const dividendDigits = digits.concat(Array(Math.max(0, cols - dividendLength)).fill(null));
+  const quotientRow = 1;
+  const dividendRow = 2;
+  const firstWorkRow = 3;
+  const visibleWorkRecords = records.filter((record) => !record.skipWork);
+  const totalRows = Math.max(5, firstWorkRow + visibleWorkRecords.length * 2 - 1);
+  let workRow = firstWorkRow;
+  const work = records.map((record) => {
+    if (record.skipWork) return '';
+    const productRow = workRow;
+    const remainderRow = workRow + 1;
+    workRow += 2;
+    return `
+      <div class="ws-op" style="grid-column:1;grid-row:${productRow};">−</div>
+      ${worksheetDivisionValueCells(record.product, productRow, record.endIndex, cols, showAnswer)}
+      ${worksheetLine(remainderRow)}
+      ${worksheetDivisionValueCells(record.remainder, remainderRow, record.endIndex, cols, showAnswer)}
+      ${record.brought !== null ? worksheetSingleCell(record.brought, remainderRow, record.endIndex + 1, showAnswer) : ''}
+    `;
+  }).join('');
+  return `<div class="ws-grid" style="--cols:${cols};--rows:${totalRows};--op:${opWidth}px">
+    ${worksheetPositionedRow(quotientRow, '', quotientDigits, showAnswer)}
+    <div class="ws-op ws-divisor" style="grid-column:1;grid-row:${dividendRow};">${problem.divisor}</div>
+    <div class="ws-div-bracket" style="grid-column:2 / span ${dividendLength};grid-row:${dividendRow};"></div>
+    ${worksheetPositionedCells(dividendRow, dividendDigits, true)}
+    ${work}
+  </div>`;
+}
+function worksheetPositionedRow(row, operator, digits, answer = true) {
+  return `<div class="ws-op" style="grid-column:1;grid-row:${row};">${escapeHtml(operator)}</div>${worksheetPositionedCells(row, digits, answer)}`;
+}
+function worksheetPositionedCells(row, digits, answer = true) {
+  return digits.map((digit, index) => (
+    `<div class="ws-cell ${answer ? 'ws-answer' : 'ws-empty'}" style="grid-column:${index + 2};grid-row:${row};">${escapeHtml(digit ?? '')}</div>`
+  )).join('');
+}
+function worksheetLine(row) {
+  return `<div class="ws-line" style="grid-row:${row};"></div>`;
+}
+function worksheetDivisionValueCells(value, row, endIndex, width, answer = true) {
+  return stringCellsEndingAt(value, width, endIndex).map((digit, index) => {
+    if (digit === null) return '';
+    return worksheetSingleCell(digit, row, index, answer);
+  }).join('');
+}
+function worksheetSingleCell(value, row, index, answer = true) {
+  if (index < 0) return '';
+  return `<div class="ws-cell ${answer ? 'ws-answer' : 'ws-empty'}" style="grid-column:${index + 2};grid-row:${row};">${escapeHtml(value ?? '')}</div>`;
+}
+function stringCellsAt(value, width, startIndex) {
+  const cells = Array(width).fill(null);
+  String(value).split('').forEach((char, offset) => {
+    const index = startIndex + offset;
+    if (index >= 0 && index < width) cells[index] = char;
+  });
+  return cells;
+}
+function stringCellsEndingAt(value, width, endIndex) {
+  return stringCellsAt(value, width, endIndex - String(value).length + 1);
+}
+function emptyWorksheetHtml() {
+  return '<!DOCTYPE html><html lang="ko"><body style="font-family:sans-serif;padding:32px;color:#333;">생성한 학습지가 없습니다.</body></html>';
+}
+function renderWorksheetList(activeId = '') {
+  const list = document.getElementById('worksheet-list');
+  if (!list) return;
+  const worksheets = loadWorksheets();
+  if (!worksheets.length) {
+    list.innerHTML = '<div class="setting-note">아직 생성한 학습지가 없습니다.</div>';
+    return;
+  }
+  list.innerHTML = worksheets.map((item) => {
+    const date = new Date(item.createdAt).toLocaleString('ko-KR');
+    return `<button class="worksheet-item ${item.id === activeId ? 'active' : ''}" type="button" onclick="previewWorksheet('${escapeAttr(item.id)}')">
+      <strong>${escapeHtml(item.title)}</strong>
+      <span>${escapeHtml(item.patternLabel)} · ${item.count}문항 · ${escapeHtml(date)}</span>
+    </button>`;
+  }).join('');
+}
+function previewWorksheet(id) {
+  const worksheet = loadWorksheets().find((item) => item.id === id);
+  if (!worksheet) return;
+  renderWorksheetList(id);
+  setWorksheetPreview(worksheet.html);
+}
+function setWorksheetPreview(html) {
+  const frame = document.getElementById('worksheet-preview');
+  if (frame) frame.srcdoc = html;
+}
+function selectedWorksheet() {
+  const frame = document.getElementById('worksheet-preview');
+  const html = frame?.srcdoc || '';
+  return loadWorksheets().find((item) => item.html === html) || null;
+}
+function downloadSelectedWorksheet() {
+  const worksheet = selectedWorksheet();
+  if (!worksheet) return;
+  const blob = new Blob([worksheet.html], { type: 'text/html;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `${worksheet.title.replace(/[\\/:*?"<>|]/g, '_')}.html`;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+}
+document.addEventListener('keydown', (event) => {
+  const active = document.activeElement;
+  if (active && ['TEXTAREA', 'INPUT', 'SELECT'].includes(active.tagName)) return;
+  const dataIndex = playerData.findIndex((data) => data && !data.eliminated && GAME_META[currentGame]?.mode === 'practice');
+  if (dataIndex < 0) return;
+  if (/^\d$/.test(event.key)) pressNum(dataIndex, event.key);
+  if (event.key === 'Backspace') backspaceInput(dataIndex);
+});
+document.getElementById('assignment-mode').addEventListener('change', saveStudentSettings);
+document.getElementById('timer-select').addEventListener('change', () => {
+  state.timer = document.getElementById('timer-select').value;
+  saveState();
+});
+document.getElementById('mul-method').addEventListener('change', () => {
+  state.mulMethod = normalizeMulMethod(document.getElementById('mul-method').value);
+  saveState();
+});
+document.getElementById('div-remainder-mode').addEventListener('change', () => {
+  state.divRemainderMode = normalizeDivRemainderMode(document.getElementById('div-remainder-mode').value);
+  saveState();
+});
+document.getElementById('life-count').addEventListener('change', () => {
+  state.lifeCount = normalizeLifeCount(document.getElementById('life-count').value);
+  saveState();
+});
+document.getElementById('student-textarea').value = state.students.join('\n');
+document.getElementById('assignment-mode').value = state.assignmentMode;
+document.getElementById('timer-select').value = state.timer || '90';
+document.getElementById('mul-method').value = normalizeMulMethod(state.mulMethod);
+document.getElementById('div-remainder-mode').value = normalizeDivRemainderMode(state.divRemainderMode);
+document.getElementById('life-count').value = String(normalizeLifeCount(state.lifeCount));
+fillPatternSelects();
+initPlayerButtons();
+refreshParticipants();
+</script>
+</body>
+</html>

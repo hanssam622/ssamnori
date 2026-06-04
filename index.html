@@ -40,6 +40,14 @@
   <!-- Hero Banner -->
   <section class="hero">
     <div class="container">
+      <!-- Interactive Brand Logo with peeking characters -->
+      <div class="hero-brand-logo" aria-hidden="true">
+        <img src="assets/char_boy.png" alt="연산맨 캐릭터" class="hero-char char-boy">
+        <img src="assets/char_rabbit.png" alt="도형맨 캐릭터" class="hero-char char-rabbit">
+        <img src="assets/char_cat.png" alt="각도맨 캐릭터" class="hero-char char-cat">
+        <div class="hero-logo-badge">achuhanssam</div>
+      </div>
+      
       <span class="hero-subtitle">Interactive Class Experience</span>
       <h1 class="hero-title">교실을 더 즐겁게,<br><span>배움을 더 역동적이게</span></h1>
       <p class="hero-desc">
@@ -107,29 +115,92 @@
         </div>
       </article>
 
-      <!-- Card 2: Classroom Escape (Web Game) -->
-      <article class="portfolio-card" data-category="web-game" id="card-escape">
+      <!-- Card 2: Calcman (Web Game) -->
+      <article class="portfolio-card" data-category="web-game" id="card-calcman">
         <div class="card-thumb-container">
-          <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #0891b2, #0369a1); display: flex; align-items: center; justify-content: center;">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 48px; height: 48px; color: #bae6fd;">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75" />
+          <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #3b82f6, #1d4ed8); display: flex; align-items: center; justify-content: center;">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 48px; height: 48px; color: #dbeafe;">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 15.75h.008v.008H15.75v-.008Zm0-2.25h.008v.008H15.75v-.008Zm0-2.25h.008v.008H15.75v-.008Zm0-2.25h.008v.008H15.75V9Zm-2.25 6.75h.008v.008h-.008v-.008Zm0-2.25h.008v.008h-.008v-.008Zm0-2.25h.008v.008h-.008v-.008Zm0-2.25h.008v.008h-.008V9Zm-2.25 6.75h.008v.008h-.008v-.008Zm0-2.25h.008v.008h-.008v-.008Zm0-2.25h.008v.008h-.008v-.008Zm0-2.25h.008v.008h-.008V9Zm-2.25 6.75h.008v.008H6.75v-.008Zm0-2.25h.008v.008H6.75v-.008Zm0-2.25h.008v.008H6.75v-.008Zm0-2.25h.008v.008H6.75V9Z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Z" />
             </svg>
           </div>
           <span class="card-badge badge-web-game">학생용 웹게임</span>
         </div>
         <div class="card-content">
-          <h2 class="card-title">방탈출: 교실 탈출</h2>
+          <h2 class="card-title">연산맨</h2>
           <p class="card-desc">
-            제한 시간 안에 교실 곳곳에 숨겨진 단서 힌트를 찾고 퀴즈를 풀어 방을 탈출하는 협동 어드벤처 게임입니다. 수업 복습용 퀴즈 팩을 적용할 수 있습니다.
+            곱셈의 받아올림과 나눗셈의 계산 과정을 색상 및 자리값 매핑을 활용해 시각적이고 직관적으로 익히는 미니게임식 연산 도구입니다.
           </p>
           <div class="card-actions">
-            <button class="btn btn-web-game btn-play-trigger" data-title="교실 탈출 게임" data-src="games/escape/index.html" aria-label="교실 탈출 게임 바로 플레이">
+            <button class="btn btn-web-game btn-play-trigger" data-title="연산맨" data-src="games/calcman/index.html" aria-label="연산맨 바로 플레이">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
               </svg>
               바로 플레이
             </button>
-            <a href="games/escape/index.html" target="_blank" class="btn btn-secondary" title="새 창에서 열기" aria-label="새 창에서 열기">
+            <a href="games/calcman/index.html" target="_blank" class="btn btn-secondary" title="새 창에서 열기" aria-label="새 창에서 열기">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+              </svg>
+            </a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 2.5: Shapeman (Web Game) -->
+      <article class="portfolio-card" data-category="web-game" id="card-shapeman">
+        <div class="card-thumb-container">
+          <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #8b5cf6, #6366f1); display: flex; align-items: center; justify-content: center;">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 48px; height: 48px; color: #ede9fe;">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m9 9 6 6m0-6-6 6m12-3c0 5.385-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12 6.635 2.25 12 2.25 21.75 6.635 21.75 12Z" />
+            </svg>
+          </div>
+          <span class="card-badge badge-web-game">학생용 웹게임</span>
+        </div>
+        <div class="card-content">
+          <h2 class="card-title">도형맨</h2>
+          <p class="card-desc">
+            삼각형의 변의 길이와 각의 크기에 따른 분류 기준을 연습하고, 모눈 칠판에 점 세 개를 찍어 삼각형을 직접 디자인해 분류 결과를 분석하는 기하 학습 게임입니다.
+          </p>
+          <div class="card-actions">
+            <button class="btn btn-web-game btn-play-trigger" data-title="도형맨" data-src="games/shapeman/index.html" aria-label="도형맨 바로 플레이">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
+              </svg>
+              바로 플레이
+            </button>
+            <a href="games/shapeman/index.html" target="_blank" class="btn btn-secondary" title="새 창에서 열기" aria-label="새 창에서 열기">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+              </svg>
+            </a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 2.8: Angleman (Web Game) -->
+      <article class="portfolio-card" data-category="web-game" id="card-angleman">
+        <div class="card-thumb-container">
+          <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #06b6d4, #0891b2); display: flex; align-items: center; justify-content: center;">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 48px; height: 48px; color: #cffafe;">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+            </svg>
+          </div>
+          <span class="card-badge badge-web-game">학생용 웹게임</span>
+        </div>
+        <div class="card-content">
+          <h2 class="card-title">각도맨</h2>
+          <p class="card-desc">
+            제시되는 각도를 비주얼 프로트랙터로 맞추고 어림값을 가늠하며 정밀한 수학적 공간 지각 능력과 도형의 내각 및 외각 계산 능력을 마스터하는 전자칠판용 교육 게임입니다.
+          </p>
+          <div class="card-actions">
+            <button class="btn btn-web-game btn-play-trigger" data-title="각도맨" data-src="games/angleman/index.html" aria-label="각도맨 바로 플레이">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
+              </svg>
+              바로 플레이
+            </button>
+            <a href="games/angleman/index.html" target="_blank" class="btn btn-secondary" title="새 창에서 열기" aria-label="새 창에서 열기">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
               </svg>
