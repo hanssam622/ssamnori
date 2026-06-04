@@ -625,8 +625,8 @@ body {
 
 .hero-speech-image {
   position: absolute;
-  left: -32%;
-  top: 1%;
+  left: calc(-32% - clamp(78px, 13vw, 150px));
+  top: -2%;
   z-index: 8;
   width: clamp(78px, 13vw, 150px);
   height: auto;
@@ -634,7 +634,7 @@ body {
   filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.22));
   opacity: 0;
   pointer-events: none;
-  transform: translateX(28px) translateY(18px) rotate(-5deg) scale(0.86);
+  transform: translateX(-12px) translateY(18px) rotate(-5deg) scale(0.86);
   transition: transform 0.32s cubic-bezier(0.2, 0.85, 0.25, 1), opacity 0.2s ease;
 }
 
@@ -653,7 +653,7 @@ body {
 .hero-brand-logo:hover .hero-speech-image,
 .hero-brand-logo:hover .hero-speech-image.is-active {
   opacity: 1;
-  transform: translateX(0) translateY(0) rotate(-5deg) scale(1);
+  transform: translateX(-18px) translateY(0) rotate(-5deg) scale(1);
 }
 
 /* Make sure touch screens can activate too */
