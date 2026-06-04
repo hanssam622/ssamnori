@@ -114,6 +114,12 @@ body {
   gap: 0.5rem;
 }
 
+.site-logo {
+  display: block;
+  width: 128px;
+  height: auto;
+}
+
 .logo-text {
   font-family: var(--font-title);
   font-weight: 800;
@@ -524,72 +530,66 @@ body {
   user-select: none;
 }
 
-.hero-logo-badge {
-  background: var(--gradient-primary);
-  padding: 0.8rem 2.2rem;
-  border-radius: 50px;
-  font-family: var(--font-title);
-  font-weight: 800;
-  font-size: 2.2rem;
-  color: white;
-  box-shadow: 0 10px 30px rgba(139, 92, 246, 0.35);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+.hero-logo-image {
+  display: block;
+  width: min(520px, 84vw);
+  height: auto;
+  filter: drop-shadow(0 18px 34px rgba(0, 0, 0, 0.35));
   z-index: 10;
-  letter-spacing: -0.5px;
-  transition: var(--transition-bounce);
+  transition: transform 0.28s ease, filter 0.28s ease;
 }
 
 .hero-char {
   position: absolute;
   z-index: 5;
-  bottom: 10px;
-  height: 60px;
+  bottom: 22%;
+  height: clamp(58px, 9vw, 96px);
   width: auto;
   opacity: 0;
   pointer-events: none;
   transform-origin: bottom center;
-  transform: translateY(20px) scale(0.3);
-  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s;
+  transform: translateY(32px) scale(0.72);
+  transition: transform 0.42s cubic-bezier(0.2, 0.85, 0.25, 1), opacity 0.28s ease;
 }
 
 .char-boy {
-  left: 15px;
-  transition-delay: 0.03s;
+  left: 8%;
+  transition-delay: 0.02s;
 }
 
 .char-rabbit {
-  right: 15px;
+  right: 10%;
   transition-delay: 0.06s;
 }
 
 .char-cat {
-  left: 45%;
-  transform: translateY(20px) scale(0.3) translateX(-50%);
-  transition-delay: 0.09s;
+  left: 49%;
+  transform: translateY(32px) translateX(-50%) scale(0.72);
+  transition-delay: 0.1s;
 }
 
 /* Hover effects */
-.hero-brand-logo:hover .hero-logo-badge {
-  transform: scale(1.05);
-  box-shadow: 0 12px 35px rgba(139, 92, 246, 0.5);
+.hero-brand-logo:hover .hero-logo-image {
+  transform: translateY(2px) scale(1.015);
+  filter: drop-shadow(0 22px 38px rgba(0, 0, 0, 0.42));
 }
 
 .hero-brand-logo:hover .char-boy {
   opacity: 1;
-  transform: translateY(-56px) translateX(-42px) rotate(-15deg) scale(1.1);
+  transform: translateY(-74%) translateX(-42%) rotate(-12deg) scale(1);
 }
 
 .hero-brand-logo:hover .char-rabbit {
   opacity: 1;
-  transform: translateY(-54px) translateX(44px) rotate(15deg) scale(1.1);
+  transform: translateY(-76%) translateX(38%) rotate(12deg) scale(1);
 }
 
 .hero-brand-logo:hover .char-cat {
   opacity: 1;
-  transform: translateY(-58px) translateX(-50%) rotate(5deg) scale(1.1);
+  transform: translateY(-82%) translateX(-50%) rotate(4deg) scale(1);
 }
 
 /* Make sure touch screens can activate too */
-.hero-brand-logo:active .hero-logo-badge {
+.hero-brand-logo:active .hero-logo-image {
   transform: scale(0.98);
 }
