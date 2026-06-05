@@ -14,6 +14,64 @@ document.addEventListener('DOMContentLoaded', () => {
   const themeToggle = document.getElementById('theme-toggle');
   const themeToggleText = document.querySelector('.theme-toggle-text');
   const themeToggleIcon = document.querySelector('.theme-toggle-icon');
+  const translationTabs = document.querySelectorAll('.translation-tab');
+  const gradeTabs = document.querySelectorAll('.grade-tab');
+  const translationTableBody = document.getElementById('translation-table-body');
+  const translationSubjectLabels = {
+    korean: '국어',
+    social: '사회',
+    science: '과학',
+    moral: '도덕',
+  };
+  let activeSubject = 'korean';
+  let activeGrade = '1';
+
+  const translationProjects = [
+    {
+      subject: 'korean',
+      grade: '1',
+      semester: '1학기',
+      unit: '자료 준비 중',
+      lesson: '-',
+      title: '국어 번역 자료',
+      translationUrl: '',
+      resourceUrl: '',
+      note: '구글 드라이브 링크를 연결할 예정입니다.',
+    },
+    {
+      subject: 'social',
+      grade: '3',
+      semester: '1학기',
+      unit: '자료 준비 중',
+      lesson: '-',
+      title: '사회 번역 자료',
+      translationUrl: '',
+      resourceUrl: '',
+      note: '구글 드라이브 링크를 연결할 예정입니다.',
+    },
+    {
+      subject: 'science',
+      grade: '3',
+      semester: '1학기',
+      unit: '자료 준비 중',
+      lesson: '-',
+      title: '과학 번역 자료',
+      translationUrl: '',
+      resourceUrl: '',
+      note: '구글 드라이브 링크를 연결할 예정입니다.',
+    },
+    {
+      subject: 'moral',
+      grade: '3',
+      semester: '1학기',
+      unit: '자료 준비 중',
+      lesson: '-',
+      title: '도덕 번역 자료',
+      translationUrl: '',
+      resourceUrl: '',
+      note: '구글 드라이브 링크를 연결할 예정입니다.',
+    },
+  ];
 
   function applyTheme(theme) {
     document.documentElement.dataset.theme = theme;
@@ -65,6 +123,60 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
   });
+
+  function renderLink(url, label) {
+    if (!url) return '<span class="table-muted">준비 중</span>';
+    return `<a href="${url}" target="_blank" rel="noopener" class="table-link">${label}</a>`;
+  }
+
+  function renderTranslationTable() {
+    if (!translationTableBody) return;
+
+    const rows = translationProjects.filter((item) => (
+      item.subject === activeSubject && item.grade === activeGrade
+    ));
+
+    if (rows.length === 0) {
+      translationTableBody.innerHTML = `
+        <tr>
+          <td>${activeGrade}학년</td>
+          <td colspan="7" class="table-empty">${translationSubjectLabels[activeSubject]} 자료를 추가할 예정입니다.</td>
+        </tr>
+      `;
+      return;
+    }
+
+    translationTableBody.innerHTML = rows.map((item) => `
+      <tr>
+        <td>${item.grade}학년</td>
+        <td>${item.semester}</td>
+        <td>${item.unit}</td>
+        <td>${item.lesson}</td>
+        <td>${item.title}</td>
+        <td>${renderLink(item.translationUrl, '번역본')}</td>
+        <td>${renderLink(item.resourceUrl, '자료')}</td>
+        <td>${item.note}</td>
+      </tr>
+    `).join('');
+  }
+
+  translationTabs.forEach((button) => {
+    button.addEventListener('click', () => {
+      activeSubject = button.dataset.subject;
+      translationTabs.forEach((tab) => tab.classList.toggle('active', tab === button));
+      renderTranslationTable();
+    });
+  });
+
+  gradeTabs.forEach((button) => {
+    button.addEventListener('click', () => {
+      activeGrade = button.dataset.grade;
+      gradeTabs.forEach((tab) => tab.classList.toggle('active', tab === button));
+      renderTranslationTable();
+    });
+  });
+
+  renderTranslationTable();
 
   const heroLogo = document.querySelector('.hero-brand-logo');
   const heroCharacter = document.getElementById('hero-random-char');

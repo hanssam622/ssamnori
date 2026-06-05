@@ -501,7 +501,138 @@ body {
 }
 
 /* ==========================================
-   7. Footer
+   7. Curriculum Translation Project
+   ========================================== */
+.translation-section {
+  margin: 1rem 0 5rem;
+}
+
+.section-heading {
+  margin-bottom: 1.25rem;
+  text-align: center;
+}
+
+.section-kicker {
+  color: var(--accent-purple);
+  display: inline-block;
+  font-family: var(--font-title);
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.35rem;
+  text-transform: uppercase;
+}
+
+.section-title {
+  color: var(--text-primary);
+  font-family: var(--font-title);
+  font-size: clamp(1.9rem, 4vw, 2.8rem);
+  line-height: 1.12;
+}
+
+.translation-tabs,
+.translation-grade-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.translation-tabs {
+  margin-bottom: 0.75rem;
+}
+
+.translation-grade-tabs {
+  margin-bottom: 1.25rem;
+}
+
+.translation-tab,
+.grade-tab {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  font-weight: 800;
+  padding: 0.55rem 0.9rem;
+  transition: var(--transition-smooth);
+}
+
+.translation-tab:hover,
+.grade-tab:hover {
+  border-color: var(--border-color-hover);
+  color: var(--text-primary);
+}
+
+.translation-tab.active,
+.grade-tab.active {
+  background: var(--gradient-primary);
+  border-color: transparent;
+  color: white;
+}
+
+.translation-table-wrap {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  overflow-x: auto;
+}
+
+.translation-table {
+  border-collapse: collapse;
+  min-width: 920px;
+  width: 100%;
+}
+
+.translation-table th,
+.translation-table td {
+  border-bottom: 1px solid var(--border-color);
+  padding: 0.85rem 0.9rem;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.translation-table th {
+  color: var(--text-primary);
+  font-family: var(--font-title);
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.translation-table td {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.translation-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.table-link {
+  color: var(--color-game);
+  font-weight: 800;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.table-link:hover {
+  text-decoration: underline;
+}
+
+.table-muted,
+.table-empty {
+  color: var(--text-muted);
+}
+
+.table-empty {
+  text-align: center;
+}
+
+/* ==========================================
+   8. Footer
    ========================================== */
 .footer {
   border-top: 1px solid var(--border-color);
@@ -578,6 +709,10 @@ body {
   .portfolio-grid {
     grid-template-columns: 1fr;
     gap: 1.5rem;
+  }
+
+  .translation-table-wrap {
+    margin: 0 -0.5rem;
   }
 }
 

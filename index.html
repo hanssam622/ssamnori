@@ -325,6 +325,48 @@
       </article>
 
     </div>
+
+    <!-- Curriculum Translation Project -->
+    <section class="translation-section" id="translation-project">
+      <div class="section-heading">
+        <span class="section-kicker">Archive</span>
+        <h2 class="section-title">교과번역 프로젝트</h2>
+      </div>
+
+      <div class="translation-tabs" aria-label="교과 선택">
+        <button class="translation-tab active" type="button" data-subject="korean">국어</button>
+        <button class="translation-tab" type="button" data-subject="social">사회</button>
+        <button class="translation-tab" type="button" data-subject="science">과학</button>
+        <button class="translation-tab" type="button" data-subject="moral">도덕</button>
+      </div>
+
+      <div class="translation-grade-tabs" aria-label="학년 선택">
+        <button class="grade-tab active" type="button" data-grade="1">1학년</button>
+        <button class="grade-tab" type="button" data-grade="2">2학년</button>
+        <button class="grade-tab" type="button" data-grade="3">3학년</button>
+        <button class="grade-tab" type="button" data-grade="4">4학년</button>
+        <button class="grade-tab" type="button" data-grade="5">5학년</button>
+        <button class="grade-tab" type="button" data-grade="6">6학년</button>
+      </div>
+
+      <div class="translation-table-wrap">
+        <table class="translation-table">
+          <thead>
+            <tr>
+              <th>학년</th>
+              <th>학기</th>
+              <th>단원</th>
+              <th>차시</th>
+              <th>자료명</th>
+              <th>번역본</th>
+              <th>추가자료</th>
+              <th>비고</th>
+            </tr>
+          </thead>
+          <tbody id="translation-table-body"></tbody>
+        </table>
+      </div>
+    </section>
   </main>
 
   <!-- Footer -->
