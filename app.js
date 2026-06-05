@@ -85,30 +85,48 @@ document.addEventListener('DOMContentLoaded', () => {
     'assets/speech-bubbles/bubble-9.png',
   ];
   let heroCharacterVisible = false;
+  let heroHoverToken = 0;
+
+  function preloadImages(sources) {
+    sources.forEach((src) => {
+      const image = new Image();
+      image.src = src;
+    });
+  }
 
   function pickHeroCharacter() {
     if (heroCharacterVisible) return;
     heroCharacterVisible = true;
+    heroHoverToken += 1;
+    const currentToken = heroHoverToken;
 
     heroCharacter.src = heroCharacterSources[Math.floor(Math.random() * heroCharacterSources.length)];
     heroSpeechImage.src = heroSpeechSources[Math.floor(Math.random() * heroSpeechSources.length)];
-    heroCharacter.classList.add('is-active');
-    heroSpeechImage.classList.add('is-active');
+
+    requestAnimationFrame(() => {
+      if (currentToken !== heroHoverToken) return;
+      heroCharacter.classList.add('is-active');
+      heroSpeechImage.classList.add('is-active');
+    });
   }
 
   function hideHeroCharacter() {
     heroCharacterVisible = false;
+    heroHoverToken += 1;
     heroCharacter.classList.remove('is-active');
     heroSpeechImage.classList.remove('is-active');
   }
 
   if (heroLogo && heroCharacter && heroSpeechImage) {
-    heroLogo.addEventListener('pointerenter', pickHeroCharacter);
-    heroLogo.addEventListener('mouseenter', pickHeroCharacter);
+    preloadImages([...heroCharacterSources, ...heroSpeechSources]);
+
+    const enterEvent = window.PointerEvent ? 'pointerenter' : 'mouseenter';
+    const leaveEvent = window.PointerEvent ? 'pointerleave' : 'mouseleave';
+
+    heroLogo.addEventListener(enterEvent, pickHeroCharacter);
     heroLogo.addEventListener('focus', pickHeroCharacter);
     heroLogo.addEventListener('touchstart', pickHeroCharacter, { passive: true });
-    heroLogo.addEventListener('pointerleave', hideHeroCharacter);
-    heroLogo.addEventListener('mouseleave', hideHeroCharacter);
+    heroLogo.addEventListener(leaveEvent, hideHeroCharacter);
     heroLogo.addEventListener('blur', hideHeroCharacter);
   }
 });
