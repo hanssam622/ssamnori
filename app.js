@@ -1,9 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
   const PROGRAM_DOWNLOAD_URLS = {
-    naejari: '#',
-    thinkchain: '#',
-    tlog: '#',
-    mininori: '#',
+    naejari: 'https://drive.google.com/uc?export=download&id=1Lj7pRTqS6PxO97yb9-01HWGsvk7aOA61',
+    naejariPortable: 'https://drive.google.com/uc?export=download&id=1iRPtdEbZFO6lFGbfBKO7qLx0H2JA75JA',
+    thinkchain: 'https://drive.google.com/uc?export=download&id=1y62D_wWRUdfitge8bLOz6vujoUlgdrIC',
+    thinkchainPortable: 'https://drive.google.com/uc?export=download&id=1fCBOVglnVkwzCNBoT6pegyI3fIFFQIyM',
+    tlog: 'https://drive.google.com/uc?export=download&id=1-iCxK7ACpS5DsHs9dfFEeJP4w0QA3LyM',
+    mininori: 'https://drive.google.com/uc?export=download&id=1o1Q3qACY8eHEi5LjXC3Pn8iCInt1aSsS',
     batchnuki: '#',
     ieon: '#',
   };
