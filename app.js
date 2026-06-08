@@ -11,13 +11,16 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   const tabButtons = document.querySelectorAll('.tab-btn');
+  const portfolioGrid = document.getElementById('grid-container');
   const portfolioCards = document.querySelectorAll('.portfolio-card');
   const downloadLinks = document.querySelectorAll('[data-download-key]');
+  const copyEmailButton = document.querySelector('.footer-copy-email');
   const themeToggle = document.getElementById('theme-toggle');
   const themeToggleText = document.querySelector('.theme-toggle-text');
   const themeToggleIcon = document.querySelector('.theme-toggle-icon');
   const translationTabs = document.querySelectorAll('.translation-tab');
   const gradeTabs = document.querySelectorAll('.grade-tab');
+  const translationSection = document.getElementById('translation-project');
   const translationTableBody = document.getElementById('translation-table-body');
   const translationSubjectLabels = {
     korean: '국어',
@@ -112,12 +115,16 @@ document.addEventListener('DOMContentLoaded', () => {
   tabButtons.forEach((button) => {
     button.addEventListener('click', () => {
       const filterValue = button.dataset.filter;
+      const isTranslationProject = filterValue === 'translation-project';
 
       tabButtons.forEach((tab) => {
         const isActive = tab === button;
         tab.classList.toggle('active', isActive);
         tab.setAttribute('aria-selected', String(isActive));
       });
+
+      portfolioGrid?.classList.toggle('hidden', isTranslationProject);
+      translationSection?.classList.toggle('hidden', !isTranslationProject);
 
       portfolioCards.forEach((card) => {
         const shouldShow = filterValue === 'all' || card.dataset.category === filterValue;
@@ -179,6 +186,21 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   renderTranslationTable();
+
+  copyEmailButton?.addEventListener('click', async () => {
+    const email = copyEmailButton.dataset.email;
+    if (!email) return;
+
+    try {
+      await navigator.clipboard.writeText(email);
+      copyEmailButton.textContent = '이메일 복사됨';
+      window.setTimeout(() => {
+        copyEmailButton.textContent = email;
+      }, 1400);
+    } catch {
+      copyEmailButton.textContent = email;
+    }
+  });
 
   const heroLogo = document.querySelector('.hero-brand-logo');
   const heroCharacter = document.getElementById('hero-random-char');
