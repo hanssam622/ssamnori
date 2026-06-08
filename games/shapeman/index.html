@@ -33,6 +33,25 @@ button {
   border: 0;
   cursor: pointer;
 }
+.samnori-home-float {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 80;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid rgba(143,122,229,0.18);
+  border-radius: 999px;
+  padding: 12px 16px;
+  background: rgba(255,255,255,0.94);
+  color: var(--accent);
+  box-shadow: 0 14px 34px rgba(53,49,92,0.18);
+  font-weight: 900;
+  font-size: 14px;
+  text-decoration: none;
+}
+.samnori-home-float:hover { background: #f5f3ff; border-color: rgba(143,122,229,0.34); }
 .screen {
   display: none;
   width: 100vw;
@@ -102,6 +121,7 @@ button {
   gap: 8px;
 }
 .timer-grid { grid-template-columns: repeat(4, 1fr); }
+.timer-grid { grid-template-columns: repeat(auto-fit, minmax(92px, 1fr)); }
 .pill-btn {
   height: 48px;
   border-radius: 8px;
@@ -124,12 +144,19 @@ button {
 .game-card {
   width: 300px;
   min-height: 178px;
-  padding: 28px 24px;
+  padding: 0;
   border-radius: 8px;
   background: #fff;
   border: 1px solid var(--line);
   text-align: center;
   transition: transform 0.2s ease, border-color 0.2s ease;
+}
+.game-card-inner {
+  width: 100%;
+  min-height: 176px;
+  padding: 28px 24px;
+  background: transparent;
+  color: inherit;
 }
 .game-card:hover {
   transform: translateY(-4px);
@@ -142,6 +169,19 @@ button {
   font-size: 17px;
   font-weight: 700;
   line-height: 1.45;
+}
+.card-setting {
+  padding: 0 18px 18px;
+}
+.card-setting select {
+  width: 100%;
+  min-height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0 10px;
+  background: #f8f7fb;
+  color: var(--text);
+  font: 800 15px var(--font);
 }
 #game-screen {
   flex-direction: column;
@@ -371,6 +411,11 @@ canvas {
   box-shadow: 0 3px 10px rgba(0,0,0,0.07);
 }
 .choice-btn:disabled { opacity: 0.62; cursor: default; }
+.choice-btn.selected {
+  background: var(--accent);
+  color: #fff;
+  border-color: rgba(111, 88, 201, 0.35);
+}
 .tutorial-note {
   width: min(100%, 360px);
   margin-top: 8px;
@@ -470,10 +515,12 @@ canvas {
     font-size: 17px;
   }
   .cell-body { padding-bottom: 10px; }
+  .samnori-home-float { right: 10px; bottom: 10px; padding: 10px 12px; font-size: 12px; }
 }
 </style>
 </head>
 <body>
+<a class="samnori-home-float" href="https://hanssam622.github.io/ssamnori/" aria-label="쌤노리 홈화면으로 가기">쌤노리 홈</a>
 <main id="home-screen" class="screen active">
   <h1 class="home-title">🔺 도형맨</h1>
   <p class="home-subtitle">삼각형을 보고 알맞게 분류해요</p>
@@ -493,31 +540,60 @@ canvas {
     </div>
   </div>
   <div class="game-cards">
-    <button class="game-card" type="button" onclick="startGame('angle')">
-      <div class="emoji">📐</div>
-      <h3>각의 크기</h3>
-      <p>예각삼각형, 직각삼각형, 둔각삼각형 중 하나를 골라요.</p>
-    </button>
-    <button class="game-card" type="button" onclick="startGame('side')">
-      <div class="emoji">📏</div>
-      <h3>변의 길이</h3>
-      <p>이등변삼각형, 정삼각형, 그냥 삼각형 중 하나로 분류해요.</p>
-    </button>
-    <button class="game-card" type="button" onclick="startGame('tutorial')">
-      <div class="emoji">🔎</div>
-      <h3>각 세기 튜토리얼</h3>
-      <p>예각, 직각, 둔각이 몇 개인지 세어 분류 기준을 익혀요.</p>
-    </button>
-    <button class="game-card" type="button" onclick="startGame('build')">
-      <div class="emoji">✏️</div>
-      <h3>점 찍어 만들기</h3>
-      <p>요구하는 삼각형이 되도록 모눈 교차점 세 곳을 찍어요.</p>
-    </button>
-    <button class="game-card" type="button" onclick="startGame('free')">
-      <div class="emoji">🧪</div>
-      <h3>자유 만들기</h3>
-      <p>점 세 개로 삼각형을 만들면 어떤 삼각형인지 바로 알려줘요.</p>
-    </button>
+    <div class="game-card" role="group" aria-label="각의 크기 게임">
+      <button class="game-card-inner" type="button" onclick="startGame('angle')">
+        <div class="emoji">📐</div>
+        <h3>각의 크기</h3>
+        <p>예각삼각형, 직각삼각형, 둔각삼각형 중 하나를 골라요.</p>
+      </button>
+    </div>
+    <div class="game-card" role="group" aria-label="변의 길이 게임">
+      <button class="game-card-inner" type="button" onclick="startGame('side')">
+        <div class="emoji">📏</div>
+        <h3>변의 길이</h3>
+        <p>이등변삼각형, 정삼각형, 그냥 삼각형 중 하나로 분류해요.</p>
+      </button>
+    </div>
+    <div class="game-card" role="group" aria-label="전체 분류 게임">
+      <button class="game-card-inner" type="button" onclick="startGame('combined')">
+        <div class="emoji">🧩</div>
+        <h3>전체 분류</h3>
+        <p>각의 크기와 변의 길이를 모두 보고 알맞은 이름을 전부 골라요.</p>
+      </button>
+    </div>
+    <div class="game-card" role="group" aria-label="각 세기 튜토리얼">
+      <button class="game-card-inner" type="button" onclick="startGame('tutorial')">
+        <div class="emoji">🔎</div>
+        <h3>각 세기 튜토리얼</h3>
+        <p>예각, 직각, 둔각이 몇 개인지 세어 분류 기준을 익혀요.</p>
+      </button>
+    </div>
+    <div class="game-card" role="group" aria-label="점 찍어 만들기">
+      <button class="game-card-inner" type="button" onclick="startGame('build')">
+        <div class="emoji">✏️</div>
+        <h3>점 찍어 만들기</h3>
+        <p>요구하는 삼각형이 되도록 모눈 교차점 세 곳을 찍어요.</p>
+      </button>
+      <div class="card-setting">
+        <select id="build-grid-mode" aria-label="점 찍어 만들기 모눈 선택" onchange="buildGridMode = this.value">
+          <option value="square-angle">사각 모눈 - 각의 크기</option>
+          <option value="triangle-all">삼각 모눈 - 모든 종류</option>
+        </select>
+      </div>
+    </div>
+    <div class="game-card" role="group" aria-label="자유 만들기">
+      <button class="game-card-inner" type="button" onclick="startGame('free')">
+        <div class="emoji">🧪</div>
+        <h3>자유 만들기</h3>
+        <p>점 세 개로 삼각형을 만들면 어떤 삼각형인지 바로 알려줘요.</p>
+      </button>
+      <div class="card-setting">
+        <select id="free-grid-mode" aria-label="자유 만들기 모눈 선택" onchange="freeGridMode = this.value">
+          <option value="square-angle">사각 모눈 - 각의 크기</option>
+          <option value="triangle-all">삼각 모눈 - 모든 종류</option>
+        </select>
+      </div>
+    </div>
   </div>
   <button class="secondary-btn" type="button" onclick="showScreen('home-screen')">뒤로</button>
 </section>
@@ -542,9 +618,10 @@ canvas {
 <section id="free-screen" class="screen">
   <header class="game-topbar">
     <button class="back-btn" type="button" onclick="showScreen('select-screen')">게임 나가기</button>
+    <button class="fullscreen-btn" type="button" onclick="toggleFullscreen()">전체화면</button>
     <div class="topbar-meta">
       <div class="topbar-title">🧪 자유 만들기</div>
-      <div class="topbar-caption">모눈 교차점 세 곳을 찍으면 삼각형의 각의 크기 분류를 바로 확인합니다.</div>
+      <div class="topbar-caption">모눈 교차점 세 곳을 찍으면 각의 크기와 변의 길이 분류를 바로 확인합니다.</div>
     </div>
     <div class="timer-wrap">
       <button class="finish-btn" type="button" onclick="resetFreeMode()">다시 만들기</button>
@@ -557,7 +634,7 @@ canvas {
     <aside class="free-panel">
       <h3>분류 결과</h3>
       <div class="free-result" id="free-result">교차점 3개를 찍어 보세요</div>
-      <p class="free-copy">세 교차점이 너무 한 줄에 가까우면 삼각형을 다시 만들어야 합니다. 만든 뒤에는 각도가 함께 표시됩니다.</p>
+      <p class="free-copy">세 교차점이 너무 한 줄에 가까우면 삼각형을 다시 만들어야 합니다. 만든 뒤에는 각도와 변의 길이가 함께 표시됩니다.</p>
       <button class="primary-btn" type="button" style="width:100%;margin-top:22px;" onclick="resetFreeMode()">다시 만들기</button>
     </aside>
   </div>
@@ -604,6 +681,19 @@ const GAME_META = {
       { key: 'scalene', label: '그냥 삼각형' }
     ]
   },
+  combined: {
+    emoji: '🧩',
+    title: '전체 분류',
+    caption: '각의 크기와 변의 길이를 모두 보고 알맞은 이름을 전부 고르세요.',
+    prompt: '삼각형의 종류를 모두 고르세요',
+    options: [
+      { key: 'acute', label: '예각삼각형' },
+      { key: 'right', label: '직각삼각형' },
+      { key: 'obtuse', label: '둔각삼각형' },
+      { key: 'isosceles', label: '이등변삼각형' },
+      { key: 'equilateral', label: '정삼각형' }
+    ]
+  },
   tutorial: {
     emoji: '🔎',
     title: '각 세기 튜토리얼',
@@ -625,7 +715,7 @@ const GAME_META = {
   free: {
     emoji: '🧪',
     title: '자유 만들기',
-    caption: '모눈 교차점 세 곳을 찍으면 삼각형의 각의 크기 분류를 바로 확인합니다.',
+    caption: '모눈 교차점 세 곳을 찍으면 각의 크기와 변의 길이 분류를 바로 확인합니다.',
     prompt: '자유롭게 만들어 보세요',
     options: []
   }
@@ -636,12 +726,20 @@ const ANGLE_LABELS = {
   right: '직각삼각형',
   obtuse: '둔각삼각형'
 };
+const SIDE_LABELS = {
+  isosceles: '이등변삼각형',
+  equilateral: '정삼각형',
+  scalene: '그냥 삼각형'
+};
+const ALL_LABELS = { ...ANGLE_LABELS, ...SIDE_LABELS };
 let playerCount = 5;
 let timerSeconds = 80;
 let timeLeft = timerSeconds;
 let timerId = null;
 let gameActive = false;
 let currentGame = 'angle';
+let buildGridMode = 'square-angle';
+let freeGridMode = 'square-angle';
 let scores = [];
 let streaks = [];
 let playerData = [];
@@ -669,7 +767,8 @@ function initSetup() {
     { label: '30초', seconds: 30 },
     { label: '1분', seconds: 60 },
     { label: '1:20', seconds: 80 },
-    { label: '2분', seconds: 120 }
+    { label: '2분', seconds: 120 },
+    { label: '무제한', seconds: null }
   ];
   const timerGrid = document.getElementById('timer-grid');
   timers.forEach((timer) => {
@@ -691,7 +790,7 @@ function renderSetupButtons() {
     button.classList.toggle('selected', index + 1 === playerCount);
   });
   document.querySelectorAll('#timer-grid .pill-btn').forEach((button) => {
-    const value = button.textContent === '30초' ? 30 : button.textContent === '1분' ? 60 : button.textContent === '1:20' ? 80 : 120;
+    const value = button.textContent === '30초' ? 30 : button.textContent === '1분' ? 60 : button.textContent === '1:20' ? 80 : button.textContent === '2분' ? 120 : null;
     button.classList.toggle('selected', value === timerSeconds);
   });
 }
@@ -706,11 +805,11 @@ function startGame(game) {
   gameActive = true;
   const meta = GAME_META[currentGame];
   document.getElementById('game-title').textContent = `${meta.emoji} ${meta.title}`;
-  document.getElementById('game-caption').textContent = currentGame === 'free'
+  document.getElementById('game-caption').textContent = currentGame === 'free' || timerSeconds === null
     ? `${meta.caption} · 시간 제한 없음`
     : `${meta.caption} · ${formatTime(timerSeconds)} 제한`;
   buildGrid();
-  if (currentGame === 'free') {
+  if (currentGame === 'free' || timerSeconds === null) {
     document.getElementById('timer').textContent = '∞';
   } else {
     startTimer();
@@ -743,6 +842,11 @@ function buildGrid() {
 
 function startTimer() {
   if (timerId) clearInterval(timerId);
+  if (timerSeconds === null) {
+    timeLeft = null;
+    document.getElementById('timer').textContent = '∞';
+    return;
+  }
   timeLeft = timerSeconds;
   updateTimer();
   timerId = setInterval(() => {
@@ -843,10 +947,19 @@ function nextQuestion(idx) {
       button.className = 'choice-btn';
       button.type = 'button';
       button.textContent = option.label;
-      button.onclick = () => submitAnswer(idx, option.key);
+      button.onclick = () => {
+        if (currentGame === 'combined') toggleMultiChoice(idx, option.key, button);
+        else submitAnswer(idx, option.key);
+      };
       choices.appendChild(button);
     });
     body.appendChild(choices);
+    if (currentGame === 'combined') {
+      const controls = document.createElement('div');
+      controls.className = 'build-controls';
+      controls.innerHTML = `<button class="choice-btn primary-action" type="button" onclick="submitMultiAnswer(${idx})">확인</button>`;
+      body.appendChild(controls);
+    }
     if (currentGame === 'tutorial') {
       const note = document.createElement('div');
       note.className = 'tutorial-note';
@@ -872,6 +985,7 @@ function nextQuestion(idx) {
 function createQuestionForGame() {
   if (currentGame === 'angle') return createAngleQuestion();
   if (currentGame === 'side') return createSideQuestion();
+  if (currentGame === 'combined') return createCombinedQuestion();
   if (currentGame === 'tutorial') return createTutorialQuestion();
   if (currentGame === 'free') return createFreeQuestion();
   return createBuildQuestion();
@@ -886,8 +1000,36 @@ function sizeCanvas(canvas, area) {
 function submitAnswer(idx, answer) {
   const data = playerData[idx];
   if (!gameActive || !data || data.answering) return;
-  data.answering = true;
   const correct = answer === data.answer;
+  resolveAnswer(idx, correct);
+}
+
+function toggleMultiChoice(idx, key, button) {
+  const data = playerData[idx];
+  if (!gameActive || !data || data.answering) return;
+  if (!Array.isArray(data.selectedKeys)) data.selectedKeys = [];
+  if (data.selectedKeys.includes(key)) {
+    data.selectedKeys = data.selectedKeys.filter((item) => item !== key);
+    button.classList.remove('selected');
+  } else {
+    data.selectedKeys.push(key);
+    button.classList.add('selected');
+  }
+}
+
+function submitMultiAnswer(idx) {
+  const data = playerData[idx];
+  if (!gameActive || !data || data.answering || !Array.isArray(data.answers)) return;
+  const selected = (data.selectedKeys || []).slice().sort();
+  const expected = data.answers.slice().sort();
+  const correct = selected.length === expected.length && selected.every((key, index) => key === expected[index]);
+  resolveAnswer(idx, correct);
+}
+
+function resolveAnswer(idx, correct) {
+  const data = playerData[idx];
+  if (!gameActive || !data || data.answering) return;
+  data.answering = true;
   document.querySelectorAll(`#body-${idx} .choice-btn`).forEach((button) => {
     button.disabled = true;
   });
@@ -925,7 +1067,8 @@ function bindBuildCanvas(canvas, idx) {
     const point = snapCanvasPoint(
       (clientX - rect.left) * (canvas.width / rect.width),
       (clientY - rect.top) * (canvas.height / rect.height),
-      canvas
+      canvas,
+      data.gridMode
     );
     if (data.points.some((existing) => distance(existing, point) < 1)) return;
     data.points.push(point);
@@ -951,14 +1094,16 @@ function evaluateBuildTriangle(idx, canvas) {
     renderBuildControls(idx);
     return;
   }
-  const type = classifyAngles(angles, 0.5);
-  const correct = type === data.answer;
+  const classification = classifyTriangleFromPoints(data.points, angles);
+  const allowedKeys = data.gridMode === 'triangle-all' ? classification.keys : [classification.angleType];
+  const correct = allowedKeys.includes(data.answer);
   data.answering = true;
   data.result = {
     valid: true,
     angles,
-    type,
-    label: ANGLE_LABELS[type]
+    classification,
+    displaySideLengths: data.gridMode === 'triangle-all' ? classification.displaySideLengths : null,
+    label: data.gridMode === 'triangle-all' ? classification.label : ANGLE_LABELS[classification.angleType]
   };
   drawBuildCanvas(canvas, data);
   if (correct) {
@@ -993,8 +1138,8 @@ function resetBuildQuestion(idx) {
 function drawBuildCanvas(canvas, data) {
   const ctx = canvas.getContext('2d');
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  drawCanvasGuide(ctx, data.points.length >= 3 ? '' : `${data.points.length + 1}번째 교차점을 찍으세요`);
-  drawPointTriangle(ctx, data.points, data.result?.angles || null);
+  drawCanvasGuide(ctx, data.points.length >= 3 ? '' : `${data.points.length + 1}번째 교차점을 찍으세요`, data.gridMode);
+  drawPointTriangle(ctx, data.points, data.result?.angles || null, data.result?.displaySideLengths || null);
   if (data.result?.label) {
     drawCanvasBadge(ctx, data.result.valid ? data.result.label : data.result.label, data.result.valid ? '#6f58c9' : '#b83232');
   }
@@ -1023,7 +1168,8 @@ function bindFreeQuestionCanvas(canvas, idx) {
     const point = snapCanvasPoint(
       (clientX - rect.left) * (canvas.width / rect.width),
       (clientY - rect.top) * (canvas.height / rect.height),
-      canvas
+      canvas,
+      data.gridMode
     );
     if (data.points.some((existing) => distance(existing, point) < 1)) return;
     data.points.push(point);
@@ -1051,12 +1197,13 @@ function evaluateFreeQuestion(idx, canvas) {
     drawFreeQuestionCanvas(canvas, data);
     return;
   }
-  const type = classifyAngles(angles, 0.5);
+  const classification = classifyTriangleFromPoints(data.points, angles);
   data.result = {
     valid: true,
     angles,
-    type,
-    label: ANGLE_LABELS[type]
+    classification,
+    displaySideLengths: data.gridMode === 'triangle-all' ? classification.displaySideLengths : null,
+    label: data.gridMode === 'triangle-all' ? classification.label : ANGLE_LABELS[classification.angleType]
   };
   drawFreeQuestionCanvas(canvas, data);
 }
@@ -1073,8 +1220,8 @@ function resetFreeQuestion(idx) {
 function drawFreeQuestionCanvas(canvas, data) {
   const ctx = canvas.getContext('2d');
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  drawCanvasGuide(ctx, data.points.length >= 3 ? '' : `${data.points.length + 1}번째 교차점을 찍으세요`);
-  drawPointTriangle(ctx, data.points, data.result?.angles || null);
+  drawCanvasGuide(ctx, data.points.length >= 3 ? '' : `${data.points.length + 1}번째 교차점을 찍으세요`, data.gridMode);
+  drawPointTriangle(ctx, data.points, data.result?.angles || null, data.result?.displaySideLengths || null);
   if (data.result?.label) {
     drawCanvasBadge(ctx, data.result.label, data.result.valid ? '#6f58c9' : '#b83232');
   }
@@ -1089,7 +1236,8 @@ function bindFreeCanvas(canvas) {
     const point = snapCanvasPoint(
       (clientX - rect.left) * (canvas.width / rect.width),
       (clientY - rect.top) * (canvas.height / rect.height),
-      canvas
+      canvas,
+      freeGridMode
     );
     if (freePoints.some((existing) => distance(existing, point) < 1)) return;
     freePoints.push(point);
@@ -1109,8 +1257,10 @@ function drawFreeCanvas() {
   const ctx = canvas.getContext('2d');
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   const angles = anglesFromPoints(freePoints);
-  drawCanvasGuide(ctx, freePoints.length >= 3 ? '' : `${freePoints.length + 1}번째 교차점을 찍으세요`);
-  drawPointTriangle(ctx, freePoints, angles);
+  drawCanvasGuide(ctx, freePoints.length >= 3 ? '' : `${freePoints.length + 1}번째 교차점을 찍으세요`, freeGridMode);
+  const freeClassification = angles ? classifyTriangleFromPoints(freePoints, angles) : null;
+  const showAll = freeGridMode === 'triangle-all';
+  drawPointTriangle(ctx, freePoints, angles, showAll ? freeClassification?.displaySideLengths || null : null);
   const result = document.getElementById('free-result');
   if (freePoints.length < 3) {
     if (result) result.textContent = `점 ${3 - freePoints.length}개가 더 필요해요`;
@@ -1121,11 +1271,12 @@ function drawFreeCanvas() {
     drawCanvasBadge(ctx, '다시 만들어 보세요', '#b83232');
     return;
   }
-  const type = classifyAngles(angles, 0.5);
+  const classification = freeClassification;
   const rounded = angles.map((angle) => Math.round(angle));
-  const label = `${ANGLE_LABELS[type]} · ${rounded.join('°, ')}°`;
+  const typeLabel = showAll ? classification.label : ANGLE_LABELS[classification.angleType];
+  const label = `${typeLabel} · ${rounded.join('°, ')}°`;
   if (result) result.textContent = label;
-  drawCanvasBadge(ctx, ANGLE_LABELS[type], '#6f58c9');
+  drawCanvasBadge(ctx, typeLabel, '#6f58c9');
 }
 
 function createAngleQuestion() {
@@ -1161,6 +1312,27 @@ function createSideQuestion() {
   ]), answer);
 }
 
+function createCombinedQuestion() {
+  const seed = pick([
+    [60, 60, 60],
+    [90, 45, 45],
+    [110, 35, 35],
+    [50, 50, 80],
+    [45, 60, 75],
+    [35, 45, 100],
+    [90, 60, 30],
+    [70, 70, 40]
+  ]);
+  const model = modelFromAngles(seed, null);
+  const classification = classifyTriangleFromModel(model);
+  return {
+    ...model,
+    answers: classification.keys.filter((key) => key !== 'scalene'),
+    selectedKeys: [],
+    classification
+  };
+}
+
 function createTutorialQuestion() {
   const data = createAngleQuestion();
   const angleType = classifyAngles(data.angles);
@@ -1172,11 +1344,16 @@ function createTutorialQuestion() {
 }
 
 function createBuildQuestion() {
-  const answer = pick(['acute', 'right', 'obtuse']);
+  const gridMode = buildGridMode === 'triangle-all' ? 'triangle-all' : 'square-angle';
+  const candidates = gridMode === 'triangle-all'
+    ? ['acute', 'right', 'obtuse', 'isosceles', 'equilateral', 'scalene']
+    : ['acute', 'right', 'obtuse'];
+  const answer = pick(candidates);
   return {
     mode: 'build',
+    gridMode,
     answer,
-    targetLabel: ANGLE_LABELS[answer],
+    targetLabel: ALL_LABELS[answer],
     points: [],
     result: null
   };
@@ -1185,6 +1362,7 @@ function createBuildQuestion() {
 function createFreeQuestion() {
   return {
     mode: 'free',
+    gridMode: freeGridMode === 'triangle-all' ? 'triangle-all' : 'square-angle',
     answer: null,
     points: [],
     result: null
@@ -1202,12 +1380,13 @@ function modelFromAngles(angles, answer) {
     [Math.cos(a) * sideB, Math.sin(a) * sideB]
   ];
   const sideLengths = edgeLengths(rawVertices);
+  const sideType = answer || classifySides(sideLengths, 0.025);
   return {
     angles,
     answer,
     rawVertices,
     sideLengths,
-    displaySideLengths: normalizeDisplayLengths(sideLengths, answer),
+    displaySideLengths: normalizeDisplayLengths(sideLengths, sideType),
     rotation: (Math.random() * 34 - 17) * DEG
   };
 }
@@ -1216,6 +1395,55 @@ function classifyAngles(angles, rightTolerance = 1) {
   if (angles.some((angle) => Math.abs(angle - 90) <= rightTolerance)) return 'right';
   if (angles.some((angle) => angle > 90)) return 'obtuse';
   return 'acute';
+}
+
+function classifySides(lengths, toleranceRatio = 0.07) {
+  const sorted = lengths.slice().sort((a, b) => a - b);
+  const tolerance = sorted[2] * toleranceRatio;
+  const close01 = Math.abs(sorted[0] - sorted[1]) <= tolerance;
+  const close12 = Math.abs(sorted[1] - sorted[2]) <= tolerance;
+  const close02 = Math.abs(sorted[0] - sorted[2]) <= tolerance;
+  if (close01 && close12 && close02) return 'equilateral';
+  if (close01 || close12 || close02) return 'isosceles';
+  return 'scalene';
+}
+
+function classificationKeys(angleType, sideType) {
+  const keys = [angleType];
+  if (sideType === 'equilateral') keys.push('isosceles', 'equilateral');
+  else keys.push(sideType);
+  return keys;
+}
+
+function classificationLabel(keys) {
+  return keys.map((key) => ALL_LABELS[key]).filter(Boolean).join(' · ');
+}
+
+function classifyTriangleFromModel(model) {
+  const angleType = classifyAngles(model.angles, 1);
+  const sideType = classifySides(model.sideLengths, 0.025);
+  const keys = classificationKeys(angleType, sideType);
+  return {
+    angleType,
+    sideType,
+    keys,
+    label: classificationLabel(keys),
+    displaySideLengths: normalizeDisplayLengths(model.sideLengths, sideType)
+  };
+}
+
+function classifyTriangleFromPoints(points, angles) {
+  const rawLengths = edgeLengths(points);
+  const angleType = classifyAngles(angles, 0.5);
+  const sideType = classifySides(rawLengths, 0.001);
+  const keys = classificationKeys(angleType, sideType);
+  return {
+    angleType,
+    sideType,
+    keys,
+    label: classificationLabel(keys),
+    displaySideLengths: normalizeDisplayLengths(rawLengths, sideType)
+  };
 }
 
 function edgeLengths(vertices) {
@@ -1258,17 +1486,17 @@ function drawTriangle(canvas, data) {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   const vertices = fitTriangle(data.rawVertices, data.rotation, canvas.width, canvas.height);
   drawPolygon(ctx, vertices);
-  if (currentGame === 'angle' || currentGame === 'tutorial') {
+  if (currentGame === 'angle' || currentGame === 'tutorial' || currentGame === 'combined') {
     drawAngleLabels(ctx, vertices, data.angles);
     if (data.angles.some((angle) => angle === 90)) drawRightAngleMark(ctx, vertices, data.angles);
   }
-  if (currentGame === 'side') {
+  if (currentGame === 'side' || currentGame === 'combined') {
     drawSideMarks(ctx, vertices, data.displaySideLengths);
     drawSideLengthLabels(ctx, vertices, data.displaySideLengths);
   }
 }
 
-function drawPointTriangle(ctx, points, angles = null) {
+function drawPointTriangle(ctx, points, angles = null, sideLengths = null) {
   if (points.length >= 2) {
     ctx.beginPath();
     ctx.moveTo(points[0][0], points[0][1]);
@@ -1297,34 +1525,52 @@ function drawPointTriangle(ctx, points, angles = null) {
   });
   if (points.length === 3 && angles) {
     drawAngleLabels(ctx, points, angles.map((angle) => Math.round(angle)), { fontRatio: 0.04, minFontSize: 13 });
+    if (sideLengths) {
+      drawSideMarks(ctx, points, sideLengths);
+      drawSideLengthLabels(ctx, points, sideLengths);
+    }
   }
 }
 
-function drawCanvasGuide(ctx, text) {
+function drawCanvasGuide(ctx, text, gridMode = 'square') {
   ctx.save();
   ctx.fillStyle = '#fafafa';
   ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-  const grid = getCanvasGridSize(ctx.canvas);
+  const triangular = gridMode === 'triangle-all';
+  const grid = getCanvasGridSize(ctx.canvas, triangular ? 'triangle' : 'square');
   ctx.strokeStyle = 'rgba(111,88,201,0.08)';
   ctx.lineWidth = 1;
-  for (let x = grid; x < ctx.canvas.width; x += grid) {
-    ctx.beginPath();
-    ctx.moveTo(x, 0);
-    ctx.lineTo(x, ctx.canvas.height);
-    ctx.stroke();
-  }
-  for (let y = grid; y < ctx.canvas.height; y += grid) {
-    ctx.beginPath();
-    ctx.moveTo(0, y);
-    ctx.lineTo(ctx.canvas.width, y);
-    ctx.stroke();
+  if (triangular) {
+    drawTriangleGridLines(ctx, grid);
+  } else {
+    for (let x = grid; x < ctx.canvas.width; x += grid) {
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, ctx.canvas.height);
+      ctx.stroke();
+    }
+    for (let y = grid; y < ctx.canvas.height; y += grid) {
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(ctx.canvas.width, y);
+      ctx.stroke();
+    }
   }
   ctx.fillStyle = 'rgba(111,88,201,0.2)';
-  for (let x = grid; x < ctx.canvas.width; x += grid) {
-    for (let y = grid; y < ctx.canvas.height; y += grid) {
+  if (triangular) {
+    const points = getTriangleGridPoints(ctx.canvas, grid);
+    points.forEach(([x, y]) => {
       ctx.beginPath();
       ctx.arc(x, y, 2, 0, Math.PI * 2);
       ctx.fill();
+    });
+  } else {
+    for (let x = grid; x < ctx.canvas.width; x += grid) {
+      for (let y = grid; y < ctx.canvas.height; y += grid) {
+        ctx.beginPath();
+        ctx.arc(x, y, 2, 0, Math.PI * 2);
+        ctx.fill();
+      }
     }
   }
   if (text) {
@@ -1337,16 +1583,60 @@ function drawCanvasGuide(ctx, text) {
   ctx.restore();
 }
 
-function getCanvasGridSize(canvas) {
-  return Math.max(18, Math.min(canvas.width, canvas.height) * 0.055);
+function getCanvasGridSize(canvas, gridType = 'square') {
+  const ratio = gridType === 'triangle' ? 0.075 : 0.055;
+  return Math.max(18, Math.min(canvas.width, canvas.height) * ratio);
 }
 
-function snapCanvasPoint(x, y, canvas) {
-  const grid = getCanvasGridSize(canvas);
+function snapCanvasPoint(x, y, canvas, gridMode = 'square') {
+  if (gridMode === 'triangle-all') return snapTriangleGridPoint(x, y, canvas);
+  const grid = getCanvasGridSize(canvas, 'square');
   return [
     clamp(Math.round(x / grid) * grid, grid, canvas.width - grid),
     clamp(Math.round(y / grid) * grid, grid, canvas.height - grid)
   ];
+}
+
+function getTriangleGridPoints(canvas, grid = getCanvasGridSize(canvas, 'triangle')) {
+  const rowStep = grid * Math.sqrt(3) / 2;
+  const points = [];
+  for (let row = 1; row * rowStep < canvas.height - grid; row += 1) {
+    const y = row * rowStep;
+    const offset = row % 2 === 0 ? grid : grid * 1.5;
+    for (let x = offset; x < canvas.width - grid; x += grid) {
+      points.push([x, y]);
+    }
+  }
+  return points;
+}
+
+function drawTriangleGridLines(ctx, grid) {
+  const points = getTriangleGridPoints(ctx.canvas, grid);
+  const rowStep = grid * Math.sqrt(3) / 2;
+  points.forEach(([x, y]) => {
+    [[x + grid, y], [x + grid / 2, y + rowStep], [x - grid / 2, y + rowStep]].forEach(([nx, ny]) => {
+      if (nx < grid || nx > ctx.canvas.width - grid || ny < grid || ny > ctx.canvas.height - grid) return;
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(nx, ny);
+      ctx.stroke();
+    });
+  });
+}
+
+function snapTriangleGridPoint(x, y, canvas) {
+  const grid = getCanvasGridSize(canvas, 'triangle');
+  const points = getTriangleGridPoints(canvas, grid);
+  let best = points[0] || [grid, grid];
+  let bestDistance = Infinity;
+  points.forEach((point) => {
+    const d = distance([x, y], point);
+    if (d < bestDistance) {
+      best = point;
+      bestDistance = d;
+    }
+  });
+  return best;
 }
 
 function drawCanvasBadge(ctx, text, color) {
@@ -1660,6 +1950,7 @@ window.addEventListener('resize', () => {
       if (!data || !canvas || !area) return;
       sizeCanvas(canvas, area);
       if (data.mode === 'build') drawBuildCanvas(canvas, data);
+      else if (data.mode === 'free') drawFreeQuestionCanvas(canvas, data);
       else drawTriangle(canvas, data);
     });
   }
