@@ -12,8 +12,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const tabButtons = document.querySelectorAll('.tab-btn');
   const portfolioGrid = document.getElementById('grid-container');
-  const portfolioCards = document.querySelectorAll('.portfolio-card');
-  const downloadLinks = document.querySelectorAll('[data-download-key]');
   const copyEmailButton = document.querySelector('.footer-copy-email');
   const themeToggle = document.getElementById('theme-toggle');
   const themeToggleText = document.querySelector('.theme-toggle-text');
@@ -22,6 +20,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const gradeTabs = document.querySelectorAll('.grade-tab');
   const translationSection = document.getElementById('translation-project');
   const translationTableBody = document.getElementById('translation-table-body');
+  let activeProjectFilter = 'all';
+  let currentProjects = [];
   const translationSubjectLabels = {
     korean: '국어',
     social: '사회',
@@ -124,19 +124,140 @@ document.addEventListener('DOMContentLoaded', () => {
     applyTheme(themes[(currentIndex + 1) % themes.length]);
   });
 
-  downloadLinks.forEach((link) => {
-    const downloadUrl = PROGRAM_DOWNLOAD_URLS[link.dataset.downloadKey];
-    link.href = downloadUrl || '#';
-    if (downloadUrl && downloadUrl !== '#') {
-      link.target = '_blank';
-      link.rel = 'noopener';
+  function escapeHtml(value) {
+    return String(value ?? '')
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#039;');
+  }
+
+  function renderIcon(type) {
+    const icons = {
+      play: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" /></svg>',
+      download: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>',
+      external: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" /></svg>',
+      info: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M12 8.25h.008v.008H12V8.25Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>',
+    };
+    return icons[type] || '';
+  }
+
+  function getBadgeClass(project) {
+    if (project.badge === '웹게임' || project.category === 'web-game') return 'badge-web-game';
+    return 'badge-file';
+  }
+
+  function renderThumbnail(project) {
+    if (project.thumbnail) {
+      return `<img src="${escapeHtml(project.thumbnail)}" alt="${escapeHtml(project.title)} 썸네일" class="card-thumb">`;
     }
-  });
+
+    return `
+      <div class="card-thumb-fallback">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 7.5h10.5m-10.5 4.5h10.5m-10.5 4.5h6.75" />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 4.5h15v15h-15v-15Z" />
+        </svg>
+      </div>
+    `;
+  }
+
+  function getActionUrl(action) {
+    if (action.downloadKey) return PROGRAM_DOWNLOAD_URLS[action.downloadKey] || '#';
+    return action.url || '#';
+  }
+
+  function renderAction(action, project) {
+    const type = action.type || 'info';
+    const url = getActionUrl(action);
+    const label = action.label || '열기';
+    const classes = ['btn'];
+    let title = '';
+    let target = '';
+    let text = escapeHtml(label);
+
+    if (type === 'play') classes.push('btn-web-game');
+    if (type === 'download') classes.push('btn-download-game');
+    if (type === 'portable') classes.push('btn-secondary', 'btn-portable');
+    if (type === 'info') classes.push('btn-secondary', 'btn-info');
+    if (type === 'external') {
+      classes.push('btn-secondary');
+      title = ' title="새 창에서 열기"';
+      target = ' target="_blank" rel="noopener"';
+      text = '';
+    }
+    if (action.downloadKey && url !== '#') {
+      target = ' target="_blank" rel="noopener"';
+    }
+
+    const icon = renderIcon(type);
+    const aria = `${project.title} ${label}`;
+    return `<a href="${escapeHtml(url)}" class="${classes.join(' ')}"${target}${title} aria-label="${escapeHtml(aria)}">${icon}${text}</a>`;
+  }
+
+  function renderProjectCard(project) {
+    return `
+      <article class="portfolio-card" data-category="${escapeHtml(project.category)}" id="card-${escapeHtml(project.id)}">
+        <div class="card-thumb-container" data-project-edit="thumbnail" data-project-id="${escapeHtml(project.id)}">
+          ${renderThumbnail(project)}
+          <span class="card-badge ${getBadgeClass(project)}">${escapeHtml(project.badge)}</span>
+        </div>
+        <div class="card-content">
+          <h2 class="card-title" data-project-edit="title" data-project-id="${escapeHtml(project.id)}">${escapeHtml(project.title)}</h2>
+          <p class="card-desc" data-project-edit="description" data-project-id="${escapeHtml(project.id)}">${escapeHtml(project.description)}</p>
+          <div class="card-actions">
+            ${(project.actions || []).map((action, index) => renderAction(action, project).replace('<a ', `<a data-project-edit="action" data-project-id="${escapeHtml(project.id)}" data-action-index="${index}" `)).join('')}
+          </div>
+        </div>
+      </article>
+    `;
+  }
+
+  function renderProjects(projects) {
+    currentProjects = Array.isArray(projects) ? projects : [];
+    window.ssamnoriProjects = currentProjects;
+    portfolioGrid.innerHTML = currentProjects.map(renderProjectCard).join('');
+    applyProjectFilter();
+    window.dispatchEvent(new CustomEvent('ssamnori:projects-rendered', {
+      detail: { projects: currentProjects },
+    }));
+  }
+
+  function applyProjectFilter() {
+    const portfolioCards = document.querySelectorAll('.portfolio-card');
+    portfolioCards.forEach((card) => {
+      const shouldShow = activeProjectFilter === 'all' || card.dataset.category === activeProjectFilter;
+      card.classList.toggle('hidden', !shouldShow);
+    });
+  }
+
+  async function loadProjects() {
+    if (!portfolioGrid) return;
+
+    try {
+      const response = await fetch('data/projects.json');
+      if (!response.ok) throw new Error(`Project data request failed: ${response.status}`);
+      const projects = await response.json();
+      renderProjects(projects);
+    } catch (error) {
+      portfolioGrid.innerHTML = '<p class="portfolio-empty">프로젝트 목록을 불러오지 못했습니다.</p>';
+      console.error(error);
+    }
+  }
+
+  window.ssamnoriSite = {
+    getProjects: () => currentProjects,
+    renderProjects,
+  };
+
+  loadProjects();
 
   tabButtons.forEach((button) => {
     button.addEventListener('click', () => {
       const filterValue = button.dataset.filter;
       const isTranslationProject = filterValue === 'translation-project';
+      activeProjectFilter = filterValue;
 
       tabButtons.forEach((tab) => {
         const isActive = tab === button;
@@ -147,10 +268,7 @@ document.addEventListener('DOMContentLoaded', () => {
       portfolioGrid?.classList.toggle('hidden', isTranslationProject);
       translationSection?.classList.toggle('hidden', !isTranslationProject);
 
-      portfolioCards.forEach((card) => {
-        const shouldShow = filterValue === 'all' || card.dataset.category === filterValue;
-        card.classList.toggle('hidden', !shouldShow);
-      });
+      applyProjectFilter();
     });
   });
 

@@ -1,0 +1,212 @@
+[
+  {
+    "id": "calcman",
+    "title": "연산맨",
+    "category": "web-game",
+    "badge": "웹게임",
+    "thumbnail": "assets/thumbnails/calcman.png",
+    "description": "곱셈의 받아올림과 나눗셈의 계산 과정을 올바른 계산 과정에 맞게 연습해보는 게임입니다.",
+    "actions": [
+      {
+        "type": "play",
+        "label": "바로 플레이",
+        "url": "games/calcman/index.html",
+        "downloadKey": ""
+      },
+      {
+        "type": "external",
+        "label": "새 창",
+        "url": "games/calcman/index.html",
+        "downloadKey": ""
+      }
+    ]
+  },
+  {
+    "id": "shapeman",
+    "title": "도형맨",
+    "category": "web-game",
+    "badge": "웹게임",
+    "thumbnail": "assets/thumbnails/shapeman.png",
+    "description": "삼각형의 변의 길이와 각의 크기에 따른 분류 기준을 연습하고, 직접 삼각형을 만들며 삼각형 분류기준에 익숙해지는 게임입니다.",
+    "actions": [
+      {
+        "type": "play",
+        "label": "바로 플레이",
+        "url": "games/shapeman/index.html",
+        "downloadKey": ""
+      },
+      {
+        "type": "external",
+        "label": "새 창",
+        "url": "games/shapeman/index.html",
+        "downloadKey": ""
+      }
+    ]
+  },
+  {
+    "id": "angleman",
+    "title": "각도맨",
+    "category": "web-game",
+    "badge": "웹게임",
+    "thumbnail": "assets/thumbnails/angleman.png",
+    "description": "제시되는 각도를 각도기로 맞추고 재어보며 각도의 개념을 읽히는 교육 게임입니다.",
+    "actions": [
+      {
+        "type": "play",
+        "label": "바로 플레이",
+        "url": "games/angleman/index.html",
+        "downloadKey": ""
+      },
+      {
+        "type": "external",
+        "label": "새 창",
+        "url": "games/angleman/index.html",
+        "downloadKey": ""
+      }
+    ]
+  },
+  {
+    "id": "seat",
+    "title": "내자리",
+    "category": "other-program",
+    "badge": "파일",
+    "thumbnail": "assets/thumbnails/naejari.png",
+    "description": "귀여운 캐릭터 감성으로 학생 자리를 바꾸고 뽑을 수 있는 교실용 자리바꾸기 프로그램입니다.",
+    "actions": [
+      {
+        "type": "download",
+        "label": "다운로드",
+        "url": "",
+        "downloadKey": "naejari"
+      },
+      {
+        "type": "portable",
+        "label": "포터블",
+        "url": "",
+        "downloadKey": "naejariPortable"
+      },
+      {
+        "type": "info",
+        "label": "설명",
+        "url": "programs/naejari.html",
+        "downloadKey": ""
+      }
+    ]
+  },
+  {
+    "id": "mindmap",
+    "title": "씽크체인 (test)",
+    "category": "other-program",
+    "badge": "파일",
+    "thumbnail": "assets/thumbnails/thinkchain.png",
+    "description": "간단한 마인드맵과 프로젝트 칸반보드를 사용할 수 있는 생각 정리 도구입니다.",
+    "actions": [
+      {
+        "type": "download",
+        "label": "다운로드",
+        "url": "",
+        "downloadKey": "thinkchain"
+      },
+      {
+        "type": "portable",
+        "label": "포터블",
+        "url": "",
+        "downloadKey": "thinkchainPortable"
+      },
+      {
+        "type": "info",
+        "label": "설명",
+        "url": "programs/thinkchain.html",
+        "downloadKey": ""
+      }
+    ]
+  },
+  {
+    "id": "tlog",
+    "title": "티로그 (test)",
+    "category": "other-program",
+    "badge": "파일",
+    "thumbnail": "assets/thumbnails/tlog.png",
+    "description": "디지털 교무수첩과 수업자료 관리를 한곳에 모으는 교사용 업무 정리 프로그램입니다. 타이머, 달력, 파일 저장과 기록 및 메모, 학생 관리 기능을 지원합니다. 구글 드라이브를 이용한 동기화도 가능합니다.",
+    "actions": [
+      {
+        "type": "download",
+        "label": "다운로드",
+        "url": "",
+        "downloadKey": "tlog"
+      },
+      {
+        "type": "info",
+        "label": "설명",
+        "url": "programs/tlog.html",
+        "downloadKey": ""
+      }
+    ]
+  },
+  {
+    "id": "mininori",
+    "title": "미니노리",
+    "category": "other-program",
+    "badge": "파일",
+    "thumbnail": "assets/thumbnails/mininori.png",
+    "description": "다같이 하는 전자칠판 종합 게임입니다. 교실 전체가 함께 참여하는 짧고 빠른 미니게임 묶음입니다. 창체 시간에 간단히 활용해보세요!",
+    "actions": [
+      {
+        "type": "download",
+        "label": "다운로드",
+        "url": "",
+        "downloadKey": "mininori"
+      },
+      {
+        "type": "info",
+        "label": "설명",
+        "url": "programs/mininori.html",
+        "downloadKey": ""
+      }
+    ]
+  },
+  {
+    "id": "batchnuki",
+    "title": "배치누끼",
+    "category": "other-program",
+    "badge": "파일",
+    "thumbnail": "",
+    "description": "캐릭터 이미지를 한 번에 정리하고 배경을 제거하는 누끼 따기 프로그램입니다. 캔바나 다른 툴로 일일이 제거하기에 누끼 따야할 이미지가 너무 많을 때 활용해보세요!",
+    "actions": [
+      {
+        "type": "download",
+        "label": "다운로드",
+        "url": "",
+        "downloadKey": "batchnuki"
+      },
+      {
+        "type": "info",
+        "label": "설명",
+        "url": "programs/batchnuki.html",
+        "downloadKey": ""
+      }
+    ]
+  },
+  {
+    "id": "ieon",
+    "title": "이어온 (추후 공개예정)",
+    "category": "other-program",
+    "badge": "파일",
+    "thumbnail": "assets/thumbnails/ieon.png",
+    "description": "다국어 수업자료 번역 프로그램입니다. 교과서와 PPT 등의 수업자료 파일을 받아 음성과 자막을 붙인 다국어 자료로 만들어줄 수 있습니다. (2025년 디지털 교육자료 연구대회 2등급 수상)",
+    "actions": [
+      {
+        "type": "download",
+        "label": "공개 예정",
+        "url": "",
+        "downloadKey": "ieon"
+      },
+      {
+        "type": "info",
+        "label": "설명",
+        "url": "programs/ieon.html",
+        "downloadKey": ""
+      }
+    ]
+  }
+]

@@ -404,6 +404,21 @@ body {
   transition: transform 0.5s ease;
 }
 
+.card-thumb-fallback {
+  align-items: center;
+  background: linear-gradient(135deg, #7c3aed, #5b21b6);
+  color: #ede9fe;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  width: 100%;
+}
+
+.card-thumb-fallback svg {
+  height: 48px;
+  width: 48px;
+}
+
 .portfolio-card:hover .card-thumb {
   transform: scale(1.05);
 }
@@ -547,6 +562,12 @@ body {
   display: none;
   opacity: 0;
   transform: scale(0.9);
+}
+
+.portfolio-empty {
+  color: var(--text-secondary);
+  grid-column: 1 / -1;
+  text-align: center;
 }
 
 .portfolio-grid.hidden,
