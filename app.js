@@ -30,6 +30,24 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   let activeSubject = 'korean';
   let activeGrade = '1';
+  const themes = ['dark', 'light', 'sunset'];
+  const themeUi = {
+    dark: {
+      label: 'Light',
+      icon: '○',
+      aria: '라이트 테마로 변경',
+    },
+    light: {
+      label: 'Sunset',
+      icon: '◐',
+      aria: '선셋 테마로 변경',
+    },
+    sunset: {
+      label: 'Dark',
+      icon: '●',
+      aria: '다크 테마로 변경',
+    },
+  };
 
   const translationProjects = [
     {
@@ -79,18 +97,20 @@ document.addEventListener('DOMContentLoaded', () => {
   ];
 
   function applyTheme(theme) {
-    document.documentElement.dataset.theme = theme;
-    localStorage.setItem('site-theme', theme);
+    const nextTheme = themes.includes(theme) ? theme : 'dark';
+    const ui = themeUi[nextTheme];
 
-    const isLight = theme === 'light';
+    document.documentElement.dataset.theme = nextTheme;
+    localStorage.setItem('site-theme', nextTheme);
+
     if (themeToggle) {
-      themeToggle.setAttribute('aria-label', isLight ? '다크 테마로 변경' : '라이트 테마로 변경');
+      themeToggle.setAttribute('aria-label', ui.aria);
     }
     if (themeToggleText) {
-      themeToggleText.textContent = isLight ? 'Dark' : 'Light';
+      themeToggleText.textContent = ui.label;
     }
     if (themeToggleIcon) {
-      themeToggleIcon.textContent = isLight ? '●' : '○';
+      themeToggleIcon.textContent = ui.icon;
     }
   }
 
@@ -99,8 +119,9 @@ document.addEventListener('DOMContentLoaded', () => {
   applyTheme(savedTheme || (prefersLight ? 'light' : 'dark'));
 
   themeToggle?.addEventListener('click', () => {
-    const nextTheme = document.documentElement.dataset.theme === 'light' ? 'dark' : 'light';
-    applyTheme(nextTheme);
+    const currentTheme = document.documentElement.dataset.theme;
+    const currentIndex = themes.indexOf(currentTheme);
+    applyTheme(themes[(currentIndex + 1) % themes.length]);
   });
 
   downloadLinks.forEach((link) => {

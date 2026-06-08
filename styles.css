@@ -44,10 +44,10 @@
 
 :root[data-theme="light"] {
   --bg-main: #f7fafc;
-  --bg-card: rgba(255, 255, 255, 0.92);
-  --bg-card-hover: rgba(255, 255, 255, 1);
-  --border-color: rgba(15, 23, 42, 0.1);
-  --border-color-hover: rgba(15, 23, 42, 0.2);
+  --bg-card: #ffffff;
+  --bg-card-hover: #fff9db;
+  --border-color: rgba(15, 23, 42, 0.14);
+  --border-color-hover: rgba(180, 124, 22, 0.35);
   --text-primary: #111827;
   --text-secondary: #4b5563;
   --text-muted: #6b7280;
@@ -57,6 +57,23 @@
   --color-tool-glow: rgba(16, 185, 129, 0.18);
   --color-download-glow: rgba(249, 115, 22, 0.18);
   --shadow-glow: 0 0 25px rgba(99, 102, 241, 0.12);
+}
+
+:root[data-theme="sunset"] {
+  --bg-main: #371527;
+  --bg-card: rgba(35, 18, 31, 0.76);
+  --bg-card-hover: rgba(58, 27, 42, 0.86);
+  --border-color: rgba(255, 226, 191, 0.18);
+  --border-color-hover: rgba(255, 214, 153, 0.34);
+  --text-primary: #fff8ed;
+  --text-secondary: #ffe2c2;
+  --text-muted: #e8b892;
+  --accent-purple: #ff8f70;
+  --accent-purple-glow: rgba(255, 143, 112, 0.22);
+  --color-game-glow: rgba(255, 187, 96, 0.22);
+  --color-tool-glow: rgba(255, 128, 112, 0.22);
+  --color-download-glow: rgba(255, 180, 76, 0.24);
+  --gradient-primary: linear-gradient(135deg, #f97316 0%, #ec4899 100%);
 }
 
 /* ==========================================
@@ -90,6 +107,13 @@ body {
   background:
     linear-gradient(rgba(247, 250, 252, 0.18), rgba(247, 250, 252, 0.3)),
     url('assets/backgrounds/bg-light.png') center / cover fixed no-repeat,
+    var(--bg-main);
+}
+
+:root[data-theme="sunset"] body {
+  background:
+    linear-gradient(rgba(72, 29, 47, 0.16), rgba(44, 18, 26, 0.34)),
+    url('assets/backgrounds/bg-sunset.png') center / cover fixed no-repeat,
     var(--bg-main);
 }
 
@@ -130,6 +154,10 @@ body {
 
 :root[data-theme="light"] .header {
   background: rgba(255, 255, 255, 0.94);
+}
+
+:root[data-theme="sunset"] .header {
+  background: rgba(54, 22, 37, 0.9);
 }
 
 .header-container {
@@ -302,7 +330,7 @@ body {
 }
 
 .portfolio-card {
-  background: rgba(18, 22, 33, 0.85);
+  background: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: 16px;
   overflow: hidden;
@@ -331,6 +359,18 @@ body {
   background: var(--bg-card-hover);
 }
 
+:root[data-theme="light"] .portfolio-card {
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.14);
+}
+
+:root[data-theme="light"] .portfolio-card::after {
+  background: linear-gradient(to bottom, rgba(15, 23, 42, 0.08), transparent);
+}
+
+:root[data-theme="light"] .portfolio-card:hover {
+  box-shadow: 0 12px 28px rgba(120, 78, 18, 0.18);
+}
+
 /* Colored glow shadows depending on project category */
 .portfolio-card[data-category="web-game"]:hover {
   box-shadow: 0 12px 30px -10px var(--color-game-glow);
@@ -343,6 +383,10 @@ body {
 }
 .portfolio-card[data-category="other-program"]:hover {
   box-shadow: 0 12px 30px -10px var(--color-download-glow);
+}
+
+:root[data-theme="light"] .portfolio-card[data-category]:hover {
+  box-shadow: 0 12px 28px rgba(120, 78, 18, 0.14);
 }
 
 /* Card Thumbnail */
