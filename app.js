@@ -168,6 +168,25 @@ document.addEventListener('DOMContentLoaded', () => {
     return action.url || '#';
   }
 
+  function applyDownloadLinks(root = document) {
+    root.querySelectorAll('[data-download-key]').forEach((link) => {
+      const url = PROGRAM_DOWNLOAD_URLS[link.dataset.downloadKey] || '#';
+      link.href = url;
+
+      if (url === '#') {
+        link.removeAttribute('target');
+        link.removeAttribute('rel');
+        link.setAttribute('aria-disabled', 'true');
+        link.addEventListener('click', (event) => event.preventDefault());
+        return;
+      }
+
+      link.target = '_blank';
+      link.rel = 'noopener';
+      link.removeAttribute('aria-disabled');
+    });
+  }
+
   function renderAction(action, project) {
     const type = action.type || 'info';
     const url = getActionUrl(action);
@@ -252,6 +271,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   loadProjects();
+  applyDownloadLinks();
 
   tabButtons.forEach((button) => {
     button.addEventListener('click', () => {
