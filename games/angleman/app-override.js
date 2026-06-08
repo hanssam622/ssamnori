@@ -7,9 +7,10 @@
     5: { emoji: '🧭', title: '실전 각도재기 튜토리얼', description: '0°에서 어디부터 읽는지 화살표 애니메이션으로 따라가며 익혀요.' }
   };
   const DEG = Math.PI / 180;
-  const PROTRACTOR_SOURCE = typeof window !== 'undefined' && typeof window.PROTRACTOR_DATA_URI === 'string'
+  const PROTRACTOR_SOURCE = 'assets/protractor-preview-transparent.png';
+  const PROTRACTOR_FALLBACK_SOURCE = typeof window !== 'undefined' && typeof window.PROTRACTOR_DATA_URI === 'string'
     ? window.PROTRACTOR_DATA_URI
-    : 'assets/protractor-preview-transparent.png';
+    : '';
   const PROTRACTOR_ORIGIN_X = 1104.5;
   const PROTRACTOR_ORIGIN_Y = 999;
   const PROTRACTOR_RADIUS = 915.5;
@@ -59,6 +60,13 @@
     playerData.forEach((data, idx) => {
       if (isMeasureMode(data)) window.redrawShape?.(idx);
     });
+  };
+  protractorImage.onerror = () => {
+    if (PROTRACTOR_FALLBACK_SOURCE && protractorImage.src !== PROTRACTOR_FALLBACK_SOURCE) {
+      protractorImage.src = PROTRACTOR_FALLBACK_SOURCE;
+      return;
+    }
+    protractorReady = false;
   };
   protractorImage.src = PROTRACTOR_SOURCE;
   if (protractorImage.complete && protractorImage.naturalWidth > 0) protractorReady = true;
