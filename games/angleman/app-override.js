@@ -3,8 +3,9 @@
     1: { emoji: '📐', title: '각도 만들기', description: '반원 각도기를 눌러 목표 각도를 만들어요.' },
     2: { emoji: '🔺', title: '삼각형의 각', description: '삼각형의 한 각을 보고 남은 각을 구해요.' },
     3: { emoji: '🔷', title: '사각형의 각', description: '사각형의 숨겨진 각을 찾아요.' },
-    4: { emoji: '📏', title: '실전 각도재기', description: '실제 각도기가 자동으로 맞춰지고, 눈금을 읽어 입력해요.' },
-    5: { emoji: '🧭', title: '실전 각도재기 튜토리얼', description: '0°에서 어디부터 읽는지 화살표 애니메이션으로 따라가며 익혀요.' }
+    4: { emoji: '📏', title: '실전 각도재기', description: '각도기를 직접 옮기고 돌려 눈금을 읽어요.' },
+    5: { emoji: '🧭', title: '실전 각도재기 튜토리얼', description: '0°에서 어디부터 읽는지 화살표 애니메이션으로 따라가며 익혀요.' },
+    6: { emoji: '📎', title: '자동 일치 각도재기', description: '각도기가 바로 맞춰진 상태에서 눈금을 읽어 입력해요.' }
   };
   const DEG = Math.PI / 180;
   const PROTRACTOR_SOURCE = 'assets/protractor-preview-transparent.png';
@@ -17,6 +18,7 @@
   const PROTRACTOR_PLACE_TOLERANCE = 22;
   const PROTRACTOR_ALIGN_TOLERANCE = 5 * DEG;
   const PROTRACTOR_READ_TOLERANCE = 2.5;
+  const MEASURE_STAGE_DELAY_MS = 360;
   const STORAGE_KEY = 'angleman-student-state-v1';
   const EXPORT_FILE_NAME = 'angleman-students.json';
   const DEFAULT_PLAYER_COUNT = 5;
@@ -102,12 +104,14 @@
 
   function setCanvasBackingSize(canvas, width, height) {
     const dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+    canvas.style.width = `${Math.max(1, Math.round(width))}px`;
+    canvas.style.height = `${Math.max(1, Math.round(height))}px`;
     canvas.width = Math.max(1, Math.round(width * dpr));
     canvas.height = Math.max(1, Math.round(height * dpr));
   }
 
   function isMeasureMode(data) {
-    return data?.mode === 'measure' || data?.mode === 'measure-tutorial';
+    return data?.mode === 'measure' || data?.mode === 'measure-auto' || data?.mode === 'measure-tutorial';
   }
 
   function escapeHtml(value) {
@@ -2170,7 +2174,8 @@
       .ag-home-float {
         position:fixed;
         right:18px;
-        bottom:18px;
+        top:50%;
+        transform:translateY(-50%);
         z-index:80;
         display:inline-flex;
         align-items:center;
@@ -2207,6 +2212,28 @@
         color:#1d7d35;
         background:rgba(233, 255, 237, 0.92);
         border-color:rgba(50, 177, 83, 0.24);
+      }
+      .ag-measure-actions {
+        width:min(92%, 430px);
+        display:flex;
+        justify-content:center;
+        margin:0 auto 4px;
+      }
+      .ag-measure-reset {
+        border:1px solid rgba(108,99,255,0.16);
+        border-radius:999px;
+        padding:8px 12px;
+        background:rgba(255,255,255,0.9);
+        color:#5d566d;
+        font:800 13px 'Outfit', 'Malgun Gothic', 'Apple SD Gothic Neo', 'Segoe UI', sans-serif;
+        cursor:pointer;
+      }
+      .ag-measure-reset:hover {
+        background:#f4f2ff;
+        color:#5546df;
+      }
+      .measure-area canvas {
+        touch-action:none;
       }
       .ag-topbar-meta {
         position:static;
@@ -2345,7 +2372,6 @@
         }
         .ag-home-float {
           right:10px;
-          bottom:10px;
           padding:10px 12px;
           font-size:12px;
         }
@@ -3091,6 +3117,8 @@
 
   function getMeasureStatusText(data) {
     if (!isMeasureMode(data) || data.mode === 'measure-tutorial') return '';
+    if (data.stageHold === 'place') return '좋아요. 손을 떼고 밑금을 맞출 준비를 해요';
+    if (data.stageHold === 'align') return '좋아요. 손을 떼고 0°부터 눈금을 읽어 봐요';
     if (data.measureStage === 'place') return '1. 각도기 중심점을 표시된 꼭짓점에 드래그하세요';
     if (data.measureStage === 'align') return '2. 각도기 밑금을 각의 밑변에 맞추세요';
     if (data.measureStage === 'read') {
@@ -3121,8 +3149,12 @@
     if (!data?.overlay) return;
     data.overlay.currentX = data.overlay.targetX;
     data.overlay.currentY = data.overlay.targetY;
-    data.overlay.currentScale = data.overlay.targetScale;
     data.overlay.currentAlpha = 1;
+  }
+
+  function lockMeasureOverlayScale(data) {
+    if (!data?.overlay) return;
+    data.overlay.currentScale = data.overlay.targetScale;
   }
 
   function snapMeasureOverlayRotation(data) {
@@ -3751,6 +3783,9 @@
     let dragging = false;
     let dragOffsetX = 0;
     let dragOffsetY = 0;
+    let pendingStage = null;
+    let stageDelayId = null;
+    let activePointerId = null;
 
     const canvasPoint = (clientX, clientY) => {
       const rect = canvas.getBoundingClientRect();
@@ -3760,38 +3795,60 @@
       ];
     };
 
-    const applyPoint = (clientX, clientY, release = false) => {
+    const finishStageAfterRelease = (data, nextStage) => {
+      if (!data || data.stageHold || !nextStage) return;
+      data.stageHold = data.measureStage;
+      if (stageDelayId) clearTimeout(stageDelayId);
+      stageDelayId = setTimeout(() => {
+        if (!playerData[idx] || playerData[idx] !== data || data.answered || data.resolving) return;
+        data.measureStage = nextStage;
+        data.stageHold = null;
+        if (nextStage === 'read') data.readAngle = null;
+        drawMeasureScene(canvas, idx);
+      }, MEASURE_STAGE_DELAY_MS);
+    };
+
+    const applyPoint = (clientX, clientY) => {
       const data = playerData[idx];
-      if (!data || data.mode !== 'measure' || data.answered || data.resolving || !data.overlay) return;
+      if (!data || data.mode !== 'measure' || data.answered || data.resolving || !data.overlay || data.stageHold) return;
       const [x, y] = canvasPoint(clientX, clientY);
       const overlay = data.overlay;
       const vertices = data.vertices;
       const vertex = vertices[data.selectedVertex];
+      if (pendingStage) {
+        snapMeasureOverlayToTarget(data);
+        lockMeasureOverlayScale(data);
+        if (pendingStage === 'read') snapMeasureOverlayRotation(data);
+        drawMeasureScene(canvas, idx);
+        return;
+      }
 
       if (data.measureStage === 'place') {
         overlay.currentX = x - dragOffsetX;
         overlay.currentY = y - dragOffsetY;
         overlay.currentAlpha = 1;
+        lockMeasureOverlayScale(data);
         const placed = distance([overlay.currentX, overlay.currentY], vertex) <= PROTRACTOR_PLACE_TOLERANCE;
-        if (placed || release) {
-          if (placed) {
-            snapMeasureOverlayToTarget(data);
-            data.measureStage = 'align';
-          }
+        if (placed) {
+          snapMeasureOverlayToTarget(data);
+          pendingStage = 'align';
+        } else {
+          pendingStage = null;
         }
       } else if (data.measureStage === 'align') {
         snapMeasureOverlayToTarget(data);
+        lockMeasureOverlayScale(data);
         overlay.currentRotation = Math.atan2(y - vertex[1], x - vertex[0]);
         const aligned = angleDistance(overlay.currentRotation, overlay.targetRotation) <= PROTRACTOR_ALIGN_TOLERANCE;
-        if (aligned || release) {
-          if (aligned) {
-            snapMeasureOverlayRotation(data);
-            data.measureStage = 'read';
-            data.readAngle = null;
-          }
+        if (aligned) {
+          snapMeasureOverlayRotation(data);
+          pendingStage = 'read';
+        } else {
+          pendingStage = null;
         }
       } else if (data.measureStage === 'read') {
         snapMeasureOverlayToTarget(data);
+        lockMeasureOverlayScale(data);
         snapMeasureOverlayRotation(data);
         const geometry = getMeasureGuideGeometry(data);
         if (geometry) {
@@ -3808,24 +3865,56 @@
 
     const start = (clientX, clientY) => {
       const data = playerData[idx];
-      if (!data || data.mode !== 'measure' || data.answered || data.resolving || !data.overlay) return;
+      if (!data || data.mode !== 'measure' || data.answered || data.resolving || !data.overlay || data.stageHold) return;
       const [x, y] = canvasPoint(clientX, clientY);
       dragging = true;
       dragOffsetX = data.measureStage === 'place' ? x - data.overlay.currentX : 0;
       dragOffsetY = data.measureStage === 'place' ? y - data.overlay.currentY : 0;
-      applyPoint(clientX, clientY, false);
+      applyPoint(clientX, clientY);
     };
 
     const move = (clientX, clientY) => {
       if (!dragging) return;
-      applyPoint(clientX, clientY, false);
+      applyPoint(clientX, clientY);
     };
 
     const end = (clientX, clientY) => {
       if (!dragging) return;
+      const data = playerData[idx];
       dragging = false;
-      applyPoint(clientX, clientY, true);
+      applyPoint(clientX, clientY);
+      if (data && pendingStage) {
+        finishStageAfterRelease(data, pendingStage);
+        pendingStage = null;
+      }
     };
+
+    if (window.PointerEvent) {
+      canvas.addEventListener('pointerdown', (event) => {
+        if (activePointerId !== null) return;
+        activePointerId = event.pointerId;
+        canvas.setPointerCapture?.(event.pointerId);
+        start(event.clientX, event.clientY);
+      });
+      canvas.addEventListener('pointermove', (event) => {
+        if (event.pointerId !== activePointerId) return;
+        move(event.clientX, event.clientY);
+      });
+      const finishPointer = (event) => {
+        if (event.pointerId !== activePointerId) return;
+        end(event.clientX, event.clientY);
+        canvas.releasePointerCapture?.(event.pointerId);
+        activePointerId = null;
+      };
+      canvas.addEventListener('pointerup', finishPointer);
+      canvas.addEventListener('pointercancel', finishPointer);
+      canvas.addEventListener('lostpointercapture', () => {
+        activePointerId = null;
+        dragging = false;
+        pendingStage = null;
+      });
+      return;
+    }
 
     canvas.addEventListener('mousedown', (event) => start(event.clientX, event.clientY));
     window.addEventListener('mousemove', (event) => move(event.clientX, event.clientY));
@@ -3940,6 +4029,7 @@
 
   function createMeasureQuestion(width, height, options = {}) {
     const tutorial = options.tutorial === true;
+    const auto = options.auto === true;
     while (true) {
       const useTriangle = Math.random() < 0.5;
       const model = useTriangle ? createTriangleModel() : createQuadModel();
@@ -3963,7 +4053,7 @@
       const startOffsetX = tutorial ? Math.min(90, width * 0.08) : Math.min(150, width * 0.16);
       const startOffsetY = tutorial ? height + Math.min(140, height * 0.22) : Math.min(height * 0.16, 90);
       return {
-        mode: tutorial ? 'measure-tutorial' : 'measure',
+        mode: tutorial ? 'measure-tutorial' : auto ? 'measure-auto' : 'measure',
         shapeType: useTriangle ? 'triangle' : 'quad',
         model,
         angles: model.angles,
@@ -3980,15 +4070,15 @@
           targetY: vertex[1],
           targetRotation: base.baseAngle,
           targetScale: scale,
-          currentX: vertex[0] + startOffsetX,
-          currentY: tutorial ? startOffsetY : vertex[1] + startOffsetY,
-          currentRotation: base.baseAngle - degToRad(18),
-          currentScale: scale * 0.84,
-          currentAlpha: tutorial ? 0 : 0.92,
+          currentX: auto ? vertex[0] : vertex[0] + startOffsetX,
+          currentY: auto ? vertex[1] : tutorial ? startOffsetY : vertex[1] + startOffsetY,
+          currentRotation: auto ? base.baseAngle : base.baseAngle - degToRad(18),
+          currentScale: tutorial ? scale * 0.84 : scale,
+          currentAlpha: tutorial ? 0 : 1,
           frameId: null,
           animating: false
         },
-        measureStage: tutorial ? 'tutorial' : 'place',
+        measureStage: tutorial ? 'tutorial' : auto ? 'read' : 'place',
         readAngle: null,
         guide: tutorial ? createMeasureGuideState() : null
       };
@@ -3997,13 +4087,18 @@
 
   function setupMeasureBody(idx, body, options = {}) {
     const tutorial = options.tutorial === true;
+    const auto = options.auto === true;
     if (!tutorial) body.appendChild(prompt('표시된 꼭짓점의 각을 각도기로 재어 입력하세요'));
-    if (!tutorial) {
+    if (!tutorial && !auto) {
       const status = document.createElement('div');
       status.className = 'ag-measure-status';
       status.id = `ag-measure-status-${idx}`;
       status.textContent = '1. 각도기 중심점을 표시된 꼭짓점에 드래그하세요';
       body.appendChild(status);
+      const actions = document.createElement('div');
+      actions.className = 'ag-measure-actions';
+      actions.innerHTML = `<button class="ag-measure-reset" type="button" onclick="restoreMeasureTool(${idx})">각도기 복귀</button>`;
+      body.appendChild(actions);
     }
     const area = document.createElement('div');
     area.className = 'shape-area measure-area';
@@ -4025,13 +4120,13 @@
     body.appendChild(createNumpad(idx));
     setTimeout(() => {
       setCanvasBackingSize(canvas, area.clientWidth, area.clientHeight);
-      playerData[idx] = createMeasureQuestion(canvas.width, canvas.height, { tutorial });
+      playerData[idx] = createMeasureQuestion(canvas.width, canvas.height, { tutorial, auto });
       drawMeasureScene(canvas, idx);
       if (tutorial) {
         animateMeasure(idx, canvas, () => {
           startMeasureTutorialAnimation(idx, canvas);
         });
-      } else {
+      } else if (!auto) {
         bindMeasureInteraction(canvas, idx);
       }
     }, 30);
@@ -4039,6 +4134,10 @@
 
   function setupMeasure(idx, body) {
     setupMeasureBody(idx, body, { tutorial: false });
+  }
+
+  function setupMeasureAuto(idx, body) {
+    setupMeasureBody(idx, body, { tutorial: false, auto: true });
   }
 
   function setupMeasureTutorial(idx, body) {
@@ -4177,6 +4276,26 @@
     } else {
       document.exitFullscreen?.();
     }
+  };
+
+  window.restoreMeasureTool = function restoreMeasureToolOverride(idx) {
+    const data = playerData[idx];
+    const body = document.getElementById(`body-${idx}`);
+    const canvas = body?.querySelector('canvas');
+    if (!data || data.mode !== 'measure' || !data.overlay || !canvas) return;
+    data.stageHold = null;
+    data.readAngle = null;
+    lockMeasureOverlayScale(data);
+    data.overlay.currentAlpha = 1;
+    if (data.measureStage === 'place') {
+      data.overlay.currentX = data.overlay.targetX + Math.min(150, canvas.width * 0.16);
+      data.overlay.currentY = data.overlay.targetY + Math.min(canvas.height * 0.16, 90);
+      data.overlay.currentRotation = data.overlay.targetRotation - degToRad(18);
+    } else {
+      snapMeasureOverlayToTarget(data);
+      if (data.measureStage === 'read') snapMeasureOverlayRotation(data);
+    }
+    drawMeasureScene(canvas, idx);
   };
 
   window.redrawShape = function redrawShapeOverride(idx) {
@@ -4373,7 +4492,8 @@
     else if (currentGame === 2) setupTriangle(idx, body);
     else if (currentGame === 3) setupQuad(idx, body);
     else if (currentGame === 4) setupMeasure(idx, body);
-    else setupMeasureTutorial(idx, body);
+    else if (currentGame === 5) setupMeasureTutorial(idx, body);
+    else setupMeasureAuto(idx, body);
   };
 
   window.showResults = function showResultsOverride() {
@@ -4398,6 +4518,7 @@
   window.setupTriangle = setupTriangle;
   window.setupQuad = setupQuad;
   window.setupMeasure = setupMeasure;
+  window.setupMeasureAuto = setupMeasureAuto;
   window.setupMeasureTutorial = setupMeasureTutorial;
 
   bootstrapUi();
