@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>구구단파이터</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ctext y='50' font-size='48'%3E%E2%9A%94%EF%B8%8F%3C/text%3E%3C/svg%3E" />
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: rgba(15, 23, 42, 0.86);
+      --panel-solid: #1e293b;
+      --line: rgba(255, 255, 255, 0.14);
+      --text: #f8fafc;
+      --muted: #64748b;
+      --blue: #2563eb;
+      --blue-light: #38bdf8;
+      --red: #dc2626;
+      --red-light: #fb7185;
+      --yellow: #facc15;
+      --green: #22c55e;
+      --purple: #8b5cf6;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; }
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      user-select: none;
+      touch-action: none;
+    }
+
+    button, input { font: inherit; }
+    button { border: 0; cursor: pointer; }
+    .hidden { display: none !important; }
+
+    .app {
+      position: relative;
+      width: 100vw;
+      height: 100dvh;
+      min-height: 650px;
+      overflow: hidden;
+      background-image:
+        linear-gradient(rgba(15, 23, 42, 0.32), rgba(15, 23, 42, 0.58)),
+        url("assets/gugudan/arena-bg.png");
+      background-size: cover;
+      background-position: center;
+    }
+
+    .topbar {
+      position: relative;
+      z-index: 30;
+      height: 92px;
+      padding: 14px 26px;
+      display: grid;
+      grid-template-columns: 180px 1fr 180px;
+      align-items: start;
+      gap: 16px;
+      pointer-events: none;
+    }
+
+    .title {
+      text-align: center;
+      text-shadow: 0 3px 0 rgba(0, 0, 0, 0.24);
+    }
+
+    .title h1 {
+      margin: 0;
+      font-size: clamp(30px, 4vw, 50px);
+      line-height: 1;
+      font-weight: 1000;
+      letter-spacing: 0;
+    }
+
+    .title p {
+      margin: 8px 0 0;
+      color: #eef2ff;
+      font-size: 15px;
+      font-weight: 900;
+    }
+
+    .top-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+      pointer-events: auto;
+    }
+
+    .topbar > .btn {
+      pointer-events: auto;
+    }
+
+    .btn {
+      min-height: 46px;
+      padding: 0 16px;
+      border-radius: 14px;
+      color: white;
+      background: rgba(15, 23, 42, 0.86);
+      border: 2px solid var(--line);
+      font-weight: 1000;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.24);
+    }
+
+    .btn.icon {
+      width: 52px;
+      padding: 0;
+      font-size: 23px;
+    }
+
+    .btn.primary { background: linear-gradient(180deg, #2563eb, #1d4ed8); }
+    .btn.green { background: linear-gradient(180deg, #22c55e, #15803d); }
+    .btn.red { background: linear-gradient(180deg, #ef4444, #b91c1c); }
+    .btn.yellow { background: linear-gradient(180deg, #facc15, #d97706); color: #1f2937; }
+
+    .home-link {
+      position: fixed;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 90;
+      width: 54px;
+      height: 54px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      background: rgba(15, 23, 42, 0.88);
+      border: 2px solid rgba(250, 204, 21, 0.7);
+      color: var(--yellow);
+      text-decoration: none;
+      font-size: 25px;
+      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.35);
+    }
+
+    .status {
+      position: relative;
+      z-index: 20;
+      display: grid;
+      grid-template-columns: minmax(230px, 430px) auto minmax(230px, 430px);
+      gap: 16px;
+      align-items: center;
+      padding: 0 26px;
+    }
+
+    .status.challenge {
+      grid-template-columns: minmax(230px, 430px) auto minmax(230px, 430px);
+    }
+
+    .card {
+      background: var(--panel);
+      border: 2px solid var(--line);
+      border-radius: 18px;
+      padding: 12px 14px;
+      box-shadow: 0 14px 32px rgba(0, 0, 0, 0.28);
+      backdrop-filter: blur(4px);
+    }
+
+    .card.blue { border-color: rgba(56, 189, 248, 0.85); }
+    .card.red { border-color: rgba(251, 113, 133, 0.85); }
+    .card.yellow { border-color: rgba(250, 204, 21, 0.75); }
+
+    .card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      font-weight: 1000;
+      font-size: 18px;
+    }
+
+    .card-head small {
+      color: #cbd5e1;
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .bar {
+      height: 14px;
+      margin-top: 8px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: rgba(2, 6, 23, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .fill { height: 100%; width: 100%; transition: width 200ms ease; }
+    .blue .fill { background: linear-gradient(90deg, var(--blue), var(--blue-light)); }
+    .red .fill { background: linear-gradient(90deg, var(--red-light), var(--red)); }
+    .yellow .fill { background: linear-gradient(90deg, var(--yellow), #f97316); }
+
+    .center-badge {
+      min-width: 92px;
+      height: 54px;
+      display: grid;
+      place-items: center;
+      border-radius: 999px;
+      background: rgba(250, 204, 21, 0.18);
+      border: 2px solid rgba(250, 204, 21, 0.65);
+      color: var(--yellow);
+      font-size: 24px;
+      font-weight: 1000;
+      box-shadow: 0 14px 30px rgba(0,0,0,0.2);
+    }
+
+    .arena {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 160px;
+      bottom: 202px;
+      z-index: 5;
+      overflow: hidden;
+    }
+
+    .arena::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at center, rgba(255,255,255,0.16), transparent 42%);
+      pointer-events: none;
+    }
+
+    .character-strip {
+      position: absolute;
+      left: 50%;
+      bottom: -12px;
+      width: min(560px, 50vw);
+      transform: translateX(-50%);
+      opacity: 0.92;
+      filter: drop-shadow(0 14px 24px rgba(0,0,0,0.22));
+      pointer-events: none;
+    }
+
+    .boss-art {
+      position: absolute;
+      right: 4%;
+      top: 48%;
+      transform: translateY(-50%);
+      font-size: clamp(110px, 18vw, 260px);
+      opacity: 0.16;
+      filter: drop-shadow(0 16px 30px rgba(0,0,0,0.28));
+      pointer-events: none;
+    }
+
+    .problem-card {
+      position: absolute;
+      left: 50%;
+      top: 44%;
+      transform: translate(-50%, -50%);
+      z-index: 8;
+      min-width: 330px;
+      padding: 28px 34px;
+      border-radius: 26px;
+      border: 4px solid rgba(250, 204, 21, 0.85);
+      background: rgba(15, 23, 42, 0.86);
+      text-align: center;
+      box-shadow: 0 24px 52px rgba(0,0,0,0.32);
+    }
+
+    .problem-card .label {
+      color: var(--yellow);
+      font-weight: 1000;
+      letter-spacing: 0;
+      margin-bottom: 10px;
+    }
+
+    .problem {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      font-size: clamp(54px, 8vw, 96px);
+      line-height: 1;
+      font-weight: 1000;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .item {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      min-width: 126px;
+      padding: 12px 16px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      border: 4px solid;
+      color: white;
+      font-size: 31px;
+      font-weight: 1000;
+      font-variant-numeric: tabular-nums;
+      box-shadow: 0 16px 34px rgba(0,0,0,0.36);
+      will-change: transform, top;
+      z-index: 9;
+    }
+
+    .item.attack { background: #7f1d1d; border-color: #ef4444; }
+    .item.defense { background: #0f3f70; border-color: #38bdf8; }
+    .item.critical { background: #713f12; border-color: #facc15; }
+
+    .keypad-row {
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      bottom: 14px;
+      z-index: 25;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      align-items: end;
+    }
+
+    .keypad-row.single {
+      grid-template-columns: minmax(240px, 360px);
+      justify-content: center;
+    }
+
+    .team-pads {
+      display: grid;
+      gap: 10px;
+      align-items: end;
+    }
+
+    .team-pads.size-1 { grid-template-columns: minmax(180px, 250px); }
+    .team-pads.size-2 { grid-template-columns: repeat(2, minmax(150px, 210px)); }
+    .team-pads.size-3 { grid-template-columns: repeat(3, minmax(128px, 180px)); }
+    .team-pads.red-side { justify-content: end; }
+
+    .pad {
+      background: rgba(15, 23, 42, 0.92);
+      border: 2px solid rgba(148, 163, 184, 0.42);
+      border-radius: 16px;
+      padding: 8px;
+      box-shadow: 0 16px 34px rgba(0,0,0,0.3);
+    }
+
+    .pad.blue { border-color: rgba(56, 189, 248, 0.78); }
+    .pad.red { border-color: rgba(251, 113, 133, 0.78); }
+    .pad.solo { border-color: rgba(250, 204, 21, 0.78); }
+
+    .buffer {
+      height: 36px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 7px;
+      background: #020617;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      color: var(--yellow);
+      font-size: 24px;
+      font-weight: 1000;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .keys {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+    }
+
+    .key {
+      height: 39px;
+      border-radius: 10px;
+      background: #334155;
+      color: white;
+      font-weight: 1000;
+      font-size: 19px;
+      box-shadow: inset 0 -2px rgba(0,0,0,0.28);
+    }
+
+    .key:active { transform: translateY(1px) scale(0.98); }
+    .key.del { background: #991b1b; }
+
+    .pad-name {
+      margin-top: 6px;
+      text-align: center;
+      color: #cbd5e1;
+      font-size: 12px;
+      font-weight: 1000;
+    }
+
+    .effect {
+      position: absolute;
+      z-index: 60;
+      transform: translate(-50%, -50%);
+      font-size: 34px;
+      font-weight: 1000;
+      text-shadow: 0 4px 0 rgba(0,0,0,0.65);
+      animation: rise 900ms ease-out forwards;
+      pointer-events: none;
+    }
+
+    @keyframes rise {
+      0% { opacity: 0; transform: translate(-50%, -20%) scale(0.5); }
+      20% { opacity: 1; transform: translate(-50%, -62%) scale(1.15); }
+      100% { opacity: 0; transform: translate(-50%, -150%) scale(1); }
+    }
+
+    .menu {
+      position: absolute;
+      inset: 0;
+      z-index: 80;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 28px;
+      background:
+        linear-gradient(rgba(2, 6, 23, 0.55), rgba(2, 6, 23, 0.7)),
+        url("assets/gugudan/arena-bg.png");
+      background-size: cover;
+      background-position: center;
+    }
+
+    .menu-inner {
+      width: min(1100px, 100%);
+      display: grid;
+      gap: 18px;
+      justify-items: center;
+    }
+
+    .brand { text-align: center; }
+    .brand h2 {
+      margin: 0;
+      font-size: clamp(46px, 8vw, 84px);
+      line-height: 1;
+      font-weight: 1000;
+      color: white;
+      text-shadow: 0 5px 0 rgba(0,0,0,0.26);
+    }
+    .brand p {
+      margin: 8px 0 0;
+      color: #e2e8f0;
+      font-weight: 1000;
+    }
+
+    .mode-grid {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    .mode-card {
+      min-height: 306px;
+      padding: 20px;
+      border-radius: 24px;
+      border: 4px solid rgba(255,255,255,0.22);
+      background: rgba(15, 23, 42, 0.82);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 11px;
+      text-align: center;
+      box-shadow: 0 22px 48px rgba(0,0,0,0.32);
+      backdrop-filter: blur(5px);
+    }
+
+    .mode-card.raid { border-color: rgba(139, 92, 246, 0.9); }
+    .mode-card.battle { border-color: rgba(251, 113, 133, 0.9); }
+    .mode-card.challenge { border-color: rgba(34, 197, 94, 0.9); }
+
+    .mode-icon { font-size: 56px; line-height: 1; }
+    .mode-title { font-size: 24px; font-weight: 1000; }
+    .mode-desc { min-height: 43px; color: #cbd5e1; font-size: 14px; line-height: 1.45; font-weight: 850; }
+
+    .segmented {
+      width: 100%;
+      display: grid;
+      gap: 8px;
+      margin-top: 4px;
+    }
+    .segmented.three { grid-template-columns: repeat(3, 1fr); }
+    .segmented button {
+      height: 43px;
+      border-radius: 12px;
+      background: #0f172a;
+      color: #cbd5e1;
+      border: 2px solid rgba(255,255,255,0.1);
+      font-weight: 1000;
+    }
+    .segmented button.active {
+      color: #172033;
+      background: var(--yellow);
+      border-color: var(--yellow);
+    }
+
+    .ranking {
+      width: min(560px, 92vw);
+      max-height: 76vh;
+      overflow: auto;
+      padding: 24px;
+      border-radius: 24px;
+      border: 3px solid rgba(250, 204, 21, 0.72);
+      background: rgba(15, 23, 42, 0.94);
+      box-shadow: 0 24px 58px rgba(0,0,0,0.44);
+    }
+    .ranking h2 { margin: 0 0 12px; font-size: 36px; text-align: center; }
+    .rank-row {
+      display: grid;
+      grid-template-columns: 42px 1fr auto;
+      gap: 10px;
+      align-items: center;
+      padding: 10px 12px;
+      margin-top: 8px;
+      border-radius: 12px;
+      background: rgba(51, 65, 85, 0.72);
+      font-weight: 900;
+    }
+
+    .save-row {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      margin: 16px 0;
+    }
+    .save-row input {
+      width: 190px;
+      min-height: 44px;
+      padding: 0 12px;
+      border-radius: 12px;
+      border: 2px solid rgba(255,255,255,0.14);
+      background: #020617;
+      color: white;
+      text-align: center;
+      font-weight: 900;
+    }
+
+    .message {
+      min-height: 26px;
+      color: var(--yellow);
+      font-weight: 1000;
+      text-align: center;
+    }
+
+    .gameover-panel {
+      width: min(640px, 92vw);
+      padding: 30px;
+      border-radius: 24px;
+      background: rgba(15, 23, 42, 0.94);
+      border: 3px solid rgba(250, 204, 21, 0.72);
+      text-align: center;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.45);
+    }
+    .gameover-panel h2 {
+      margin: 0 0 10px;
+      font-size: clamp(36px, 6vw, 62px);
+      font-weight: 1000;
+    }
+    .gameover-panel p { margin: 0 0 20px; color: #cbd5e1; font-weight: 900; }
+
+    @media (max-width: 1120px) {
+      .app { min-height: 730px; }
+      .topbar { height: 84px; padding: 10px 18px; grid-template-columns: 150px 1fr 150px; }
+      .status { padding: 0 18px; grid-template-columns: 1fr 76px 1fr; }
+      .arena { top: 146px; bottom: 268px; }
+      .keypad-row { grid-template-columns: 1fr; gap: 10px; }
+      .team-pads, .team-pads.size-1, .team-pads.size-2, .team-pads.size-3 {
+        grid-template-columns: repeat(3, minmax(112px, 1fr));
+        justify-content: stretch;
+      }
+      .mode-grid { grid-template-columns: 1fr; max-width: 500px; }
+      .mode-card { min-height: 250px; }
+      .key { height: 34px; font-size: 17px; }
+      .buffer { height: 31px; font-size: 20px; }
+    }
+
+    @media (max-width: 720px) {
+      .app { min-height: 780px; }
+      .topbar { grid-template-columns: 72px 1fr 72px; }
+      .top-actions .btn:not(.icon) { display: none; }
+      .title h1 { font-size: 28px; }
+      .title p { display: none; }
+      .status { grid-template-columns: 1fr; gap: 8px; }
+      .center-badge { display: none; }
+      .arena { top: 230px; bottom: 330px; }
+      .item { min-width: 104px; font-size: 24px; padding: 10px 13px; }
+      .team-pads, .team-pads.size-1, .team-pads.size-2, .team-pads.size-3 {
+        grid-template-columns: repeat(2, minmax(112px, 1fr));
+      }
+      .problem-card { min-width: 260px; padding: 20px; }
+      .home-link { width: 48px; height: 48px; border-radius: 14px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app" id="app">
+    <a class="home-link" href="https://hanssam622.github.io/ssamnori/" aria-label="쌤노리 홈">⌂</a>
+
+    <header class="topbar">
+      <button class="btn" id="backBtn" type="button">← 목록</button>
+      <div class="title">
+        <h1 id="mainTitle">⚔️ 구구단파이터</h1>
+        <p id="subtitle">게임을 선택하세요</p>
+      </div>
+      <div class="top-actions">
+        <button class="btn icon" id="fullscreenBtn" aria-label="전체화면" type="button">⛶</button>
+      </div>
+    </header>
+
+    <section class="status" id="status"></section>
+
+    <main class="arena" id="arena">
+      <img class="character-strip" src="assets/gugudan/characters.png" alt="" />
+    </main>
+
+    <section class="keypad-row" id="keypadRow"></section>
+
+    <section class="menu" id="overlay">
+      <div class="menu-inner" id="overlayInner"></div>
+    </section>
+  </div>
+
+  <script>
+    const MAX_HP = 100;
+    const FALL_SPEED = 0.17;
+    const INITIAL_CHALLENGE_TIME = 10;
+    const MIN_CHALLENGE_TIME = 3;
+    const ITEM_TYPES = [
+      { type: "attack", icon: "🔥", damage: 10 },
+      { type: "defense", icon: "🛡️", heal: 15 },
+      { type: "critical", icon: "⚡", damage: 25 }
+    ];
+    const BOSS_STAGES = [
+      { name: "슬라임 킹", hp: 60, speed: 1, emoji: "🟦" },
+      { name: "아이언 골렘", hp: 120, speed: 1.18, emoji: "🪨" },
+      { name: "레드 드래곤", hp: 210, speed: 1.42, emoji: "🐲" }
+    ];
+
+    const state = {
+      mode: "menu",
+      teamSize: 1,
+      challengeType: "unlimited",
+      selectedChallengeType: "unlimited",
+      stage: 0,
+      items: [],
+      players: [],
+      teams: {},
+      boss: null,
+      solo: { hp: MAX_HP, maxHp: MAX_HP, buffer: "", combo: 0 },
+      challenge: {
+        problem: { n1: 2, n2: 1 },
+        time: INITIAL_CHALLENGE_TIME,
+        maxTime: INITIAL_CHALLENGE_TIME,
+        totalTime: 0,
+        level: 1,
+        score: 0,
+        correct: 0,
+        saved: false
+      },
+      rankings: [],
+      lastTime: 0,
+      spawnTimer: 0,
+      raf: null,
+      tick: null
+    };
+
+    const el = {
+      overlay: document.getElementById("overlay"),
+      overlayInner: document.getElementById("overlayInner"),
+      status: document.getElementById("status"),
+      arena: document.getElementById("arena"),
+      keypadRow: document.getElementById("keypadRow"),
+      title: document.getElementById("mainTitle"),
+      subtitle: document.getElementById("subtitle"),
+      backBtn: document.getElementById("backBtn"),
+      fullscreenBtn: document.getElementById("fullscreenBtn")
+    };
+
+    function loadRankings() {
+      try {
+        state.rankings = JSON.parse(localStorage.getItem("gugudan_rankings_html") || "[]");
+      } catch (_) {
+        state.rankings = [];
+      }
+    }
+
+    function saveRankings() {
+      localStorage.setItem("gugudan_rankings_html", JSON.stringify(state.rankings));
+    }
+
+    function showMenu() {
+      stopLoops();
+      state.mode = "menu";
+      state.items = [];
+      state.solo.buffer = "";
+      el.title.textContent = "⚔️ 구구단파이터";
+      el.subtitle.textContent = "게임을 선택하세요";
+      el.status.innerHTML = "";
+      el.keypadRow.innerHTML = "";
+      clearDynamicArena();
+      el.overlay.classList.remove("hidden");
+      el.overlayInner.innerHTML = `
+        <div class="brand">
+          <h2>구구단파이터</h2>
+          <p>MAGIC MULTIPLICATION BATTLE</p>
+        </div>
+        <div class="message" id="menuMessage"></div>
+        <div class="mode-grid">
+          <div class="mode-card raid">
+            <div class="mode-icon">🏰</div>
+            <div class="mode-title">레이드 모드</div>
+            <div class="mode-desc">떨어지는 곱셈을 맞혀 보스를 물리칩니다.</div>
+            <button class="btn primary" data-action="start-raid" type="button">레이드 시작</button>
+          </div>
+          <div class="mode-card battle">
+            <div class="mode-icon">⚔️</div>
+            <div class="mode-title">대결 모드</div>
+            <div class="mode-desc">친구들과 같은 인원끼리 팀 대결을 합니다.</div>
+            <div class="segmented three">
+              <button class="team-option ${state.teamSize === 1 ? "active" : ""}" data-size="1" type="button">1:1</button>
+              <button class="team-option ${state.teamSize === 2 ? "active" : ""}" data-size="2" type="button">2:2</button>
+              <button class="team-option ${state.teamSize === 3 ? "active" : ""}" data-size="3" type="button">3:3</button>
+            </div>
+            <button class="btn red" data-action="start-battle" type="button">대결 시작</button>
+          </div>
+          <div class="mode-card challenge">
+            <div class="mode-icon">⏱️</div>
+            <div class="mode-title">챌린지 모드</div>
+            <div class="mode-desc">시간 안에 많이 맞혀 점수를 올립니다.</div>
+            <div class="segmented three">
+              <button class="challenge-option ${state.selectedChallengeType === "30s" ? "active" : ""}" data-type="30s" type="button">30초</button>
+              <button class="challenge-option ${state.selectedChallengeType === "60s" ? "active" : ""}" data-type="60s" type="button">60초</button>
+              <button class="challenge-option ${state.selectedChallengeType === "unlimited" ? "active" : ""}" data-type="unlimited" type="button">무제한</button>
+            </div>
+            <button class="btn green" data-action="start-challenge" type="button">챌린지 시작</button>
+          </div>
+        </div>
+        <button class="btn yellow" data-action="rankings" type="button">명예의 전당</button>
+      `;
+    }
+
+    function startRaid() {
+      stopLoops();
+      state.mode = "raid";
+      state.stage = 0;
+      state.items = [];
+      state.solo = { hp: MAX_HP, maxHp: MAX_HP, buffer: "", combo: 0 };
+      state.boss = { ...BOSS_STAGES[0] };
+      state.spawnTimer = 9999;
+      el.overlay.classList.add("hidden");
+      el.title.textContent = "🏰 레이드 모드";
+      el.subtitle.textContent = "떨어지는 곱셈을 맞혀 보스를 공격하세요";
+      renderRaid();
+      startFallingLoop();
+    }
+
+    function startBattle() {
+      stopLoops();
+      const maxHp = MAX_HP * state.teamSize;
+      state.mode = "battle";
+      state.items = [];
+      state.teams = {
+        blue: { hp: maxHp, maxHp, players: makePlayers("blue", state.teamSize) },
+        red: { hp: maxHp, maxHp, players: makePlayers("red", state.teamSize) }
+      };
+      state.spawnTimer = 9999;
+      el.overlay.classList.add("hidden");
+      el.title.textContent = "⚔️ 대결 모드";
+      el.subtitle.textContent = `${state.teamSize}:${state.teamSize} 팀전 - 정답을 맞히면 상대 팀을 공격합니다`;
+      renderBattle();
+      startFallingLoop();
+    }
+
+    function startChallenge() {
+      stopLoops();
+      state.mode = "challenge";
+      state.challengeType = state.selectedChallengeType;
+      state.challenge = {
+        problem: makeProblem(),
+        time: INITIAL_CHALLENGE_TIME,
+        maxTime: INITIAL_CHALLENGE_TIME,
+        totalTime: state.selectedChallengeType === "30s" ? 30 : state.selectedChallengeType === "60s" ? 60 : 0,
+        level: 1,
+        score: 0,
+        correct: 0,
+        saved: false
+      };
+      state.solo = { hp: MAX_HP, maxHp: MAX_HP, buffer: "", combo: 0 };
+      el.overlay.classList.add("hidden");
+      el.title.textContent = "⏱️ 챌린지 모드";
+      el.subtitle.textContent = state.challengeType === "unlimited" ? "시간이 줄어드는 문제를 계속 맞혀 보세요" : `${state.challenge.totalTime}초 동안 최대한 많이 맞혀 보세요`;
+      renderChallenge();
+      state.tick = setInterval(challengeTick, 100);
+    }
+
+    function startFallingLoop() {
+      state.lastTime = performance.now();
+      cancelAnimationFrame(state.raf);
+      state.raf = requestAnimationFrame(fallingLoop);
+    }
+
+    function fallingLoop(time) {
+      if (state.mode !== "raid" && state.mode !== "battle") return;
+      const delta = time - state.lastTime;
+      state.lastTime = time;
+      state.spawnTimer += delta;
+      const spawnRate = state.mode === "raid"
+        ? Math.max(760, 1900 - state.stage * 320)
+        : Math.max(720, 1500 - (state.teamSize - 1) * 230);
+      if (state.spawnTimer >= spawnRate) {
+        spawnItem();
+        state.spawnTimer = 0;
+      }
+      const speedMod = state.mode === "raid" ? BOSS_STAGES[state.stage].speed : 1.15;
+      const nextItems = [];
+      let raidHit = false;
+      state.items.forEach((item) => {
+        const y = item.y + FALL_SPEED * speedMod * (delta / 16);
+        if (y > 105) {
+          if (state.mode === "raid") raidHit = true;
+        } else {
+          nextItems.push({ ...item, y });
+        }
+      });
+      state.items = nextItems;
+      if (raidHit) {
+        state.solo.hp = Math.max(0, state.solo.hp - 10);
+        addEffect(22, 74, "-10", "#fb7185");
+        if (state.solo.hp <= 0) return showGameOver("lose");
+        renderStatus();
+      }
+      renderItems();
+      state.raf = requestAnimationFrame(fallingLoop);
+    }
+
+    function challengeTick() {
+      if (state.mode !== "challenge") return;
+      state.challenge.time = Math.max(0, state.challenge.time - 0.1);
+      if (state.challengeType !== "unlimited") {
+        state.challenge.totalTime = Math.max(0, state.challenge.totalTime - 0.1);
+        if (state.challenge.totalTime <= 0) return showGameOver("timeout");
+      }
+      if (state.challenge.time <= 0) {
+        state.solo.hp = Math.max(0, state.solo.hp - 20);
+        addEffect(50, 50, "TIME -20", "#fb7185");
+        if (state.solo.hp <= 0) return showGameOver("lose");
+        nextChallenge(false);
+      }
+      renderChallenge();
+    }
+
+    function spawnItem() {
+      const problem = makeProblem();
+      const roll = Math.random();
+      const type = roll < 0.2 ? ITEM_TYPES[2] : roll < 0.65 ? ITEM_TYPES[0] : ITEM_TYPES[1];
+      state.items.push({
+        id: Date.now() + Math.random(),
+        ...problem,
+        answer: String(problem.n1 * problem.n2),
+        type,
+        x: state.mode === "battle" ? 18 + Math.random() * 64 : 28 + Math.random() * 44,
+        y: -8
+      });
+    }
+
+    function makeProblem() {
+      return {
+        n1: Math.floor(Math.random() * 8) + 2,
+        n2: Math.floor(Math.random() * 9) + 1
+      };
+    }
+
+    function makePlayers(team, count) {
+      return Array.from({ length: count }, (_, index) => ({
+        id: `${team}-${index}`,
+        team,
+        number: index + 1,
+        buffer: "",
+        combo: 0
+      }));
+    }
+
+    function handleInput(playerId, value) {
+      if (state.mode === "challenge") return handleSoloInput(value);
+      if (state.mode === "raid") return handleRaidInput(value);
+      if (state.mode === "battle") return handleBattleInput(playerId, value);
+    }
+
+    function handleSoloInput(value) {
+      if (value === "DEL") {
+        state.solo.buffer = state.solo.buffer.slice(0, -1);
+        return renderChallenge();
+      }
+      state.solo.buffer += value;
+      const answer = String(state.challenge.problem.n1 * state.challenge.problem.n2);
+      if (state.solo.buffer === answer) {
+        nextChallenge(true);
+      } else if (state.solo.buffer.length >= answer.length + 1) {
+        state.solo.buffer = "";
+        addEffect(50, 58, "MISS", "#fb7185");
+      }
+      renderChallenge();
+    }
+
+    function nextChallenge(correct) {
+      if (correct) {
+        const bonus = Math.floor(state.challenge.time) * 10;
+        state.challenge.score += 50 + bonus;
+        state.challenge.correct += 1;
+        state.solo.combo += 1;
+        addEffect(50, 42, `+${50 + bonus}`, "#facc15");
+        if (state.challenge.correct % 3 === 0) {
+          state.challenge.level += 1;
+          state.challenge.maxTime = Math.max(MIN_CHALLENGE_TIME, INITIAL_CHALLENGE_TIME - state.challenge.level * 0.8);
+          addEffect(50, 33, "LEVEL UP", "#4ade80");
+        }
+      }
+      state.challenge.problem = makeProblem();
+      state.challenge.time = state.challenge.maxTime;
+      state.solo.buffer = "";
+    }
+
+    function handleRaidInput(value) {
+      if (value === "DEL") {
+        state.solo.buffer = state.solo.buffer.slice(0, -1);
+        return renderRaid();
+      }
+      state.solo.buffer += value;
+      const match = [...state.items].sort((a, b) => b.y - a.y).find((item) => item.answer === state.solo.buffer);
+      if (match) {
+        processRaidItem(match);
+        state.items = state.items.filter((item) => item.id !== match.id);
+        state.solo.buffer = "";
+      } else if (state.solo.buffer.length >= 3) {
+        state.solo.buffer = "";
+        addEffect(25, 74, "MISS", "#fb7185");
+      }
+      renderRaid();
+    }
+
+    function processRaidItem(item) {
+      if (item.type.type === "defense") {
+        state.solo.hp = Math.min(state.solo.maxHp, state.solo.hp + item.type.heal);
+        addEffect(24, 50, `+${item.type.heal}`, "#4ade80");
+      } else {
+        state.boss.hp = Math.max(0, state.boss.hp - item.type.damage);
+        addEffect(78, 48, `-${item.type.damage}`, item.type.type === "critical" ? "#facc15" : "#fb7185");
+        if (state.boss.hp <= 0) {
+          if (state.stage >= BOSS_STAGES.length - 1) {
+            showGameOver("win");
+          } else {
+            state.stage += 1;
+            state.boss = { ...BOSS_STAGES[state.stage] };
+            state.items = [];
+            addEffect(50, 45, "NEXT BOSS", "#facc15");
+          }
+        }
+      }
+    }
+
+    function handleBattleInput(playerId, value) {
+      const player = [...state.teams.blue.players, ...state.teams.red.players].find((p) => p.id === playerId);
+      if (!player) return;
+      if (value === "DEL") {
+        player.buffer = player.buffer.slice(0, -1);
+        return renderBattle();
+      }
+      player.buffer += value;
+      const match = [...state.items].sort((a, b) => b.y - a.y).find((item) => item.answer === player.buffer);
+      if (match) {
+        processBattleItem(player, match);
+        state.items = state.items.filter((item) => item.id !== match.id);
+        player.buffer = "";
+      } else if (player.buffer.length >= 3) {
+        player.buffer = "";
+        addEffect(player.team === "blue" ? 22 : 78, 76, "MISS", "#fb7185");
+      }
+      renderBattle();
+    }
+
+    function processBattleItem(player, item) {
+      const own = state.teams[player.team];
+      const enemyKey = player.team === "blue" ? "red" : "blue";
+      const enemy = state.teams[enemyKey];
+      player.combo += 1;
+      if (item.type.type === "defense") {
+        own.hp = Math.min(own.maxHp, own.hp + item.type.heal);
+        addEffect(player.team === "blue" ? 23 : 77, 48, `+${item.type.heal}`, "#4ade80");
+      } else {
+        enemy.hp = Math.max(0, enemy.hp - item.type.damage);
+        addEffect(player.team === "blue" ? 77 : 23, 48, `-${item.type.damage}`, item.type.type === "critical" ? "#facc15" : "#fb7185");
+        if (enemy.hp <= 0) setTimeout(() => showGameOver(player.team), 160);
+      }
+    }
+
+    function showGameOver(result) {
+      stopLoops();
+      const previousMode = state.mode;
+      state.mode = "gameover";
+      let title = "게임 종료";
+      let detail = "";
+      if (previousMode === "battle") {
+        title = result === "blue" ? "블루팀 승리!" : "레드팀 승리!";
+        detail = `${state.teamSize}:${state.teamSize} 대결이 끝났습니다.`;
+      } else if (previousMode === "raid") {
+        title = result === "win" ? "레이드 성공!" : "레이드 실패";
+        detail = result === "win" ? "모든 보스를 물리쳤습니다." : "체력이 모두 떨어졌습니다.";
+      } else {
+        title = "챌린지 종료";
+        detail = `점수 ${state.challenge.score.toLocaleString()} · 레벨 ${state.challenge.level}`;
+      }
+      el.overlay.classList.remove("hidden");
+      el.overlayInner.innerHTML = `
+        <div class="gameover-panel">
+          <h2>${title}</h2>
+          <p>${detail}</p>
+          ${previousMode === "challenge" ? `
+            <div class="save-row">
+              <input id="rankName" maxlength="8" placeholder="이름" />
+              <button class="btn yellow" data-action="save-rank" type="button">기록</button>
+            </div>
+          ` : ""}
+          <button class="btn primary" data-action="retry" data-mode="${previousMode}" type="button">다시 하기</button>
+          <button class="btn" data-action="menu" type="button" style="margin-left:8px">목록으로</button>
+        </div>
+      `;
+    }
+
+    function retry(mode) {
+      if (mode === "raid") startRaid();
+      else if (mode === "battle") startBattle();
+      else if (mode === "challenge") startChallenge();
+      else showMenu();
+    }
+
+    function saveRank() {
+      const input = document.getElementById("rankName");
+      const name = (input?.value || "").trim();
+      if (!name || state.challenge.saved) return;
+      state.rankings.push({
+        id: Date.now(),
+        name,
+        score: state.challenge.score,
+        level: state.challenge.level,
+        type: state.challengeType,
+        date: new Date().toLocaleDateString("ko-KR")
+      });
+      state.challenge.saved = true;
+      saveRankings();
+      showRankings();
+    }
+
+    function showRankings() {
+      stopLoops();
+      state.mode = "rankings";
+      const rows = [...state.rankings]
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 10)
+        .map((rank, index) => `
+          <div class="rank-row">
+            <span>${index + 1}</span>
+            <span>${rank.name}<br><small>${rank.type || "unlimited"} · ${rank.date}</small></span>
+            <span>${rank.score.toLocaleString()}</span>
+          </div>
+        `).join("");
+      el.overlay.classList.remove("hidden");
+      el.overlayInner.innerHTML = `
+        <div class="ranking">
+          <h2>🏆 명예의 전당</h2>
+          ${rows || `<div class="message">아직 기록이 없습니다.</div>`}
+          <div style="text-align:center;margin-top:18px">
+            <button class="btn" data-action="menu" type="button">목록으로</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderRaid() {
+      renderStatus();
+      renderItems();
+      renderSoloPad();
+      renderBossArt();
+    }
+
+    function renderBattle() {
+      renderStatus();
+      renderItems();
+      renderBattlePads();
+      clearProblemCard();
+      clearBossArt();
+    }
+
+    function renderChallenge() {
+      renderStatus();
+      renderProblemCard();
+      renderSoloPad();
+      clearBossArt();
+    }
+
+    function renderStatus() {
+      if (state.mode === "raid") {
+        el.status.className = "status";
+        el.status.innerHTML = `
+          <div class="card blue"><div class="card-head"><span>🧙 플레이어</span><small>${Math.ceil(state.solo.hp)} / ${state.solo.maxHp}</small></div><div class="bar"><div class="fill" style="width:${state.solo.hp / state.solo.maxHp * 100}%"></div></div></div>
+          <div class="center-badge">STAGE ${state.stage + 1}</div>
+          <div class="card red"><div class="card-head"><span>${state.boss.name}</span><small>${Math.ceil(state.boss.hp)} / ${state.boss.hp <= 0 ? BOSS_STAGES[state.stage].hp : BOSS_STAGES[state.stage].hp}</small></div><div class="bar"><div class="fill" style="width:${state.boss.hp / BOSS_STAGES[state.stage].hp * 100}%"></div></div></div>
+        `;
+      } else if (state.mode === "battle") {
+        const blue = state.teams.blue;
+        const red = state.teams.red;
+        el.status.className = "status";
+        el.status.innerHTML = `
+          <div class="card blue"><div class="card-head"><span>🔵 블루팀</span><small>${state.teamSize}명 · ${Math.ceil(blue.hp)} / ${blue.maxHp}</small></div><div class="bar"><div class="fill" style="width:${blue.hp / blue.maxHp * 100}%"></div></div></div>
+          <div class="center-badge">VS</div>
+          <div class="card red"><div class="card-head"><span>레드팀 🔴</span><small>${state.teamSize}명 · ${Math.ceil(red.hp)} / ${red.maxHp}</small></div><div class="bar"><div class="fill" style="width:${red.hp / red.maxHp * 100}%"></div></div></div>
+        `;
+      } else if (state.mode === "challenge") {
+        const c = state.challenge;
+        const totalLabel = state.challengeType === "unlimited" ? "무제한" : `${Math.ceil(c.totalTime)}초`;
+        el.status.className = "status challenge";
+        el.status.innerHTML = `
+          <div class="card blue"><div class="card-head"><span>❤️ 체력</span><small>${Math.ceil(state.solo.hp)} / ${state.solo.maxHp}</small></div><div class="bar"><div class="fill" style="width:${state.solo.hp / state.solo.maxHp * 100}%"></div></div></div>
+          <div class="center-badge">${c.score}</div>
+          <div class="card yellow"><div class="card-head"><span>⏱️ ${totalLabel}</span><small>Lv.${c.level}</small></div><div class="bar"><div class="fill" style="width:${c.time / c.maxTime * 100}%"></div></div></div>
+        `;
+      }
+    }
+
+    function renderItems() {
+      el.arena.querySelectorAll(".item").forEach((node) => node.remove());
+      state.items.forEach((item) => {
+        const node = document.createElement("div");
+        node.className = `item ${item.type.type}`;
+        node.style.left = `${item.x}%`;
+        node.style.top = `${item.y}%`;
+        node.innerHTML = `<span>${item.type.icon}</span><span>${item.n1}×${item.n2}</span>`;
+        el.arena.appendChild(node);
+      });
+    }
+
+    function renderProblemCard() {
+      clearProblemCard();
+      const card = document.createElement("div");
+      card.className = "problem-card";
+      card.innerHTML = `
+        <div class="label">CHALLENGE</div>
+        <div class="problem"><span>${state.challenge.problem.n1}</span><span style="color:var(--yellow)">×</span><span>${state.challenge.problem.n2}</span></div>
+      `;
+      el.arena.appendChild(card);
+    }
+
+    function renderBossArt() {
+      clearBossArt();
+      const boss = document.createElement("div");
+      boss.className = "boss-art";
+      boss.textContent = state.boss.emoji;
+      el.arena.appendChild(boss);
+      clearProblemCard();
+    }
+
+    function clearProblemCard() {
+      el.arena.querySelectorAll(".problem-card").forEach((node) => node.remove());
+    }
+
+    function clearBossArt() {
+      el.arena.querySelectorAll(".boss-art").forEach((node) => node.remove());
+    }
+
+    function clearDynamicArena() {
+      el.arena.querySelectorAll(".item,.problem-card,.boss-art").forEach((node) => node.remove());
+    }
+
+    function renderSoloPad() {
+      el.keypadRow.className = "keypad-row single";
+      el.keypadRow.innerHTML = `<div class="team-pads size-1">${padHtml({ id: "solo", team: "solo", number: 1, buffer: state.solo.buffer }, "PLAYER")}</div>`;
+    }
+
+    function renderBattlePads() {
+      el.keypadRow.className = "keypad-row";
+      el.keypadRow.innerHTML = `
+        <div class="team-pads blue-side size-${state.teamSize}">
+          ${state.teams.blue.players.map((p) => padHtml(p, `BLUE ${p.number}`)).join("")}
+        </div>
+        <div class="team-pads red-side size-${state.teamSize}">
+          ${state.teams.red.players.map((p) => padHtml(p, `RED ${p.number}`)).join("")}
+        </div>
+      `;
+    }
+
+    function padHtml(player, label) {
+      return `
+        <div class="pad ${player.team}">
+          <div class="buffer">${player.buffer || "&nbsp;"}</div>
+          <div class="keys">
+            ${[1,2,3,4,5,6,7,8,9,"DEL",0].map((key) => `<button class="key ${key === "DEL" ? "del" : ""}" data-player="${player.id}" data-key="${key}" type="button">${key === "DEL" ? "←" : key}</button>`).join("")}
+          </div>
+          <div class="pad-name">${label}</div>
+        </div>
+      `;
+    }
+
+    function addEffect(x, y, text, color) {
+      const node = document.createElement("div");
+      node.className = "effect";
+      node.style.left = `${x}%`;
+      node.style.top = `${y}%`;
+      node.style.color = color;
+      node.textContent = text;
+      document.getElementById("app").appendChild(node);
+      setTimeout(() => node.remove(), 920);
+    }
+
+    function stopLoops() {
+      cancelAnimationFrame(state.raf);
+      clearInterval(state.tick);
+      state.raf = null;
+      state.tick = null;
+    }
+
+    document.addEventListener("pointerdown", (event) => {
+      const key = event.target.closest(".key");
+      if (!key) return;
+      event.preventDefault();
+      handleInput(key.dataset.player, key.dataset.key);
+    }, { passive: false });
+
+    el.overlay.addEventListener("click", (event) => {
+      const action = event.target.closest("[data-action]");
+      if (!action) return;
+      const value = action.dataset.action;
+      if (value === "start-raid") startRaid();
+      if (value === "start-battle") startBattle();
+      if (value === "start-challenge") startChallenge();
+      if (value === "rankings") showRankings();
+      if (value === "menu") showMenu();
+      if (value === "retry") retry(action.dataset.mode);
+      if (value === "save-rank") saveRank();
+    });
+
+    el.overlay.addEventListener("click", (event) => {
+      const team = event.target.closest(".team-option");
+      if (team) {
+        state.teamSize = Number(team.dataset.size);
+        showMenu();
+      }
+      const challenge = event.target.closest(".challenge-option");
+      if (challenge) {
+        state.selectedChallengeType = challenge.dataset.type;
+        showMenu();
+      }
+    });
+
+    el.backBtn.addEventListener("click", showMenu);
+    el.fullscreenBtn.addEventListener("click", async () => {
+      try {
+        if (!document.fullscreenElement) await document.documentElement.requestFullscreen();
+        else await document.exitFullscreen();
+      } catch (_) {}
+    });
+
+    loadRankings();
+    showMenu();
+  </script>
+</body>
+</html>

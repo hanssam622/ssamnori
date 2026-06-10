@@ -1,5 +1,27 @@
 [
   {
+    "id": "gugudan-fighter",
+    "title": "구구단파이터",
+    "category": "web-game",
+    "badge": "웹게임",
+    "thumbnail": "assets/thumbnails/gugudan.png",
+    "description": "구구단 문제를 빠르게 풀며 몬스터와 대결하는 전자칠판용 곱셈 연습 게임입니다.",
+    "actions": [
+      {
+        "type": "play",
+        "label": "바로 플레이",
+        "url": "games/gugudan/index.html",
+        "downloadKey": ""
+      },
+      {
+        "type": "external",
+        "label": "새 창",
+        "url": "games/gugudan/index.html",
+        "downloadKey": ""
+      }
+    ]
+  },
+  {
     "id": "calcman",
     "title": "연산맨",
     "category": "web-game",
