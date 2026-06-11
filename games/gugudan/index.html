@@ -232,17 +232,6 @@
       pointer-events: none;
     }
 
-    .boss-art {
-      position: absolute;
-      right: 4%;
-      top: 48%;
-      transform: translateY(-50%);
-      font-size: clamp(110px, 18vw, 260px);
-      opacity: 0.16;
-      filter: drop-shadow(0 16px 30px rgba(0,0,0,0.28));
-      pointer-events: none;
-    }
-
     .problem-card {
       position: absolute;
       left: 50%;
@@ -319,14 +308,16 @@
 
     .team-pads {
       display: grid;
-      gap: 10px;
+      gap: 16px;
       align-items: end;
     }
 
     .team-pads.size-1 { grid-template-columns: minmax(180px, 250px); }
-    .team-pads.size-2 { grid-template-columns: repeat(2, minmax(150px, 210px)); }
-    .team-pads.size-3 { grid-template-columns: repeat(3, minmax(128px, 180px)); }
+    .team-pads.size-2 { grid-template-columns: repeat(2, minmax(150px, 214px)); }
+    .team-pads.size-3 { grid-template-columns: repeat(3, minmax(128px, 184px)); }
+    .team-pads.size-4, .team-pads.size-5, .team-pads.size-6 { grid-template-columns: repeat(3, minmax(128px, 178px)); }
     .team-pads.red-side { justify-content: end; }
+    .team-pads.challenge-side { justify-content: center; }
 
     .pad {
       background: rgba(15, 23, 42, 0.92);
@@ -334,11 +325,22 @@
       border-radius: 16px;
       padding: 8px;
       box-shadow: 0 16px 34px rgba(0,0,0,0.3);
+      transition: transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease;
     }
 
     .pad.blue { border-color: rgba(56, 189, 248, 0.78); }
     .pad.red { border-color: rgba(251, 113, 133, 0.78); }
     .pad.solo { border-color: rgba(250, 204, 21, 0.78); }
+
+    .pad.flash {
+      animation: pad-flash 360ms ease-out;
+    }
+
+    @keyframes pad-flash {
+      0% { transform: scale(1); box-shadow: 0 16px 34px rgba(0,0,0,0.3); }
+      35% { transform: scale(1.045); box-shadow: 0 0 0 4px rgba(250,204,21,0.8), 0 0 34px rgba(250,204,21,0.8); border-color: var(--yellow); }
+      100% { transform: scale(1); box-shadow: 0 16px 34px rgba(0,0,0,0.3); }
+    }
 
     .buffer {
       height: 36px;
@@ -398,6 +400,20 @@
       100% { opacity: 0; transform: translate(-50%, -150%) scale(1); }
     }
 
+    .projectile {
+      position: absolute;
+      z-index: 65;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: radial-gradient(circle at 35% 30%, #fff7ad, #facc15 42%, #f97316 80%);
+      box-shadow: 0 0 20px rgba(250, 204, 21, 0.85);
+      pointer-events: none;
+      transition: transform 260ms cubic-bezier(.15,.8,.25,1), opacity 260ms ease;
+    }
+
     .menu {
       position: absolute;
       inset: 0;
@@ -438,7 +454,7 @@
     .mode-grid {
       width: 100%;
       display: grid;
-      grid-template-columns: repeat(3, minmax(220px, 1fr));
+      grid-template-columns: repeat(2, minmax(240px, 1fr));
       gap: 16px;
     }
 
@@ -459,7 +475,6 @@
       backdrop-filter: blur(5px);
     }
 
-    .mode-card.raid { border-color: rgba(139, 92, 246, 0.9); }
     .mode-card.battle { border-color: rgba(251, 113, 133, 0.9); }
     .mode-card.challenge { border-color: rgba(34, 197, 94, 0.9); }
 
@@ -474,6 +489,7 @@
       margin-top: 4px;
     }
     .segmented.three { grid-template-columns: repeat(3, 1fr); }
+    .segmented.six { grid-template-columns: repeat(6, 1fr); }
     .segmented button {
       height: 43px;
       border-radius: 12px;
@@ -557,8 +573,8 @@
       .topbar { height: 84px; padding: 10px 18px; grid-template-columns: 150px 1fr 150px; }
       .status { padding: 0 18px; grid-template-columns: 1fr 76px 1fr; }
       .arena { top: 146px; bottom: 268px; }
-      .keypad-row { grid-template-columns: 1fr; gap: 10px; }
-      .team-pads, .team-pads.size-1, .team-pads.size-2, .team-pads.size-3 {
+      .keypad-row { grid-template-columns: 1fr; gap: 14px; }
+      .team-pads, .team-pads.size-1, .team-pads.size-2, .team-pads.size-3, .team-pads.size-4, .team-pads.size-5, .team-pads.size-6 {
         grid-template-columns: repeat(3, minmax(112px, 1fr));
         justify-content: stretch;
       }
@@ -578,9 +594,10 @@
       .center-badge { display: none; }
       .arena { top: 230px; bottom: 330px; }
       .item { min-width: 104px; font-size: 24px; padding: 10px 13px; }
-      .team-pads, .team-pads.size-1, .team-pads.size-2, .team-pads.size-3 {
+      .team-pads, .team-pads.size-1, .team-pads.size-2, .team-pads.size-3, .team-pads.size-4, .team-pads.size-5, .team-pads.size-6 {
         grid-template-columns: repeat(2, minmax(112px, 1fr));
       }
+      .segmented.six { grid-template-columns: repeat(3, 1fr); }
       .problem-card { min-width: 260px; padding: 20px; }
       .home-link { width: 48px; height: 48px; border-radius: 14px; }
     }
@@ -624,23 +641,19 @@
       { type: "defense", icon: "🛡️", heal: 15 },
       { type: "critical", icon: "⚡", damage: 25 }
     ];
-    const BOSS_STAGES = [
-      { name: "슬라임 킹", hp: 60, speed: 1, emoji: "🟦" },
-      { name: "아이언 골렘", hp: 120, speed: 1.18, emoji: "🪨" },
-      { name: "레드 드래곤", hp: 210, speed: 1.42, emoji: "🐲" }
-    ];
 
     const state = {
       mode: "menu",
       teamSize: 1,
+      challengePlayerCount: 1,
       challengeType: "unlimited",
       selectedChallengeType: "unlimited",
       stage: 0,
       items: [],
       players: [],
       teams: {},
-      boss: null,
       solo: { hp: MAX_HP, maxHp: MAX_HP, buffer: "", combo: 0 },
+      challengePlayers: [],
       challenge: {
         problem: { n1: 2, n2: 1 },
         time: INITIAL_CHALLENGE_TIME,
@@ -655,7 +668,8 @@
       lastTime: 0,
       spawnTimer: 0,
       raf: null,
-      tick: null
+      tick: null,
+      audio: null
     };
 
     const el = {
@@ -687,6 +701,7 @@
       state.mode = "menu";
       state.items = [];
       state.solo.buffer = "";
+      state.challengePlayers = [];
       el.title.textContent = "⚔️ 구구단파이터";
       el.subtitle.textContent = "게임을 선택하세요";
       el.status.innerHTML = "";
@@ -700,12 +715,6 @@
         </div>
         <div class="message" id="menuMessage"></div>
         <div class="mode-grid">
-          <div class="mode-card raid">
-            <div class="mode-icon">🏰</div>
-            <div class="mode-title">레이드 모드</div>
-            <div class="mode-desc">떨어지는 곱셈을 맞혀 보스를 물리칩니다.</div>
-            <button class="btn primary" data-action="start-raid" type="button">레이드 시작</button>
-          </div>
           <div class="mode-card battle">
             <div class="mode-icon">⚔️</div>
             <div class="mode-title">대결 모드</div>
@@ -726,26 +735,14 @@
               <button class="challenge-option ${state.selectedChallengeType === "60s" ? "active" : ""}" data-type="60s" type="button">60초</button>
               <button class="challenge-option ${state.selectedChallengeType === "unlimited" ? "active" : ""}" data-type="unlimited" type="button">무제한</button>
             </div>
+            <div class="segmented six" aria-label="챌린지 인원 선택">
+              ${[1,2,3,4,5,6].map((count) => `<button class="challenge-count-option ${state.challengePlayerCount === count ? "active" : ""}" data-count="${count}" type="button">${count}명</button>`).join("")}
+            </div>
             <button class="btn green" data-action="start-challenge" type="button">챌린지 시작</button>
           </div>
         </div>
         <button class="btn yellow" data-action="rankings" type="button">명예의 전당</button>
       `;
-    }
-
-    function startRaid() {
-      stopLoops();
-      state.mode = "raid";
-      state.stage = 0;
-      state.items = [];
-      state.solo = { hp: MAX_HP, maxHp: MAX_HP, buffer: "", combo: 0 };
-      state.boss = { ...BOSS_STAGES[0] };
-      state.spawnTimer = 9999;
-      el.overlay.classList.add("hidden");
-      el.title.textContent = "🏰 레이드 모드";
-      el.subtitle.textContent = "떨어지는 곱셈을 맞혀 보스를 공격하세요";
-      renderRaid();
-      startFallingLoop();
     }
 
     function startBattle() {
@@ -780,9 +777,16 @@
         saved: false
       };
       state.solo = { hp: MAX_HP, maxHp: MAX_HP, buffer: "", combo: 0 };
+      state.challengePlayers = makePlayers("solo", state.challengePlayerCount).map((player) => ({
+        ...player,
+        id: `challenge-${player.number}`,
+        label: `PLAYER ${player.number}`
+      }));
       el.overlay.classList.add("hidden");
       el.title.textContent = "⏱️ 챌린지 모드";
-      el.subtitle.textContent = state.challengeType === "unlimited" ? "시간이 줄어드는 문제를 계속 맞혀 보세요" : `${state.challenge.totalTime}초 동안 최대한 많이 맞혀 보세요`;
+      el.subtitle.textContent = state.challengeType === "unlimited"
+        ? `${state.challengePlayerCount}명이 함께 시간 문제를 계속 맞혀 보세요`
+        : `${state.challengePlayerCount}명이 ${state.challenge.totalTime}초 동안 최대한 많이 맞혀 보세요`;
       renderChallenge();
       state.tick = setInterval(challengeTick, 100);
     }
@@ -794,35 +798,18 @@
     }
 
     function fallingLoop(time) {
-      if (state.mode !== "raid" && state.mode !== "battle") return;
+      if (state.mode !== "battle") return;
       const delta = time - state.lastTime;
       state.lastTime = time;
       state.spawnTimer += delta;
-      const spawnRate = state.mode === "raid"
-        ? Math.max(760, 1900 - state.stage * 320)
-        : Math.max(720, 1500 - (state.teamSize - 1) * 230);
+      const spawnRate = Math.max(720, 1500 - (state.teamSize - 1) * 230);
       if (state.spawnTimer >= spawnRate) {
         spawnItem();
         state.spawnTimer = 0;
       }
-      const speedMod = state.mode === "raid" ? BOSS_STAGES[state.stage].speed : 1.15;
-      const nextItems = [];
-      let raidHit = false;
-      state.items.forEach((item) => {
-        const y = item.y + FALL_SPEED * speedMod * (delta / 16);
-        if (y > 105) {
-          if (state.mode === "raid") raidHit = true;
-        } else {
-          nextItems.push({ ...item, y });
-        }
-      });
-      state.items = nextItems;
-      if (raidHit) {
-        state.solo.hp = Math.max(0, state.solo.hp - 10);
-        addEffect(22, 74, "-10", "#fb7185");
-        if (state.solo.hp <= 0) return showGameOver("lose");
-        renderStatus();
-      }
+      state.items = state.items
+        .map((item) => ({ ...item, y: item.y + FALL_SPEED * 1.15 * (delta / 16) }))
+        .filter((item) => item.y < 105);
       renderItems();
       state.raf = requestAnimationFrame(fallingLoop);
     }
@@ -836,11 +823,13 @@
       }
       if (state.challenge.time <= 0) {
         state.solo.hp = Math.max(0, state.solo.hp - 20);
+        playSound("miss");
         addEffect(50, 50, "TIME -20", "#fb7185");
         if (state.solo.hp <= 0) return showGameOver("lose");
         nextChallenge(false);
+        return renderChallenge();
       }
-      renderChallenge();
+      renderStatus();
     }
 
     function spawnItem() {
@@ -852,7 +841,7 @@
         ...problem,
         answer: String(problem.n1 * problem.n2),
         type,
-        x: state.mode === "battle" ? 18 + Math.random() * 64 : 28 + Math.random() * 44,
+        x: 18 + Math.random() * 64,
         y: -8
       });
     }
@@ -875,33 +864,41 @@
     }
 
     function handleInput(playerId, value) {
-      if (state.mode === "challenge") return handleSoloInput(value);
-      if (state.mode === "raid") return handleRaidInput(value);
+      if (state.mode === "challenge") return handleChallengeInput(playerId, value);
       if (state.mode === "battle") return handleBattleInput(playerId, value);
     }
 
-    function handleSoloInput(value) {
+    function handleChallengeInput(playerId, value) {
+      const player = state.challengePlayers.find((p) => p.id === playerId);
+      if (!player) return;
       if (value === "DEL") {
-        state.solo.buffer = state.solo.buffer.slice(0, -1);
+        player.buffer = player.buffer.slice(0, -1);
         return renderChallenge();
       }
-      state.solo.buffer += value;
+      player.buffer += value;
       const answer = String(state.challenge.problem.n1 * state.challenge.problem.n2);
-      if (state.solo.buffer === answer) {
-        nextChallenge(true);
-      } else if (state.solo.buffer.length >= answer.length + 1) {
-        state.solo.buffer = "";
+      if (player.buffer === answer) {
+        const target = getProblemTarget();
+        nextChallenge(true, player);
+        renderChallenge();
+        flashPad(player.id);
+        launchProjectile(player.id, target, "⭐");
+        playSound("correct");
+        return;
+      } else if (player.buffer.length >= answer.length + 1) {
+        player.buffer = "";
+        playSound("miss");
         addEffect(50, 58, "MISS", "#fb7185");
       }
       renderChallenge();
     }
 
-    function nextChallenge(correct) {
+    function nextChallenge(correct, player = null) {
       if (correct) {
         const bonus = Math.floor(state.challenge.time) * 10;
         state.challenge.score += 50 + bonus;
         state.challenge.correct += 1;
-        state.solo.combo += 1;
+        if (player) player.combo += 1;
         addEffect(50, 42, `+${50 + bonus}`, "#facc15");
         if (state.challenge.correct % 3 === 0) {
           state.challenge.level += 1;
@@ -911,45 +908,7 @@
       }
       state.challenge.problem = makeProblem();
       state.challenge.time = state.challenge.maxTime;
-      state.solo.buffer = "";
-    }
-
-    function handleRaidInput(value) {
-      if (value === "DEL") {
-        state.solo.buffer = state.solo.buffer.slice(0, -1);
-        return renderRaid();
-      }
-      state.solo.buffer += value;
-      const match = [...state.items].sort((a, b) => b.y - a.y).find((item) => item.answer === state.solo.buffer);
-      if (match) {
-        processRaidItem(match);
-        state.items = state.items.filter((item) => item.id !== match.id);
-        state.solo.buffer = "";
-      } else if (state.solo.buffer.length >= 3) {
-        state.solo.buffer = "";
-        addEffect(25, 74, "MISS", "#fb7185");
-      }
-      renderRaid();
-    }
-
-    function processRaidItem(item) {
-      if (item.type.type === "defense") {
-        state.solo.hp = Math.min(state.solo.maxHp, state.solo.hp + item.type.heal);
-        addEffect(24, 50, `+${item.type.heal}`, "#4ade80");
-      } else {
-        state.boss.hp = Math.max(0, state.boss.hp - item.type.damage);
-        addEffect(78, 48, `-${item.type.damage}`, item.type.type === "critical" ? "#facc15" : "#fb7185");
-        if (state.boss.hp <= 0) {
-          if (state.stage >= BOSS_STAGES.length - 1) {
-            showGameOver("win");
-          } else {
-            state.stage += 1;
-            state.boss = { ...BOSS_STAGES[state.stage] };
-            state.items = [];
-            addEffect(50, 45, "NEXT BOSS", "#facc15");
-          }
-        }
-      }
+      state.challengePlayers.forEach((p) => { p.buffer = ""; });
     }
 
     function handleBattleInput(playerId, value) {
@@ -962,11 +921,20 @@
       player.buffer += value;
       const match = [...state.items].sort((a, b) => b.y - a.y).find((item) => item.answer === player.buffer);
       if (match) {
+        const target = getItemTarget(match);
+        const icon = match.type.icon;
+        const sound = match.type.type === "defense" ? "heal" : match.type.type === "critical" ? "critical" : "hit";
         processBattleItem(player, match);
         state.items = state.items.filter((item) => item.id !== match.id);
         player.buffer = "";
+        renderBattle();
+        flashPad(player.id);
+        launchProjectile(player.id, target, icon);
+        playSound(sound);
+        return;
       } else if (player.buffer.length >= 3) {
         player.buffer = "";
+        playSound("miss");
         addEffect(player.team === "blue" ? 22 : 78, 76, "MISS", "#fb7185");
       }
       renderBattle();
@@ -996,12 +964,9 @@
       if (previousMode === "battle") {
         title = result === "blue" ? "블루팀 승리!" : "레드팀 승리!";
         detail = `${state.teamSize}:${state.teamSize} 대결이 끝났습니다.`;
-      } else if (previousMode === "raid") {
-        title = result === "win" ? "레이드 성공!" : "레이드 실패";
-        detail = result === "win" ? "모든 보스를 물리쳤습니다." : "체력이 모두 떨어졌습니다.";
       } else {
         title = "챌린지 종료";
-        detail = `점수 ${state.challenge.score.toLocaleString()} · 레벨 ${state.challenge.level}`;
+        detail = `${state.challengePlayerCount}명 · 점수 ${state.challenge.score.toLocaleString()} · 레벨 ${state.challenge.level}`;
       }
       el.overlay.classList.remove("hidden");
       el.overlayInner.innerHTML = `
@@ -1021,8 +986,7 @@
     }
 
     function retry(mode) {
-      if (mode === "raid") startRaid();
-      else if (mode === "battle") startBattle();
+      if (mode === "battle") startBattle();
       else if (mode === "challenge") startChallenge();
       else showMenu();
     }
@@ -1069,37 +1033,21 @@
       `;
     }
 
-    function renderRaid() {
-      renderStatus();
-      renderItems();
-      renderSoloPad();
-      renderBossArt();
-    }
-
     function renderBattle() {
       renderStatus();
       renderItems();
       renderBattlePads();
       clearProblemCard();
-      clearBossArt();
     }
 
     function renderChallenge() {
       renderStatus();
       renderProblemCard();
-      renderSoloPad();
-      clearBossArt();
+      renderChallengePads();
     }
 
     function renderStatus() {
-      if (state.mode === "raid") {
-        el.status.className = "status";
-        el.status.innerHTML = `
-          <div class="card blue"><div class="card-head"><span>🧙 플레이어</span><small>${Math.ceil(state.solo.hp)} / ${state.solo.maxHp}</small></div><div class="bar"><div class="fill" style="width:${state.solo.hp / state.solo.maxHp * 100}%"></div></div></div>
-          <div class="center-badge">STAGE ${state.stage + 1}</div>
-          <div class="card red"><div class="card-head"><span>${state.boss.name}</span><small>${Math.ceil(state.boss.hp)} / ${state.boss.hp <= 0 ? BOSS_STAGES[state.stage].hp : BOSS_STAGES[state.stage].hp}</small></div><div class="bar"><div class="fill" style="width:${state.boss.hp / BOSS_STAGES[state.stage].hp * 100}%"></div></div></div>
-        `;
-      } else if (state.mode === "battle") {
+      if (state.mode === "battle") {
         const blue = state.teams.blue;
         const red = state.teams.red;
         el.status.className = "status";
@@ -1113,7 +1061,7 @@
         const totalLabel = state.challengeType === "unlimited" ? "무제한" : `${Math.ceil(c.totalTime)}초`;
         el.status.className = "status challenge";
         el.status.innerHTML = `
-          <div class="card blue"><div class="card-head"><span>❤️ 체력</span><small>${Math.ceil(state.solo.hp)} / ${state.solo.maxHp}</small></div><div class="bar"><div class="fill" style="width:${state.solo.hp / state.solo.maxHp * 100}%"></div></div></div>
+          <div class="card blue"><div class="card-head"><span>❤️ 체력</span><small>${state.challengePlayerCount}명 · ${Math.ceil(state.solo.hp)} / ${state.solo.maxHp}</small></div><div class="bar"><div class="fill" style="width:${state.solo.hp / state.solo.maxHp * 100}%"></div></div></div>
           <div class="center-badge">${c.score}</div>
           <div class="card yellow"><div class="card-head"><span>⏱️ ${totalLabel}</span><small>Lv.${c.level}</small></div><div class="bar"><div class="fill" style="width:${c.time / c.maxTime * 100}%"></div></div></div>
         `;
@@ -1143,30 +1091,21 @@
       el.arena.appendChild(card);
     }
 
-    function renderBossArt() {
-      clearBossArt();
-      const boss = document.createElement("div");
-      boss.className = "boss-art";
-      boss.textContent = state.boss.emoji;
-      el.arena.appendChild(boss);
-      clearProblemCard();
-    }
-
     function clearProblemCard() {
       el.arena.querySelectorAll(".problem-card").forEach((node) => node.remove());
     }
 
-    function clearBossArt() {
-      el.arena.querySelectorAll(".boss-art").forEach((node) => node.remove());
-    }
-
     function clearDynamicArena() {
-      el.arena.querySelectorAll(".item,.problem-card,.boss-art").forEach((node) => node.remove());
+      el.arena.querySelectorAll(".item,.problem-card").forEach((node) => node.remove());
     }
 
-    function renderSoloPad() {
+    function renderChallengePads() {
       el.keypadRow.className = "keypad-row single";
-      el.keypadRow.innerHTML = `<div class="team-pads size-1">${padHtml({ id: "solo", team: "solo", number: 1, buffer: state.solo.buffer }, "PLAYER")}</div>`;
+      el.keypadRow.innerHTML = `
+        <div class="team-pads challenge-side size-${state.challengePlayerCount}">
+          ${state.challengePlayers.map((p) => padHtml(p, p.label)).join("")}
+        </div>
+      `;
     }
 
     function renderBattlePads() {
@@ -1183,7 +1122,7 @@
 
     function padHtml(player, label) {
       return `
-        <div class="pad ${player.team}">
+        <div class="pad ${player.team}" data-pad-id="${player.id}">
           <div class="buffer">${player.buffer || "&nbsp;"}</div>
           <div class="keys">
             ${[1,2,3,4,5,6,7,8,9,"DEL",0].map((key) => `<button class="key ${key === "DEL" ? "del" : ""}" data-player="${player.id}" data-key="${key}" type="button">${key === "DEL" ? "←" : key}</button>`).join("")}
@@ -1204,6 +1143,93 @@
       setTimeout(() => node.remove(), 920);
     }
 
+    function flashPad(playerId) {
+      const pad = document.querySelector(`[data-pad-id="${playerId}"]`);
+      if (!pad) return;
+      pad.classList.remove("flash");
+      void pad.offsetWidth;
+      pad.classList.add("flash");
+      setTimeout(() => pad.classList.remove("flash"), 380);
+    }
+
+    function getItemTarget(item) {
+      const arenaRect = el.arena.getBoundingClientRect();
+      return {
+        x: arenaRect.left + arenaRect.width * item.x / 100,
+        y: arenaRect.top + arenaRect.height * item.y / 100
+      };
+    }
+
+    function getProblemTarget() {
+      const problem = el.arena.querySelector(".problem-card");
+      const rect = problem ? problem.getBoundingClientRect() : el.arena.getBoundingClientRect();
+      return {
+        x: rect.left + rect.width / 2,
+        y: rect.top + rect.height / 2
+      };
+    }
+
+    function launchProjectile(playerId, target, icon = "⭐") {
+      const pad = document.querySelector(`[data-pad-id="${playerId}"]`);
+      if (!pad) return;
+      const start = pad.getBoundingClientRect();
+      const appRect = document.getElementById("app").getBoundingClientRect();
+      const node = document.createElement("div");
+      node.className = "projectile";
+      node.textContent = icon;
+      const startX = start.left + start.width / 2 - appRect.left;
+      const startY = start.top + start.height * 0.2 - appRect.top;
+      const targetX = target.x - appRect.left;
+      const targetY = target.y - appRect.top;
+      node.style.left = `${startX}px`;
+      node.style.top = `${startY}px`;
+      document.getElementById("app").appendChild(node);
+      requestAnimationFrame(() => {
+        node.style.transform = `translate(${targetX - startX}px, ${targetY - startY}px) scale(0.45)`;
+        node.style.opacity = "0.1";
+      });
+      setTimeout(() => node.remove(), 300);
+    }
+
+    function getAudio() {
+      if (!state.audio) {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return null;
+        state.audio = new AudioContext();
+      }
+      if (state.audio.state === "suspended") state.audio.resume();
+      return state.audio;
+    }
+
+    function playSound(type) {
+      const audio = getAudio();
+      if (!audio) return;
+      const now = audio.currentTime;
+      const osc = audio.createOscillator();
+      const gain = audio.createGain();
+      const filter = audio.createBiquadFilter();
+      filter.type = "lowpass";
+      filter.frequency.value = type === "miss" ? 520 : 1800;
+      osc.type = type === "miss" ? "sawtooth" : "triangle";
+      const base = {
+        correct: 720,
+        hit: 520,
+        heal: 640,
+        critical: 920,
+        miss: 180
+      }[type] || 620;
+      osc.frequency.setValueAtTime(base, now);
+      osc.frequency.exponentialRampToValueAtTime(type === "miss" ? 90 : base * 1.65, now + 0.12);
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.exponentialRampToValueAtTime(type === "critical" ? 0.16 : 0.1, now + 0.012);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.18);
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(audio.destination);
+      osc.start(now);
+      osc.stop(now + 0.2);
+    }
+
     function stopLoops() {
       cancelAnimationFrame(state.raf);
       clearInterval(state.tick);
@@ -1222,7 +1248,6 @@
       const action = event.target.closest("[data-action]");
       if (!action) return;
       const value = action.dataset.action;
-      if (value === "start-raid") startRaid();
       if (value === "start-battle") startBattle();
       if (value === "start-challenge") startChallenge();
       if (value === "rankings") showRankings();
@@ -1240,6 +1265,11 @@
       const challenge = event.target.closest(".challenge-option");
       if (challenge) {
         state.selectedChallengeType = challenge.dataset.type;
+        showMenu();
+      }
+      const challengeCount = event.target.closest(".challenge-count-option");
+      if (challengeCount) {
+        state.challengePlayerCount = Number(challengeCount.dataset.count);
         showMenu();
       }
     });
