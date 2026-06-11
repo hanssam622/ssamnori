@@ -88,6 +88,22 @@
     ]
   },
   {
+    "id": "duckqr",
+    "title": "오리 QR 카메라",
+    "category": "other-program",
+    "badge": "안드로이드",
+    "thumbnail": "assets/thumbnails/duckqr.png",
+    "description": "구형 안드로이드 태블릿에서 QR 코드 링크를 빠르게 열기 위한 단순한 카메라 앱입니다.",
+    "actions": [
+      {
+        "type": "download",
+        "label": "다운로드",
+        "url": "https://drive.google.com/file/d/11tIU1UZplCheH7RYSLjA1rYspp-IvRdd/view?usp=sharing",
+        "downloadKey": ""
+      }
+    ]
+  },
+  {
     "id": "seat",
     "title": "내자리",
     "category": "other-program",
