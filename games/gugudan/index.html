@@ -306,6 +306,11 @@
       justify-content: center;
     }
 
+    .keypad-row.challenge {
+      grid-template-columns: 1fr;
+      justify-content: stretch;
+    }
+
     .team-pads {
       display: grid;
       gap: 16px;
@@ -318,6 +323,32 @@
     .team-pads.size-4, .team-pads.size-5, .team-pads.size-6 { grid-template-columns: repeat(3, minmax(128px, 178px)); }
     .team-pads.red-side { justify-content: end; }
     .team-pads.challenge-side { justify-content: center; }
+
+    .keypad-row.challenge .team-pads.challenge-side {
+      width: 100%;
+      grid-template-columns: repeat(var(--challenge-count, 1), minmax(104px, 1fr));
+      justify-content: stretch;
+      align-items: end;
+    }
+
+    .keypad-row.challenge .pad {
+      padding: 6px;
+    }
+
+    .keypad-row.challenge .buffer {
+      height: 30px;
+      margin-bottom: 5px;
+      font-size: 20px;
+    }
+
+    .keypad-row.challenge .keys {
+      gap: 5px;
+    }
+
+    .keypad-row.challenge .key {
+      height: 32px;
+      font-size: 16px;
+    }
 
     .pad {
       background: rgba(15, 23, 42, 0.92);
@@ -381,6 +412,40 @@
       color: #cbd5e1;
       font-size: 12px;
       font-weight: 1000;
+    }
+
+    .pad-score {
+      margin-bottom: 6px;
+      min-height: 32px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      background: rgba(250, 204, 21, 0.16);
+      border: 2px solid rgba(250, 204, 21, 0.55);
+      color: var(--yellow);
+      font-size: 22px;
+      font-weight: 1000;
+      font-variant-numeric: tabular-nums;
+      text-shadow: 0 2px 0 rgba(0,0,0,0.28);
+    }
+
+    .pad-stats {
+      margin-top: 4px;
+      text-align: center;
+      color: #f8fafc;
+      font-size: 11px;
+      font-weight: 1000;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .pad.out {
+      opacity: 0.48;
+      filter: grayscale(0.7);
+    }
+
+    .pad.done {
+      border-color: rgba(34, 197, 94, 0.9);
+      box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.28), 0 16px 34px rgba(0,0,0,0.3);
     }
 
     .effect {
@@ -578,6 +643,9 @@
         grid-template-columns: repeat(3, minmax(112px, 1fr));
         justify-content: stretch;
       }
+      .keypad-row.challenge .team-pads.challenge-side {
+        grid-template-columns: repeat(var(--challenge-count, 1), minmax(88px, 1fr));
+      }
       .mode-grid { grid-template-columns: 1fr; max-width: 500px; }
       .mode-card { min-height: 250px; }
       .key { height: 34px; font-size: 17px; }
@@ -596,6 +664,10 @@
       .item { min-width: 104px; font-size: 24px; padding: 10px 13px; }
       .team-pads, .team-pads.size-1, .team-pads.size-2, .team-pads.size-3, .team-pads.size-4, .team-pads.size-5, .team-pads.size-6 {
         grid-template-columns: repeat(2, minmax(112px, 1fr));
+      }
+      .keypad-row.challenge .team-pads.challenge-side {
+        grid-template-columns: repeat(var(--challenge-count, 1), minmax(76px, 1fr));
+        gap: 7px;
       }
       .segmented.six { grid-template-columns: repeat(3, 1fr); }
       .problem-card { min-width: 260px; padding: 20px; }
@@ -780,7 +852,10 @@
       state.challengePlayers = makePlayers("solo", state.challengePlayerCount).map((player) => ({
         ...player,
         id: `challenge-${player.number}`,
-        label: `PLAYER ${player.number}`
+        label: `PLAYER ${player.number}`,
+        lives: 5,
+        score: 0,
+        answered: false
       }));
       el.overlay.classList.add("hidden");
       el.title.textContent = "⏱️ 챌린지 모드";
@@ -822,11 +897,17 @@
         if (state.challenge.totalTime <= 0) return showGameOver("timeout");
       }
       if (state.challenge.time <= 0) {
-        state.solo.hp = Math.max(0, state.solo.hp - 20);
+        state.challengePlayers.forEach((player) => {
+          if (player.lives > 0 && !player.answered) {
+            player.lives -= 1;
+            player.answered = true;
+            player.buffer = "";
+          }
+        });
         playSound("miss");
-        addEffect(50, 50, "TIME -20", "#fb7185");
-        if (state.solo.hp <= 0) return showGameOver("lose");
-        nextChallenge(false);
+        addEffect(50, 50, "TIME -1", "#fb7185");
+        if (allChallengePlayersOut()) return showGameOver("lose");
+        nextChallenge();
         return renderChallenge();
       }
       renderStatus();
@@ -871,6 +952,8 @@
     function handleChallengeInput(playerId, value) {
       const player = state.challengePlayers.find((p) => p.id === playerId);
       if (!player) return;
+      if (player.lives <= 0) return;
+      if (player.answered) return;
       if (value === "DEL") {
         player.buffer = player.buffer.slice(0, -1);
         return renderChallenge();
@@ -879,36 +962,69 @@
       const answer = String(state.challenge.problem.n1 * state.challenge.problem.n2);
       if (player.buffer === answer) {
         const target = getProblemTarget();
-        nextChallenge(true, player);
+        resolveChallengePlayer(player, true);
+        const roundComplete = isChallengeRoundComplete();
         renderChallenge();
         flashPad(player.id);
         launchProjectile(player.id, target, "⭐");
         playSound("correct");
+        if (roundComplete) {
+          setTimeout(() => {
+            if (state.mode !== "challenge") return;
+            nextChallenge();
+            renderChallenge();
+          }, 260);
+        }
         return;
       } else if (player.buffer.length >= answer.length + 1) {
         player.buffer = "";
+        player.lives = Math.max(0, player.lives - 1);
+        player.answered = true;
         playSound("miss");
-        addEffect(50, 58, "MISS", "#fb7185");
+        addEffect(50, 58, player.lives > 0 ? "MISS -1" : "OUT", "#fb7185");
+        if (allChallengePlayersOut()) return showGameOver("lose");
+        if (isChallengeRoundComplete()) {
+          nextChallenge();
+          return renderChallenge();
+        }
       }
       renderChallenge();
     }
 
-    function nextChallenge(correct, player = null) {
-      if (correct) {
-        const bonus = Math.floor(state.challenge.time) * 10;
-        state.challenge.score += 50 + bonus;
-        state.challenge.correct += 1;
-        if (player) player.combo += 1;
-        addEffect(50, 42, `+${50 + bonus}`, "#facc15");
-        if (state.challenge.correct % 3 === 0) {
-          state.challenge.level += 1;
-          state.challenge.maxTime = Math.max(MIN_CHALLENGE_TIME, INITIAL_CHALLENGE_TIME - state.challenge.level * 0.8);
-          addEffect(50, 33, "LEVEL UP", "#4ade80");
-        }
+    function resolveChallengePlayer(player, correct) {
+      player.answered = true;
+      player.buffer = "";
+      if (!correct) return;
+      const bonus = Math.floor(state.challenge.time) * 10;
+      const points = 50 + bonus;
+      state.challenge.score += points;
+      state.challenge.correct += 1;
+      player.combo += 1;
+      player.score += points;
+      addEffect(50, 42, `+${points}`, "#facc15");
+    }
+
+    function nextChallenge() {
+      if (state.challenge.correct > 0 && state.challenge.correct % 3 === 0) {
+        state.challenge.level += 1;
+        state.challenge.maxTime = Math.max(MIN_CHALLENGE_TIME, INITIAL_CHALLENGE_TIME - state.challenge.level * 0.8);
+        addEffect(50, 33, "LEVEL UP", "#4ade80");
       }
       state.challenge.problem = makeProblem();
       state.challenge.time = state.challenge.maxTime;
-      state.challengePlayers.forEach((p) => { p.buffer = ""; });
+      state.challengePlayers.forEach((p) => {
+        p.buffer = "";
+        p.answered = false;
+      });
+    }
+
+    function isChallengeRoundComplete() {
+      const activePlayers = state.challengePlayers.filter((player) => player.lives > 0);
+      return activePlayers.length > 0 && activePlayers.every((player) => player.answered);
+    }
+
+    function allChallengePlayersOut() {
+      return state.challengePlayers.length > 0 && state.challengePlayers.every((player) => player.lives <= 0);
     }
 
     function handleBattleInput(playerId, value) {
@@ -966,7 +1082,10 @@
         detail = `${state.teamSize}:${state.teamSize} 대결이 끝났습니다.`;
       } else {
         title = "챌린지 종료";
-        detail = `${state.challengePlayerCount}명 · 점수 ${state.challenge.score.toLocaleString()} · 레벨 ${state.challenge.level}`;
+        const personalScores = state.challengePlayers
+          .map((player) => `${player.label}: ${player.score.toLocaleString()}점`)
+          .join(" · ");
+        detail = `${state.challengePlayerCount}명 · 합계 ${state.challenge.score.toLocaleString()}점 · ${personalScores}`;
       }
       el.overlay.classList.remove("hidden");
       el.overlayInner.innerHTML = `
@@ -1059,10 +1178,11 @@
       } else if (state.mode === "challenge") {
         const c = state.challenge;
         const totalLabel = state.challengeType === "unlimited" ? "무제한" : `${Math.ceil(c.totalTime)}초`;
+        const liveCount = state.challengePlayers.filter((player) => player.lives > 0).length;
         el.status.className = "status challenge";
         el.status.innerHTML = `
-          <div class="card blue"><div class="card-head"><span>❤️ 체력</span><small>${state.challengePlayerCount}명 · ${Math.ceil(state.solo.hp)} / ${state.solo.maxHp}</small></div><div class="bar"><div class="fill" style="width:${state.solo.hp / state.solo.maxHp * 100}%"></div></div></div>
-          <div class="center-badge">${c.score}</div>
+          <div class="card blue"><div class="card-head"><span>❤️ 남은 플레이어</span><small>${liveCount} / ${state.challengePlayerCount}명</small></div><div class="bar"><div class="fill" style="width:${liveCount / state.challengePlayerCount * 100}%"></div></div></div>
+          <div class="center-badge">개인전</div>
           <div class="card yellow"><div class="card-head"><span>⏱️ ${totalLabel}</span><small>Lv.${c.level}</small></div><div class="bar"><div class="fill" style="width:${c.time / c.maxTime * 100}%"></div></div></div>
         `;
       }
@@ -1100,9 +1220,9 @@
     }
 
     function renderChallengePads() {
-      el.keypadRow.className = "keypad-row single";
+      el.keypadRow.className = "keypad-row challenge";
       el.keypadRow.innerHTML = `
-        <div class="team-pads challenge-side size-${state.challengePlayerCount}">
+        <div class="team-pads challenge-side size-${state.challengePlayerCount}" style="--challenge-count:${state.challengePlayerCount}">
           ${state.challengePlayers.map((p) => padHtml(p, p.label)).join("")}
         </div>
       `;
@@ -1121,13 +1241,17 @@
     }
 
     function padHtml(player, label) {
+      const score = player.lives == null ? "" : `<div class="pad-score">${player.score.toLocaleString()}점</div>`;
+      const stats = player.lives == null ? "" : `<div class="pad-stats">❤️ ${"●".repeat(player.lives)}${"○".repeat(5 - player.lives)}</div>`;
       return `
-        <div class="pad ${player.team}" data-pad-id="${player.id}">
+        <div class="pad ${player.team} ${player.lives === 0 ? "out" : ""} ${player.answered && player.lives > 0 ? "done" : ""}" data-pad-id="${player.id}">
+          ${score}
           <div class="buffer">${player.buffer || "&nbsp;"}</div>
           <div class="keys">
             ${[1,2,3,4,5,6,7,8,9,"DEL",0].map((key) => `<button class="key ${key === "DEL" ? "del" : ""}" data-player="${player.id}" data-key="${key}" type="button">${key === "DEL" ? "←" : key}</button>`).join("")}
           </div>
-          <div class="pad-name">${label}</div>
+          <div class="pad-name">${player.answered && player.lives > 0 ? `${label} 완료` : label}</div>
+          ${stats}
         </div>
       `;
     }
