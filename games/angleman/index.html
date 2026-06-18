@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>앵글맨 - 각도 학습 게임</title>
 <meta name="description" content="각도 만들기, 삼각형과 사각형의 각, 실전 각도 재기를 전자칠판에서 즐길 수 있는 학습 게임">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ctext y='50' font-size='48'%3E%F0%9F%93%90%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
@@ -401,40 +402,35 @@ body {
 /* ===== FEEDBACK OVERLAY ===== */
 .feedback-overlay {
   position: absolute;
-  top: 18px;
-  right: 18px;
-  left: auto;
-  bottom: auto;
+  inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 90px;
-  min-height: 54px;
-  padding: 10px 18px;
-  font-size: clamp(26px, 2.6vw, 42px);
-  font-weight: 900;
-  z-index: 10;
+  font-size: clamp(68px, 8vw, 132px);
+  font-weight: 1000;
+  z-index: 30;
   pointer-events: none;
   opacity: 0;
-  transform: translateY(-10px) scale(0.85);
+  transform: scale(0.7);
   transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  border-radius: 999px;
-  letter-spacing: -0.04em;
-  border: 3px solid currentColor;
-  background: rgba(255,255,255,0.92);
-  box-shadow: 0 10px 24px rgba(0,0,0,0.12);
+  letter-spacing: 0;
+  text-shadow: 0 7px 0 rgba(255,255,255,0.95), 0 12px 30px rgba(0,0,0,0.22);
   line-height: 1;
 }
 .feedback-overlay::before {
   content: '';
   position: absolute;
-  inset: -8px;
+  width: min(44%, 190px);
+  aspect-ratio: 1;
   border-radius: 50%;
-  border: 6px solid currentColor;
+  border: 11px solid currentColor;
+  background: rgba(255,255,255,0.82);
+  box-shadow: 0 22px 54px rgba(0,0,0,0.22);
   opacity: 0;
   transform: scale(0.55);
+  z-index: -1;
 }
-.feedback-overlay.show { opacity: 1; transform: translateY(0) scale(1); }
+.feedback-overlay.show { opacity: 1; transform: scale(1); }
 .feedback-overlay.show::before { animation: feedbackRing 0.55s ease both; }
 .feedback-overlay.correct {
   color: #1b8f39;
@@ -2962,17 +2958,17 @@ const PROTRACTOR_ORIGIN_X = 1104.5;
   }
 
   function feedbackText(data, correct) {
-    if (!data) return correct ? 'O' : 'X';
+    if (!data) return correct ? '○' : '×';
     if (data.mode === 'build-angle' && typeof data.selectedAngle === 'number') {
-      return `${correct ? 'O' : 'X'} ${data.selectedAngle}°`;
+      return `${correct ? '○' : '×'} ${data.selectedAngle}°`;
     }
     if (typeof data.input === 'string' && data.input) {
-      return `${correct ? 'O' : 'X'} ${data.input}°`;
+      return `${correct ? '○' : '×'} ${data.input}°`;
     }
     if (correct && typeof data.answer === 'number') {
-      return `O ${data.answer}°`;
+      return `○ ${data.answer}°`;
     }
-    return correct ? 'O' : 'X';
+    return correct ? '○' : '×';
   }
 
   function getHoldMs(data, correct) {
@@ -3235,6 +3231,6 @@ const PROTRACTOR_ORIGIN_X = 1104.5;
 })();
 
 </script>
-<script src="app-override.js?v=20260609-games-update"></script>
+<script src="app-override.js?v=20260619-angleman-update"></script>
 </body>
 </html>

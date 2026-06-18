@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>그래프맨</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ctext y='50' font-size='48'%3E%F0%9F%93%8A%3C/text%3E%3C/svg%3E" />
+  <style>
+    :root {
+      --ink: #2f3240;
+      --muted: #747887;
+      --accent: #8b7cf6;
+      --accent-2: #45b7a5;
+      --good: #2fb36d;
+      --bad: #ef6b6b;
+      --paper: #ffffff;
+      --line: #d8dbe5;
+      --soft: #f4f6fb;
+      --yellow: #ffb020;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; }
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background: #f6f4ff;
+      user-select: none;
+      touch-action: manipulation;
+    }
+    button { font: inherit; border: 0; cursor: pointer; }
+    .hidden { display: none !important; }
+
+    .samnori-home-float {
+      position: fixed;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 80;
+      display: grid;
+      place-items: center;
+      width: 78px;
+      height: 54px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.94);
+      border: 2px solid #ffe3a5;
+      color: #8a5b00;
+      font-size: 14px;
+      font-weight: 900;
+      text-decoration: none;
+      box-shadow: 0 10px 26px rgba(77, 70, 110, .18);
+    }
+
+    .screen {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 32px;
+      background:
+        radial-gradient(circle at 16% 16%, rgba(139,124,246,.22), transparent 30%),
+        radial-gradient(circle at 84% 22%, rgba(69,183,165,.2), transparent 32%),
+        linear-gradient(180deg, #fff 0%, #f1f5ff 100%);
+    }
+
+    .hero-title {
+      margin: 0 0 10px;
+      font-size: clamp(52px, 8vw, 92px);
+      font-weight: 1000;
+      letter-spacing: 0;
+      color: var(--ink);
+    }
+    .hero-sub {
+      margin: 0 0 34px;
+      color: var(--muted);
+      font-size: 22px;
+      font-weight: 800;
+    }
+    .primary-btn, .back-btn, .fullscreen-btn {
+      min-height: 52px;
+      padding: 0 24px;
+      border-radius: 16px;
+      background: #fff;
+      color: var(--ink);
+      border: 2px solid var(--line);
+      font-weight: 900;
+      box-shadow: 0 10px 24px rgba(66, 70, 100, .12);
+    }
+    .primary-btn {
+      min-width: 220px;
+      background: linear-gradient(180deg, #8b7cf6, #6f5de8);
+      color: #fff;
+      border-color: transparent;
+      font-size: 22px;
+    }
+
+    .section-title {
+      margin: 0 0 24px;
+      font-size: 42px;
+      font-weight: 1000;
+    }
+    .inline-player-grid {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 28px;
+    }
+    .player-btn {
+      height: 56px;
+      min-width: 72px;
+      padding: 0 18px;
+      border-radius: 14px;
+      background: #fff;
+      color: var(--ink);
+      border: 3px solid var(--line);
+      font-size: 20px;
+      font-weight: 1000;
+      box-shadow: 0 8px 20px rgba(66, 70, 100, .1);
+    }
+    .player-btn.active {
+      background: #fff6d8;
+      border-color: var(--yellow);
+      color: #8a5b00;
+    }
+    .setting-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+    .setting-label {
+      font-size: 18px;
+      font-weight: 900;
+      color: var(--ink);
+      white-space: nowrap;
+    }
+    .select {
+      height: 48px;
+      padding: 0 16px;
+      border-radius: 12px;
+      border: 2px solid var(--line);
+      background: #fff;
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--ink);
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(66, 70, 100, .08);
+    }
+    .select:focus { border-color: var(--accent); outline: none; }
+
+    .game-cards {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+      width: min(520px, 92vw);
+    }
+    .game-card {
+      min-height: 200px;
+      padding: 28px;
+      border-radius: 24px;
+      background: #fff;
+      border: 3px solid var(--line);
+      text-align: center;
+      box-shadow: 0 16px 34px rgba(66, 70, 100, .12);
+    }
+    .game-card .emoji { font-size: 58px; line-height: 1; margin-bottom: 14px; }
+    .game-card h3 { margin: 0 0 10px; font-size: 28px; font-weight: 1000; }
+    .game-card p { margin: 0 0 18px; color: var(--muted); font-weight: 750; line-height: 1.45; }
+
+    .game-screen {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      background: #fff;
+    }
+    .topbar {
+      flex: 0 0 94px;
+      display: grid;
+      grid-template-columns: 190px 1fr auto 190px;
+      align-items: start;
+      padding: 14px 24px 8px;
+      border-bottom: 2px solid #edf0f6;
+      background: rgba(255,255,255,.96);
+      z-index: 5;
+    }
+    .top-title { text-align: center; }
+    .top-title h1 {
+      margin: 0;
+      font-size: 42px;
+      line-height: 1;
+      font-weight: 1000;
+    }
+    .top-title p {
+      margin: 7px 0 0;
+      color: var(--muted);
+      font-size: 15px;
+      font-weight: 850;
+    }
+    .timer-display {
+      color: #ff6b6b;
+      font-size: 46px;
+      font-weight: 900;
+      text-align: center;
+      padding: 0 16px;
+      line-height: 1.3;
+    }
+    .timer-display.infinite { color: var(--accent); }
+    .top-actions { display: flex; justify-content: flex-end; gap: 10px; }
+
+    .players {
+      flex: 1 1 auto;
+      min-height: 0;
+      display: grid;
+      width: 100%;
+      overflow: hidden;
+    }
+    .player-cell {
+      position: relative;
+      min-width: 0;
+      min-height: 0;
+      display: grid;
+      grid-template-rows: auto auto 1fr auto;
+      border-right: 2px solid rgba(60, 64, 82, .18);
+      background: var(--cell-bg, #f8fbff);
+      overflow: hidden;
+    }
+    .player-cell:last-child { border-right: 0; }
+    .theme-0 { --cell-bg: #fff0f3; --theme: #f46b8a; }
+    .theme-1 { --cell-bg: #eef8ff; --theme: #46a7e8; }
+    .theme-2 { --cell-bg: #f9efff; --theme: #a479e8; }
+    .theme-3 { --cell-bg: #effaf2; --theme: #50b96a; }
+    .theme-4 { --cell-bg: #fff8e3; --theme: #f1a80f; }
+    .theme-5 { --cell-bg: #eefaf7; --theme: #2fae9b; }
+
+    .player-header {
+      padding: 12px 14px 7px;
+      text-align: center;
+    }
+    .player-name {
+      font-size: clamp(19px, 1.9vw, 28px);
+      font-weight: 1000;
+      line-height: 1.05;
+    }
+    .score-line {
+      margin-top: 5px;
+      color: #ff9500;
+      font-size: clamp(18px, 1.8vw, 26px);
+      font-weight: 1000;
+    }
+
+    .table-card {
+      margin: 0 12px 7px;
+      padding: 8px;
+      border-radius: 12px;
+      background: rgba(255,255,255,.86);
+      border: 2px solid rgba(255,255,255,.75);
+      box-shadow: 0 6px 16px rgba(65, 70, 98, .08);
+    }
+    .table-title {
+      margin-bottom: 5px;
+      text-align: center;
+      font-size: clamp(14px, 1.25vw, 18px);
+      font-weight: 1000;
+    }
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      background: #fff;
+      overflow: hidden;
+      border-radius: 8px;
+      font-size: clamp(11px, .94vw, 15px);
+    }
+    .data-table th, .data-table td {
+      border: 1px solid #dce2ee;
+      padding: 4px 3px;
+      text-align: center;
+      font-weight: 850;
+      word-break: keep-all;
+    }
+    .data-table th:first-child, .data-table td:first-child {
+      width: 58px;
+      background: #f1f4fb;
+      color: #485066;
+    }
+    .data-table .total {
+      background: #fff5cf;
+      color: #8a5b00;
+    }
+
+    .graph-card {
+      min-height: 0;
+      margin: 0 12px;
+      padding: 10px 10px 8px;
+      border-radius: 14px;
+      background: rgba(255,255,255,.9);
+      border: 2px solid rgba(255,255,255,.75);
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      box-shadow: 0 6px 16px rgba(65, 70, 98, .08);
+    }
+    .graph-title {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: end;
+      margin-bottom: 6px;
+    }
+    .graph-title strong {
+      font-size: clamp(14px, 1.15vw, 18px);
+      font-weight: 1000;
+      line-height: 1.1;
+    }
+    .graph-title span {
+      color: var(--muted);
+      font-size: clamp(10px, .8vw, 13px);
+      font-weight: 850;
+      text-align: right;
+    }
+
+    .graph-wrap {
+      min-height: 0;
+      display: grid;
+      grid-template-columns: 62px 1fr;
+      grid-template-rows: 1fr 46px;
+      gap: 0;
+    }
+    .y-axis {
+      grid-row: 1;
+      position: relative;
+      border-bottom: 3px solid transparent;
+      color: #51576a;
+      font-size: clamp(10px, .82vw, 13px);
+      font-weight: 850;
+      font-variant-numeric: tabular-nums;
+    }
+    .y-axis span {
+      position: absolute;
+      right: 8px;
+      transform: translateY(50%);
+      white-space: nowrap;
+    }
+    .unit-label {
+      position: absolute;
+      top: 0;
+      left: 0;
+      color: #333849;
+      font-size: clamp(10px, .82vw, 13px);
+      font-weight: 950;
+      line-height: 1;
+    }
+    .plot {
+      position: relative;
+      grid-column: 2;
+      grid-row: 1;
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: 1fr;
+      align-items: end;
+      gap: 0;
+      padding: 0 8px;
+      border-left: 3px solid #5b6277;
+      border-bottom: 3px solid #5b6277;
+      background: #fff;
+      overflow: hidden;
+    }
+    .grid-line {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: rgba(91,98,119,.16);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .grid-line.major {
+      height: 2px;
+      background: rgba(91,98,119,.34);
+    }
+    .bar-slot {
+      position: relative;
+      height: 100%;
+      display: flex;
+      align-items: end;
+      justify-content: center;
+      cursor: pointer;
+      border-left: 2px solid rgba(91,98,119,.28);
+      z-index: 1;
+    }
+    .bar-slot:last-child { border-right: 2px solid rgba(91,98,119,.28); }
+    .bar {
+      width: min(70%, 42px);
+      min-height: 0;
+      border-radius: 8px 8px 0 0;
+      background: linear-gradient(180deg, var(--theme), color-mix(in srgb, var(--theme), #111 15%));
+      border: 2px solid rgba(40,44,58,.18);
+      transition: height .12s ease, filter .12s ease;
+    }
+    .bar-slot:hover .bar { filter: brightness(1.05); }
+    .axis-corner {
+      position: relative;
+      grid-column: 1;
+      grid-row: 2;
+      min-height: 46px;
+      border-left: 3px solid #5b6277;
+      border-bottom: 3px solid #5b6277;
+      background: #dff5fb;
+      overflow: hidden;
+      color: #333849;
+      font-size: clamp(9px, .72vw, 12px);
+      font-weight: 950;
+      line-height: 1.1;
+    }
+    .axis-corner::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      background: linear-gradient(to bottom right, transparent calc(50% - 1px), #8d96a6 50%, transparent calc(50% + 1px));
+      pointer-events: none;
+    }
+    .axis-y-name {
+      position: absolute;
+      top: 5px;
+      left: 5px;
+      max-width: 48px;
+    }
+    .axis-x-name {
+      position: absolute;
+      right: 5px;
+      bottom: 5px;
+      max-width: 52px;
+      text-align: right;
+    }
+    .x-labels {
+      grid-column: 2;
+      grid-row: 2;
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: 1fr;
+      gap: 0;
+      padding: 0 8px;
+      border-bottom: 3px solid #5b6277;
+      border-right: 2px solid rgba(91,98,119,.28);
+      background: #dff5fb;
+      text-align: center;
+      color: #444a5e;
+      font-size: clamp(10px, .82vw, 13px);
+      font-weight: 900;
+      word-break: keep-all;
+    }
+    .x-labels span {
+      min-width: 0;
+      display: grid;
+      place-items: center;
+      padding: 3px 4px;
+      border-left: 2px solid rgba(91,98,119,.28);
+      line-height: 1.1;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: center;
+      padding: 9px 12px 12px;
+    }
+    .message {
+      min-height: 38px;
+      padding: 7px 10px;
+      border-radius: 10px;
+      background: rgba(255,255,255,.76);
+      color: var(--muted);
+      font-size: clamp(12px, .92vw, 15px);
+      font-weight: 900;
+      line-height: 1.35;
+    }
+    .message.ok { color: #116a3b; background: #e8fff2; }
+    .message.no { color: #9e2929; background: #fff0f0; }
+
+    .answer-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 30;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      opacity: 0;
+      transform: scale(.75);
+      transition: opacity .16s ease, transform .16s ease;
+    }
+    .answer-overlay.show {
+      opacity: 1;
+      transform: scale(1);
+    }
+    .answer-mark {
+      width: min(42%, 170px);
+      aspect-ratio: 1;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: rgba(255,255,255,.88);
+      border: 10px solid currentColor;
+      font-size: clamp(76px, 9vw, 138px);
+      font-weight: 1000;
+      line-height: 1;
+      box-shadow: 0 22px 50px rgba(45, 48, 66, .24);
+      animation: answerPop .58s ease both;
+    }
+    .answer-overlay.correct { color: #1ca35f; }
+    .answer-overlay.wrong { color: #e04444; }
+    @keyframes answerPop {
+      0% { transform: scale(.55) rotate(-7deg); }
+      52% { transform: scale(1.12) rotate(2deg); }
+      100% { transform: scale(1) rotate(0); }
+    }
+    .check-btn {
+      height: 46px;
+      min-width: 96px;
+      border-radius: 14px;
+      background: #58b9ff;
+      color: #fff;
+      font-weight: 1000;
+      font-size: 18px;
+      box-shadow: 0 8px 18px rgba(58, 139, 210, .28);
+    }
+
+    .result-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 70;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(34,38,54,.62);
+      padding: 24px;
+    }
+    .result-card {
+      width: min(620px, 92vw);
+      border-radius: 26px;
+      background: #fff;
+      padding: 28px;
+      text-align: center;
+      box-shadow: 0 30px 80px rgba(0,0,0,.24);
+    }
+    .result-card h2 { margin: 0 0 16px; font-size: 44px; font-weight: 1000; }
+    .ranking-row {
+      display: grid;
+      grid-template-columns: 44px 1fr auto;
+      gap: 10px;
+      align-items: center;
+      margin: 8px 0;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: var(--soft);
+      font-weight: 900;
+      text-align: left;
+    }
+
+    @media (max-width: 1200px) {
+      .game-cards { max-width: 520px; }
+      .topbar { grid-template-columns: 120px 1fr auto 120px; }
+      .back-btn, .fullscreen-btn { font-size: 13px; padding: 0 12px; }
+      .timer-display { font-size: 34px; padding: 0 10px; }
+      .graph-wrap { grid-template-columns: 54px 1fr; }
+      .plot, .x-labels { padding-left: 5px; padding-right: 5px; }
+    }
+  </style>
+</head>
+<body>
+  <a class="samnori-home-float" href="https://hanssam622.github.io/ssamnori/" aria-label="쌤노리 홈화면으로 가기">쌤노리 홈</a>
+
+  <section id="start-screen" class="screen">
+    <h1 class="hero-title">📊 그래프맨</h1>
+    <p class="hero-sub">표를 읽고 막대그래프를 올바르게 그려요</p>
+    <button class="primary-btn" type="button" onclick="showScreen('game-select-screen')">시작하기 →</button>
+  </section>
+
+  <section id="game-select-screen" class="screen hidden">
+    <h2 class="section-title">게임을 선택하세요</h2>
+    <div class="setting-row">
+      <span class="setting-label">참가 인원</span>
+      <div class="inline-player-grid" id="player-grid"></div>
+    </div>
+    <div class="setting-row">
+      <span class="setting-label">제한 시간</span>
+      <select id="timer-select" class="select">
+        <option value="60">1분</option>
+        <option value="90" selected>1분 30초</option>
+        <option value="none">무제한</option>
+      </select>
+    </div>
+    <div class="game-cards">
+      <article class="game-card">
+        <div class="emoji">📊</div>
+        <h3>막대그래프 그리기</h3>
+        <p>표의 값을 읽고 각 막대의 높이를 눈금에 맞게 선택합니다.</p>
+        <button class="primary-btn" type="button" onclick="startGame()">시작</button>
+      </article>
+    </div>
+    <button class="back-btn" style="margin-top:18px" type="button" onclick="showScreen('start-screen')">← 처음으로</button>
+  </section>
+
+  <section id="game-screen" class="game-screen hidden">
+    <div class="topbar">
+      <button class="back-btn" type="button" onclick="exitGame()">← 게임 목록</button>
+      <div class="top-title">
+        <h1>📊 그래프맨</h1>
+        <p>표를 보고 막대그래프의 막대를 눌러 알맞은 높이로 맞추세요</p>
+      </div>
+      <div class="timer-display" id="time-left">∞</div>
+      <div class="top-actions">
+        <button class="fullscreen-btn" type="button" onclick="toggleFullscreen()">전체화면</button>
+        <button class="fullscreen-btn" type="button" onclick="finishGame()">결과 보기</button>
+      </div>
+    </div>
+    <div class="players" id="players"></div>
+  </section>
+
+  <div id="result-overlay" class="result-overlay hidden"></div>
+
+  <script>
+    const ANIMALS = [
+      { emoji: '🐶', name: '강아지' },
+      { emoji: '🐱', name: '고양이' },
+      { emoji: '🐰', name: '토끼' },
+      { emoji: '🦊', name: '여우' },
+      { emoji: '🐻', name: '곰' },
+      { emoji: '🐼', name: '판다' }
+    ];
+
+    const TABLE_TEMPLATES = [
+      { title: '마을별 사과 생산량', subject: '사과 생산량', rowLabel: '상자 수', unit: '상자', xLabel: '마을', categories: ['꿈마을','무지개마을','산마을','바다마을'], base: [10,17,13,8], min: 4, max: 24 },
+      { title: '마을별 배 생산량', subject: '배 생산량', rowLabel: '상자 수', unit: '상자', xLabel: '마을', categories: ['햇살마을','나무마을','별마을','강마을'], base: [12,9,16,14], min: 4, max: 24 },
+      { title: '마을별 딸기 생산량', subject: '딸기 생산량', rowLabel: '상자 수', unit: '상자', xLabel: '마을', categories: ['꽃마을','구름마을','들마을','숲마을'], base: [15,11,18,7], min: 4, max: 26 },
+      { title: '과일별 학생 선호도', subject: '좋아하는 과일', rowLabel: '학생 수', unit: '명', xLabel: '과일', categories: ['사과','배','딸기','참외'], base: [11,4,6,9], min: 2, max: 18 },
+      { title: '우리 반 간식 선호도', subject: '좋아하는 간식', rowLabel: '학생 수', unit: '명', xLabel: '간식', categories: ['떡','빵','과자','과일'], base: [7,12,9,5], min: 2, max: 18 },
+      { title: '요일별 도서관 이용 학생 수', subject: '도서관 이용', rowLabel: '학생 수', unit: '명', xLabel: '요일', categories: ['월','화','수','목','금'], base: [8,10,14,11,7], min: 3, max: 22 },
+      { title: '학급별 줄넘기 참여 인원', subject: '줄넘기 참여', rowLabel: '학생 수', unit: '명', xLabel: '학급', categories: ['1반','2반','3반','4반'], base: [18,15,21,13], min: 8, max: 28 },
+      { title: '동아리별 신청 학생 수', subject: '동아리 신청', rowLabel: '학생 수', unit: '명', xLabel: '동아리', categories: ['축구','미술','과학','음악'], base: [12,9,15,8], min: 3, max: 22 },
+      { title: '월별 비 온 날 수', subject: '비 온 날', rowLabel: '날 수', unit: '일', xLabel: '월', categories: ['3월','4월','5월','6월'], base: [5,8,6,10], min: 1, max: 16 },
+      { title: '주별 쓰레기 줍기 봉사자 수', subject: '봉사자', rowLabel: '학생 수', unit: '명', xLabel: '주', categories: ['1주','2주','3주','4주'], base: [9,13,11,16], min: 4, max: 24 },
+      { title: '가게별 우유 판매량', subject: '우유 판매량', rowLabel: '개수', unit: '개', xLabel: '가게', categories: ['하늘점','햇살점','바다점','숲점'], base: [14,18,11,20], min: 6, max: 30 },
+      { title: '반별 책 읽은 권수', subject: '읽은 책', rowLabel: '권수', unit: '권', xLabel: '학급', categories: ['1반','2반','3반','4반'], base: [22,17,25,14], min: 8, max: 34 },
+      { title: '운동별 좋아하는 학생 수', subject: '좋아하는 운동', rowLabel: '학생 수', unit: '명', xLabel: '운동', categories: ['축구','야구','피구','농구'], base: [15,7,12,9], min: 3, max: 22 },
+      { title: '색깔별 풍선 수', subject: '풍선 수', rowLabel: '개수', unit: '개', xLabel: '색깔', categories: ['빨강','노랑','초록','파랑'], base: [9,13,7,15], min: 2, max: 22 },
+      { title: '동물별 관람객 투표', subject: '좋아하는 동물', rowLabel: '사람 수', unit: '명', xLabel: '동물', categories: ['토끼','고양이','강아지','판다'], base: [8,14,17,11], min: 3, max: 25 },
+      { title: '계절별 현장체험 선호도', subject: '체험 선호도', rowLabel: '학생 수', unit: '명', xLabel: '계절', categories: ['봄','여름','가을','겨울'], base: [13,8,16,6], min: 2, max: 20 },
+      { title: '문구별 판매 개수', subject: '문구 판매량', rowLabel: '개수', unit: '개', xLabel: '문구', categories: ['연필','지우개','공책','자'], base: [23,12,18,9], min: 5, max: 32 },
+      { title: '반별 급식 만족도', subject: '만족한 학생', rowLabel: '학생 수', unit: '명', xLabel: '학급', categories: ['1반','2반','3반','4반','5반'], base: [18,21,15,19,13], min: 8, max: 28 },
+      { title: '장소별 소풍 희망 인원', subject: '소풍 희망', rowLabel: '학생 수', unit: '명', xLabel: '장소', categories: ['공원','박물관','수목원','과학관'], base: [14,9,11,16], min: 3, max: 24 },
+      { title: '악기별 배우고 싶은 학생 수', subject: '배우고 싶은 악기', rowLabel: '학생 수', unit: '명', xLabel: '악기', categories: ['피아노','기타','드럼','바이올린'], base: [12,10,7,9], min: 2, max: 20 },
+      { title: '과목별 좋아하는 학생 수', subject: '좋아하는 과목', rowLabel: '학생 수', unit: '명', xLabel: '과목', categories: ['국어','수학','과학','체육'], base: [8,13,10,15], min: 3, max: 22 },
+      { title: '방과후 교실 신청 인원', subject: '방과후 신청', rowLabel: '학생 수', unit: '명', xLabel: '교실', categories: ['컴퓨터','로봇','요리','체스'], base: [17,12,9,7], min: 3, max: 24 },
+      { title: '지역별 귤 생산량', subject: '귤 생산량', rowLabel: '상자 수', unit: '상자', xLabel: '지역', categories: ['동쪽','서쪽','남쪽','북쪽'], base: [18,11,23,14], min: 6, max: 32 },
+      { title: '모둠별 스티커 수', subject: '스티커 수', rowLabel: '개수', unit: '개', xLabel: '모둠', categories: ['1모둠','2모둠','3모둠','4모둠'], base: [16,20,12,18], min: 5, max: 30 },
+      { title: '요일별 운동장 이용 반 수', subject: '운동장 이용', rowLabel: '반 수', unit: '반', xLabel: '요일', categories: ['월','화','수','목','금'], base: [3,5,4,6,2], min: 1, max: 9 },
+      { title: '종류별 화분 수', subject: '화분 수', rowLabel: '개수', unit: '개', xLabel: '식물', categories: ['장미','튤립','해바라기','민들레'], base: [8,12,6,10], min: 2, max: 18 },
+      { title: '층별 교실 수', subject: '교실 수', rowLabel: '개수', unit: '개', xLabel: '층', categories: ['1층','2층','3층','4층'], base: [6,8,7,5], min: 2, max: 12 },
+      { title: '차량별 주차 대수', subject: '주차 대수', rowLabel: '대수', unit: '대', xLabel: '차량', categories: ['자전거','자동차','버스','오토바이'], base: [15,9,4,7], min: 1, max: 22 },
+      { title: '가족 수 조사', subject: '가족 수별 학생', rowLabel: '학생 수', unit: '명', xLabel: '가족 수', categories: ['3명','4명','5명','6명'], base: [5,14,9,4], min: 1, max: 20 },
+      { title: '취미별 학생 수', subject: '취미 조사', rowLabel: '학생 수', unit: '명', xLabel: '취미', categories: ['독서','게임','그림','운동'], base: [9,16,11,13], min: 3, max: 24 },
+      { title: '간식별 판매량', subject: '간식 판매량', rowLabel: '개수', unit: '개', xLabel: '간식', categories: ['김밥','샌드위치','주스','우유'], base: [18,14,21,11], min: 5, max: 32 },
+      { title: '마을별 감자 수확량', subject: '감자 수확량', rowLabel: '상자 수', unit: '상자', xLabel: '마을', categories: ['솔마을','달마을','샘마을','들마을'], base: [13,19,10,16], min: 5, max: 28 }
+    ];
+
+    let playerCount = 4;
+    let players = [];
+    let scores = [];
+    let round = 1;
+    let timerId = null;
+    let timeLeft = 0;
+    let gameActive = false;
+
+    function showScreen(id) {
+      document.querySelectorAll('.screen, .game-screen').forEach((el) => el.classList.add('hidden'));
+      document.getElementById(id).classList.remove('hidden');
+      if (id === 'game-select-screen') renderPlayerButtons();
+    }
+
+    function renderPlayerButtons() {
+      const grid = document.getElementById('player-grid');
+      grid.innerHTML = '';
+      for (let i = 1; i <= 6; i += 1) {
+        const btn = document.createElement('button');
+        btn.className = `player-btn${i === playerCount ? ' active' : ''}`;
+        btn.textContent = `${i}명`;
+        btn.onclick = () => {
+          playerCount = i;
+          renderPlayerButtons();
+        };
+        grid.appendChild(btn);
+      }
+    }
+
+    function startGame() {
+      scores = Array(playerCount).fill(0);
+      round = 1;
+      gameActive = true;
+      players = Array.from({ length: playerCount }, (_, idx) => createPlayer(idx));
+      document.getElementById('game-screen').classList.remove('hidden');
+      document.querySelectorAll('.screen').forEach((el) => el.classList.add('hidden'));
+      renderPlayers();
+      startTimer();
+    }
+
+    function startTimer() {
+      if (timerId) { clearInterval(timerId); timerId = null; }
+      const selected = document.getElementById('timer-select').value;
+      const display = document.getElementById('time-left');
+      if (selected === 'none') {
+        display.textContent = '∞';
+        display.classList.add('infinite');
+        return;
+      }
+      display.classList.remove('infinite');
+      timeLeft = Number.parseInt(selected, 10) || 90;
+      display.textContent = String(timeLeft);
+      timerId = setInterval(() => {
+        if (!gameActive) return;
+        timeLeft -= 1;
+        display.textContent = String(timeLeft);
+        if (timeLeft <= 10) display.style.color = '#e04444';
+        if (timeLeft <= 0) finishGame();
+      }, 1000);
+    }
+
+    function exitGame() {
+      gameActive = false;
+      if (timerId) { clearInterval(timerId); timerId = null; }
+      document.getElementById('time-left').style.color = '';
+      showScreen('game-select-screen');
+    }
+
+    function createPlayer(idx) {
+      const question = createQuestion(idx);
+      return {
+        idx,
+        question,
+        selected: question.values.map(() => 0),
+        message: '막대를 눌러 표의 값과 같게 맞춰 보세요.',
+        state: 'idle'
+      };
+    }
+
+    function createQuestion(seed) {
+      const template = TABLE_TEMPLATES[Math.floor(Math.random() * TABLE_TEMPLATES.length)];
+      const offset = Math.floor(Math.random() * 7) - 3 + (seed % 3) - 1;
+      const roughValues = template.base.map((v) => clamp(v + offset + Math.floor(Math.random() * 5) - 2, template.min, template.max));
+      const step = chooseStep(Math.max(...roughValues));
+      const snapped = roughValues.map((value) => snapToStep(value, step, template.min, template.max));
+      const values = ensureLimitedDuplicates(snapped, step, template.min, template.max);
+      const maxValue = Math.max(...values);
+      const baseAxisMax = Math.max(step * 4, Math.ceil((maxValue + step) / step) * step);
+      const majorEvery = chooseMajorEvery(baseAxisMax / step);
+      const axisMax = Math.ceil((baseAxisMax / step) / majorEvery) * majorEvery * step;
+      return { ...template, values, total: values.reduce((a, b) => a + b, 0), step, axisMax, majorEvery };
+    }
+
+    function snapToStep(value, step, min, max) {
+      const snapped = Math.round(value / step) * step;
+      const minStep = Math.max(step, Math.ceil(min / step) * step);
+      const maxStep = Math.max(minStep, Math.floor(max / step) * step);
+      return clamp(snapped, minStep, maxStep);
+    }
+
+    function ensureLimitedDuplicates(values, step, min, max) {
+      const minStep = Math.max(step, Math.ceil(min / step) * step);
+      const maxStep = Math.max(minStep, Math.floor(max / step) * step);
+      const result = [...values];
+      let hasPair = false;
+      for (let i = 0; i < result.length; i++) {
+        const prefix = result.slice(0, i);
+        const count = prefix.filter((v) => v === result[i]).length;
+        if (count === 0) continue;
+        if (count === 1 && !hasPair) { hasPair = true; continue; }
+        const original = result[i];
+        let changed = false;
+        for (let delta = 1; delta <= 20 && !changed; delta++) {
+          for (const candidate of [original + delta * step, original - delta * step]) {
+            if (candidate < minStep || candidate > maxStep) continue;
+            const cCount = prefix.filter((v) => v === candidate).length;
+            if (cCount === 0) { result[i] = candidate; changed = true; break; }
+            if (cCount === 1 && !hasPair) { result[i] = candidate; hasPair = true; changed = true; break; }
+          }
+        }
+      }
+      return result;
+    }
+
+    function chooseStep(maxValue) {
+      if (maxValue <= 10) return 1;
+      if (maxValue <= 20) return 2;
+      if (maxValue <= 35) return 5;
+      return 10;
+    }
+
+    function chooseMajorEvery(tickCount) {
+      if (tickCount < 5) return tickCount;
+      return 5;
+    }
+
+    function clamp(value, min, max) {
+      return Math.max(min, Math.min(max, value));
+    }
+
+    function getGridTemplate(count) {
+      return `repeat(${count}, minmax(0, 1fr))`;
+    }
+
+    function renderPlayers() {
+      const grid = document.getElementById('players');
+      grid.style.gridTemplateColumns = getGridTemplate(playerCount);
+      grid.innerHTML = players.map((player) => renderPlayer(player)).join('');
+      requestAnimationFrame(drawAllGraphs);
+    }
+
+    function renderPlayer(player) {
+      const animal = ANIMALS[player.idx % ANIMALS.length];
+      const q = player.question;
+      return `
+        <section class="player-cell theme-${player.idx % 6}">
+          <div class="answer-overlay" id="answer-overlay-${player.idx}"></div>
+          <div class="player-header">
+            <div class="player-name">${animal.emoji} ${animal.name}</div>
+            <div class="score-line">점수 ${scores[player.idx]}</div>
+          </div>
+          <div class="table-card">
+            <div class="table-title">${q.title}</div>
+            <table class="data-table">
+              <tr>
+                <th>${q.xLabel}</th>
+                ${q.categories.map((cat) => `<th>${cat}</th>`).join('')}
+                <th class="total">합계</th>
+              </tr>
+              <tr>
+                <td>${q.rowLabel}</td>
+                ${q.values.map((value) => `<td>${value}</td>`).join('')}
+                <td class="total">${q.total}</td>
+              </tr>
+            </table>
+          </div>
+          <div class="graph-card">
+            <div class="graph-title">
+              <strong>${q.subject} 막대그래프</strong>
+              <span>눈금 한 칸: ${q.step}${q.unit}</span>
+            </div>
+            <div class="graph-wrap">
+              <div class="y-axis">
+                <div class="unit-label">(${q.unit})</div>
+                ${axisLabels(q)}
+              </div>
+              <div class="plot" id="plot-${player.idx}">
+                ${gridLines(q)}
+                ${q.categories.map((_, catIdx) => `
+                  <div class="bar-slot" data-player="${player.idx}" data-cat="${catIdx}" onclick="selectBar(${player.idx}, ${catIdx}, event)">
+                    <div class="bar" id="bar-${player.idx}-${catIdx}"></div>
+                  </div>
+                `).join('')}
+              </div>
+              <div class="axis-corner">
+                <span class="axis-y-name">${q.rowLabel}</span>
+                <span class="axis-x-name">${q.xLabel}</span>
+              </div>
+              <div class="x-labels">
+                ${q.categories.map((cat) => `<span>${cat}</span>`).join('')}
+              </div>
+            </div>
+          </div>
+          <div class="controls">
+            <div class="message ${player.state === 'ok' ? 'ok' : player.state === 'no' ? 'no' : ''}" id="message-${player.idx}">${player.message}</div>
+            <button class="check-btn" type="button" onclick="checkAnswer(${player.idx})">확인</button>
+          </div>
+        </section>
+      `;
+    }
+
+    function axisLabels(q) {
+      const html = [];
+      const tickCount = q.axisMax / q.step;
+      for (let i = 0; i <= tickCount; i++) {
+        const value = i * q.step;
+        if (i % q.majorEvery === 0) {
+          const bottom = (value / q.axisMax) * 100;
+          html.push(`<span style="bottom:${bottom}%">${value}</span>`);
+        }
+      }
+      return html.join('');
+    }
+
+    function gridLines(q) {
+      const tickCount = q.axisMax / q.step;
+      return Array.from({ length: tickCount + 1 }, (_, i) => {
+        const value = i * q.step;
+        const bottom = (value / q.axisMax) * 100;
+        const cls = i % q.majorEvery === 0 ? 'grid-line major' : 'grid-line';
+        return `<div class="${cls}" style="bottom:${bottom}%"></div>`;
+      }).join('');
+    }
+
+    function drawAllGraphs() {
+      players.forEach((player) => {
+        player.selected.forEach((_, catIdx) => updateBar(player.idx, catIdx));
+      });
+    }
+
+    function selectBar(playerIdx, catIdx, event) {
+      const player = players[playerIdx];
+      const plot = document.getElementById(`plot-${playerIdx}`);
+      const rect = plot.getBoundingClientRect();
+      const y = clamp(event.clientY - rect.top, 0, rect.height);
+      const ratio = 1 - y / rect.height;
+      const raw = ratio * player.question.axisMax;
+      const snapped = clamp(Math.round(raw / player.question.step) * player.question.step, 0, player.question.axisMax);
+      player.selected[catIdx] = snapped;
+      player.state = 'idle';
+      player.message = '수정한 뒤 다시 확인할 수 있어요.';
+      updateBar(playerIdx, catIdx);
+      updateMessage(playerIdx);
+    }
+
+    function updateBar(playerIdx, catIdx) {
+      const player = players[playerIdx];
+      const q = player.question;
+      const value = player.selected[catIdx];
+      const height = q.axisMax === 0 ? 0 : (value / q.axisMax) * 100;
+      const bar = document.getElementById(`bar-${playerIdx}-${catIdx}`);
+      if (bar) {
+        bar.style.height = `${height}%`;
+        bar.parentElement.style.setProperty('--bar-height', `${height}%`);
+      }
+    }
+
+    function updateMessage(playerIdx) {
+      const player = players[playerIdx];
+      const el = document.getElementById(`message-${playerIdx}`);
+      if (!el) return;
+      el.textContent = player.message;
+      el.className = `message ${player.state === 'ok' ? 'ok' : player.state === 'no' ? 'no' : ''}`;
+    }
+
+    function checkAnswer(playerIdx) {
+      const player = players[playerIdx];
+      const correct = player.selected.every((value, idx) => value === player.question.values[idx]);
+      if (correct) {
+        scores[playerIdx] += 1;
+        player.state = 'ok';
+        player.message = '정답! 표의 값과 막대 높이가 모두 같아요.';
+        updateMessage(playerIdx);
+        showAnswerOverlay(playerIdx, true);
+        setTimeout(() => {
+          players[playerIdx] = createPlayer(playerIdx);
+          renderPlayers();
+        }, 650);
+      } else {
+        player.state = 'no';
+        player.message = '아직 달라요. 표의 숫자와 눈금에 맞춘 막대 높이를 비교해 고쳐 보세요.';
+        updateMessage(playerIdx);
+        showAnswerOverlay(playerIdx, false);
+      }
+      renderScore(playerIdx);
+    }
+
+    function showAnswerOverlay(playerIdx, correct) {
+      const overlay = document.getElementById(`answer-overlay-${playerIdx}`);
+      if (!overlay) return;
+      overlay.className = `answer-overlay show ${correct ? 'correct' : 'wrong'}`;
+      overlay.innerHTML = `<div class="answer-mark">${correct ? '○' : '×'}</div>`;
+      clearTimeout(overlay._timer);
+      overlay._timer = setTimeout(() => {
+        overlay.className = 'answer-overlay';
+        overlay.innerHTML = '';
+      }, correct ? 620 : 900);
+    }
+
+    function renderScore(playerIdx) {
+      const cell = document.querySelectorAll('.player-cell')[playerIdx];
+      const line = cell?.querySelector('.score-line');
+      if (line) line.textContent = `점수 ${scores[playerIdx]}`;
+    }
+
+    function finishGame() {
+      gameActive = false;
+      if (timerId) { clearInterval(timerId); timerId = null; }
+      document.getElementById('time-left').style.color = '';
+      const ranking = scores
+        .map((score, idx) => ({ score, idx, animal: ANIMALS[idx % ANIMALS.length] }))
+        .sort((a, b) => b.score - a.score);
+      document.getElementById('result-overlay').innerHTML = `
+        <div class="result-card">
+          <h2>결과</h2>
+          ${ranking.map((item, pos) => `
+            <div class="ranking-row">
+              <span>${pos + 1}</span>
+              <span>${item.animal.emoji} ${item.animal.name}</span>
+              <strong>${item.score}점</strong>
+            </div>
+          `).join('')}
+          <div style="margin-top:18px;display:flex;gap:10px;justify-content:center">
+            <button class="primary-btn" type="button" onclick="hideResult()">계속하기</button>
+            <button class="back-btn" type="button" onclick="hideResult(); exitGame()">게임 목록</button>
+          </div>
+        </div>
+      `;
+      document.getElementById('result-overlay').classList.remove('hidden');
+    }
+
+    function hideResult() {
+      document.getElementById('result-overlay').classList.add('hidden');
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen?.();
+      } else {
+        document.exitFullscreen?.();
+      }
+    }
+
+    renderPlayerButtons();
+  </script>
+</body>
+</html>

@@ -88,6 +88,28 @@
     ]
   },
   {
+    "id": "graphman",
+    "title": "그래프맨",
+    "category": "web-game",
+    "badge": "웹게임",
+    "thumbnail": "assets/thumbnails/graphman.svg",
+    "description": "표를 읽고 막대그래프의 높이를 직접 맞추며 자료 해석과 그래프 그리기를 연습하는 게임입니다.",
+    "actions": [
+      {
+        "type": "play",
+        "label": "바로 플레이",
+        "url": "games/graphman/index.html",
+        "downloadKey": ""
+      },
+      {
+        "type": "external",
+        "label": "새 창",
+        "url": "games/graphman/index.html",
+        "downloadKey": ""
+      }
+    ]
+  },
+  {
     "id": "duckqr",
     "title": "오리 QR 카메라",
     "category": "other-program",
