@@ -265,6 +265,9 @@
       text-align: center;
       font-size: clamp(14px, 1.25vw, 18px);
       font-weight: 1000;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
     .data-table {
       width: 100%;
@@ -280,7 +283,9 @@
       padding: 4px 3px;
       text-align: center;
       font-weight: 850;
-      word-break: keep-all;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
     .data-table th:first-child, .data-table td:first-child {
       width: 58px;
@@ -314,12 +319,19 @@
       font-size: clamp(14px, 1.15vw, 18px);
       font-weight: 1000;
       line-height: 1.1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
     .graph-title span {
       color: var(--muted);
       font-size: clamp(10px, .8vw, 13px);
       font-weight: 850;
       text-align: right;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .graph-wrap {
@@ -430,6 +442,9 @@
       top: 5px;
       left: 5px;
       max-width: 48px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
     .axis-x-name {
       position: absolute;
@@ -437,6 +452,9 @@
       bottom: 5px;
       max-width: 52px;
       text-align: right;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
     .x-labels {
       grid-column: 2;
@@ -457,11 +475,15 @@
     }
     .x-labels span {
       min-width: 0;
-      display: grid;
-      place-items: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       padding: 3px 4px;
       border-left: 2px solid rgba(91,98,119,.28);
       line-height: 1.1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .controls {
