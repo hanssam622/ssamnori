@@ -187,18 +187,28 @@
       background: rgba(255,255,255,.96);
       z-index: 5;
     }
-    .top-title { text-align: center; }
+    .top-title {
+      min-width: 0;
+      overflow: hidden;
+      text-align: center;
+    }
     .top-title h1 {
       margin: 0;
       font-size: 42px;
       line-height: 1;
       font-weight: 1000;
+      overflow: hidden;
+      text-overflow: clip;
+      white-space: nowrap;
     }
     .top-title p {
       margin: 7px 0 0;
       color: var(--muted);
       font-size: 15px;
       font-weight: 850;
+      overflow: hidden;
+      text-overflow: clip;
+      white-space: nowrap;
     }
     .timer-display {
       color: #ff6b6b;
@@ -593,6 +603,56 @@
       .timer-display { font-size: 34px; padding: 0 10px; }
       .graph-wrap { grid-template-columns: 54px 1fr; }
       .plot, .x-labels { padding-left: 5px; padding-right: 5px; }
+    }
+
+    @media (max-width: 640px) {
+      .samnori-home-float {
+        width: 68px;
+        height: 46px;
+        right: 8px;
+        font-size: 12px;
+      }
+      .topbar {
+        flex-basis: 70px;
+        grid-template-columns: 92px minmax(0, 1fr) 52px 126px;
+        align-items: center;
+        gap: 5px;
+        padding: 7px 8px 6px;
+      }
+      .top-title h1 {
+        font-size: clamp(20px, 6vw, 28px);
+      }
+      .top-title p {
+        margin-top: 2px;
+        font-size: 10px;
+        line-height: 1.05;
+      }
+      .timer-display {
+        min-width: 0;
+        padding: 0 2px;
+        font-size: clamp(24px, 8vw, 34px);
+        line-height: 1;
+        overflow: hidden;
+        white-space: nowrap;
+      }
+      .top-actions {
+        min-width: 0;
+        gap: 4px;
+      }
+      .back-btn,
+      .fullscreen-btn {
+        min-height: 40px;
+        padding: 0 7px;
+        border-radius: 13px;
+        font-size: 12px;
+        line-height: 1.05;
+        overflow: hidden;
+        text-overflow: clip;
+        white-space: nowrap;
+      }
+      .top-actions .fullscreen-btn {
+        width: 61px;
+      }
     }
   </style>
 </head>
