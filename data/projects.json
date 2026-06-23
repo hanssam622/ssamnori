@@ -126,6 +126,22 @@
     ]
   },
   {
+    "id": "class-mafia",
+    "title": "교실 마피아 게임",
+    "category": "other-program",
+    "badge": "파일",
+    "thumbnail": "assets/thumbnails/class-mafia.png",
+    "description": "교실에서 함께 즐길 수 있는 추리형 마피아 게임 자료입니다.",
+    "actions": [
+      {
+        "type": "download",
+        "label": "다운로드",
+        "url": "https://drive.google.com/file/d/1FLammY2oDp9q5nK-S5ZrkkCHry0Dq6Sn/view?usp=sharing",
+        "downloadKey": ""
+      }
+    ]
+  },
+  {
     "id": "seat",
     "title": "내자리",
     "category": "other-program",
