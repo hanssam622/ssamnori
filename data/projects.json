@@ -142,6 +142,22 @@
     ]
   },
   {
+    "id": "dun-podo-escape",
+    "title": "둔포도 탈출기",
+    "category": "other-program",
+    "badge": "파일",
+    "thumbnail": "assets/thumbnails/dun-podo-escape.png",
+    "description": "학생들과 함께 만드는 전자칠판용 보드게임입니다.",
+    "actions": [
+      {
+        "type": "download",
+        "label": "다운로드",
+        "url": "https://drive.google.com/file/d/1beCzsj1YXBwyDa2T7kL7H8J_ATLS-FZj/view?usp=sharing",
+        "downloadKey": ""
+      }
+    ]
+  },
+  {
     "id": "seat",
     "title": "내자리",
     "category": "other-program",
