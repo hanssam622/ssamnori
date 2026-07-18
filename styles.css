@@ -274,6 +274,11 @@ body {
    5. Interactive Category Filter (Tab System)
    ========================================== */
 .filter-section {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
   margin-bottom: 3rem;
 }
 
@@ -287,7 +292,41 @@ body {
   border-radius: 12px;
   border: 1px solid var(--border-color);
   max-width: fit-content;
-  margin: 0 auto;
+}
+
+.sort-control {
+  align-items: center;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  display: flex;
+  min-height: 46px;
+  padding: 0 0.4rem 0 0.8rem;
+}
+
+.sort-control label {
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.sort-control select {
+  appearance: auto;
+  background: transparent;
+  border: 0;
+  color: var(--text-primary);
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  font-weight: 700;
+  min-width: 92px;
+  padding: 0.55rem 0.45rem;
+}
+
+.sort-control select:focus-visible {
+  outline: 2px solid var(--accent-purple);
+  outline-offset: 1px;
 }
 
 .tab-btn {

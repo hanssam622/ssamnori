@@ -1,6 +1,7 @@
 [
   {
     "id": "gugudan-fighter",
+    "updatedAt": "2026-06-12",
     "title": "구구단파이터",
     "category": "web-game",
     "badge": "웹게임",
@@ -23,6 +24,7 @@
   },
   {
     "id": "calcman",
+    "updatedAt": "2026-06-09",
     "title": "연산맨",
     "category": "web-game",
     "badge": "웹게임",
@@ -45,6 +47,7 @@
   },
   {
     "id": "shapeman",
+    "updatedAt": "2026-06-09",
     "title": "도형맨",
     "category": "web-game",
     "badge": "웹게임",
@@ -67,6 +70,7 @@
   },
   {
     "id": "angleman",
+    "updatedAt": "2026-06-19",
     "title": "각도맨",
     "category": "web-game",
     "badge": "웹게임",
@@ -89,6 +93,7 @@
   },
   {
     "id": "graphman",
+    "updatedAt": "2026-06-21",
     "title": "그래프맨",
     "category": "web-game",
     "badge": "웹게임",
@@ -111,6 +116,7 @@
   },
   {
     "id": "duckqr",
+    "updatedAt": "2026-06-11",
     "title": "오리 QR 카메라",
     "category": "other-program",
     "badge": "안드로이드",
@@ -127,6 +133,7 @@
   },
   {
     "id": "class-mafia",
+    "updatedAt": "2026-06-23",
     "title": "교실 마피아 게임",
     "category": "other-program",
     "badge": "파일",
@@ -143,6 +150,7 @@
   },
   {
     "id": "dun-podo-escape",
+    "updatedAt": "2026-07-15",
     "title": "둔포도 탈출기",
     "category": "other-program",
     "badge": "파일",
@@ -159,6 +167,7 @@
   },
   {
     "id": "seat",
+    "updatedAt": "2026-06-08",
     "title": "내자리",
     "category": "other-program",
     "badge": "파일",
@@ -187,6 +196,7 @@
   },
   {
     "id": "mindmap",
+    "updatedAt": "2026-06-08",
     "title": "씽크체인 (test)",
     "category": "other-program",
     "badge": "파일",
@@ -215,6 +225,7 @@
   },
   {
     "id": "tlog",
+    "updatedAt": "2026-06-08",
     "title": "티로그 (test)",
     "category": "other-program",
     "badge": "파일",
@@ -237,6 +248,7 @@
   },
   {
     "id": "mininori",
+    "updatedAt": "2026-06-08",
     "title": "미니노리",
     "category": "other-program",
     "badge": "파일",
@@ -259,6 +271,7 @@
   },
   {
     "id": "batchnuki",
+    "updatedAt": "2026-06-08",
     "title": "배치누끼",
     "category": "other-program",
     "badge": "파일",
@@ -281,6 +294,7 @@
   },
   {
     "id": "ieon",
+    "updatedAt": "2026-06-08",
     "title": "이어온 (추후 공개예정)",
     "category": "other-program",
     "badge": "파일",

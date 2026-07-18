@@ -20,7 +20,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const gradeTabs = document.querySelectorAll('.grade-tab');
   const translationSection = document.getElementById('translation-project');
   const translationTableBody = document.getElementById('translation-table-body');
+  const projectSort = document.getElementById('project-sort');
+  const sortControl = document.getElementById('sort-control');
   let activeProjectFilter = 'all';
+  let activeProjectSort = 'newest';
   let currentProjects = [];
   const translationSubjectLabels = {
     korean: '국어',
@@ -233,10 +236,22 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
   }
 
+  function getSortedProjects(projects) {
+    return [...projects].sort((a, b) => {
+      if (activeProjectSort === 'name') {
+        return String(a.title).localeCompare(String(b.title), 'ko');
+      }
+
+      const aDate = Date.parse(a.updatedAt || '') || 0;
+      const bDate = Date.parse(b.updatedAt || '') || 0;
+      return activeProjectSort === 'oldest' ? aDate - bDate : bDate - aDate;
+    });
+  }
+
   function renderProjects(projects) {
     currentProjects = Array.isArray(projects) ? projects : [];
     window.ssamnoriProjects = currentProjects;
-    portfolioGrid.innerHTML = currentProjects.map(renderProjectCard).join('');
+    portfolioGrid.innerHTML = getSortedProjects(currentProjects).map(renderProjectCard).join('');
     applyProjectFilter();
     window.dispatchEvent(new CustomEvent('ssamnori:projects-rendered', {
       detail: { projects: currentProjects },
@@ -273,6 +288,11 @@ document.addEventListener('DOMContentLoaded', () => {
   loadProjects();
   applyDownloadLinks();
 
+  projectSort?.addEventListener('change', () => {
+    activeProjectSort = projectSort.value;
+    renderProjects(currentProjects);
+  });
+
   tabButtons.forEach((button) => {
     button.addEventListener('click', () => {
       const filterValue = button.dataset.filter;
@@ -287,6 +307,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       portfolioGrid?.classList.toggle('hidden', isTranslationProject);
       translationSection?.classList.toggle('hidden', !isTranslationProject);
+      sortControl?.classList.toggle('hidden', isTranslationProject);
 
       applyProjectFilter();
     });
