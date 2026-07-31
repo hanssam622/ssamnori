@@ -271,7 +271,7 @@
   },
   {
     "id": "batchnuki",
-    "updatedAt": "2026-06-08",
+    "updatedAt": "2026-07-31",
     "title": "배치누끼",
     "category": "other-program",
     "badge": "파일",
@@ -294,8 +294,8 @@
   },
   {
     "id": "ieon",
-    "updatedAt": "2026-06-08",
-    "title": "이어온 (추후 공개예정)",
+    "updatedAt": "2026-07-31",
+    "title": "이어온",
     "category": "other-program",
     "badge": "파일",
     "thumbnail": "assets/thumbnails/ieon.png",
@@ -303,7 +303,7 @@
     "actions": [
       {
         "type": "download",
-        "label": "공개 예정",
+        "label": "다운로드",
         "url": "",
         "downloadKey": "ieon"
       },

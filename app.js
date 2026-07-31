@@ -6,8 +6,8 @@ document.addEventListener('DOMContentLoaded', () => {
     thinkchainPortable: 'https://drive.google.com/uc?export=download&id=1fCBOVglnVkwzCNBoT6pegyI3fIFFQIyM',
     tlog: 'https://drive.google.com/uc?export=download&id=1-iCxK7ACpS5DsHs9dfFEeJP4w0QA3LyM',
     mininori: 'https://drive.google.com/uc?export=download&id=1o1Q3qACY8eHEi5LjXC3Pn8iCInt1aSsS',
-    batchnuki: '#',
-    ieon: '#',
+    batchnuki: 'https://drive.google.com/uc?export=download&id=14QG_bmMH1n4x7-Qes6l_7NIrDUtHF2JP',
+    ieon: 'https://drive.google.com/uc?export=download&id=1yFsUyxpCR-JcPZwb_qYj66QLYSARzOlZ',
   };
 
   const tabButtons = document.querySelectorAll('.tab-btn');
