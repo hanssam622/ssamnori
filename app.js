@@ -25,6 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let activeProjectFilter = 'all';
   let activeProjectSort = 'newest';
   let currentProjects = [];
+  let currentTranslations = [];
   const translationSubjectLabels = {
     korean: '국어',
     social: '사회',
@@ -51,53 +52,6 @@ document.addEventListener('DOMContentLoaded', () => {
       aria: '다크 테마로 변경',
     },
   };
-
-  const translationProjects = [
-    {
-      subject: 'korean',
-      grade: '1',
-      semester: '1학기',
-      unit: '자료 준비 중',
-      lesson: '-',
-      title: '국어 번역 자료',
-      translationUrl: '',
-      resourceUrl: '',
-      note: '구글 드라이브 링크를 연결할 예정입니다.',
-    },
-    {
-      subject: 'social',
-      grade: '3',
-      semester: '1학기',
-      unit: '자료 준비 중',
-      lesson: '-',
-      title: '사회 번역 자료',
-      translationUrl: '',
-      resourceUrl: '',
-      note: '구글 드라이브 링크를 연결할 예정입니다.',
-    },
-    {
-      subject: 'science',
-      grade: '3',
-      semester: '1학기',
-      unit: '자료 준비 중',
-      lesson: '-',
-      title: '과학 번역 자료',
-      translationUrl: '',
-      resourceUrl: '',
-      note: '구글 드라이브 링크를 연결할 예정입니다.',
-    },
-    {
-      subject: 'moral',
-      grade: '3',
-      semester: '1학기',
-      unit: '자료 준비 중',
-      lesson: '-',
-      title: '도덕 번역 자료',
-      translationUrl: '',
-      resourceUrl: '',
-      note: '구글 드라이브 링크를 연결할 예정입니다.',
-    },
-  ];
 
   function applyTheme(theme) {
     const nextTheme = themes.includes(theme) ? theme : 'dark';
@@ -283,6 +237,12 @@ document.addEventListener('DOMContentLoaded', () => {
   window.ssamnoriSite = {
     getProjects: () => currentProjects,
     renderProjects,
+    getTranslations: () => currentTranslations,
+    renderTranslations,
+    getActiveTranslationContext: () => ({
+      subject: activeSubject,
+      grade: activeGrade,
+    }),
   };
 
   loadProjects();
@@ -321,7 +281,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderTranslationTable() {
     if (!translationTableBody) return;
 
-    const rows = translationProjects.filter((item) => (
+    const rows = currentTranslations.filter((item) => (
       item.subject === activeSubject && item.grade === activeGrade
     ));
 
@@ -335,18 +295,43 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    translationTableBody.innerHTML = rows.map((item) => `
-      <tr>
-        <td>${item.grade}학년</td>
-        <td>${item.semester}</td>
-        <td>${item.unit}</td>
-        <td>${item.lesson}</td>
-        <td>${item.title}</td>
-        <td>${renderLink(item.translationUrl, '번역본')}</td>
-        <td>${renderLink(item.resourceUrl, '자료')}</td>
-        <td>${item.note}</td>
+    translationTableBody.innerHTML = rows.map((item) => {
+      const index = currentTranslations.indexOf(item);
+      return `
+      <tr data-translation-index="${index}">
+        <td data-translation-field="grade">${escapeHtml(item.grade)}학년</td>
+        <td data-translation-field="semester">${escapeHtml(item.semester)}</td>
+        <td data-translation-field="unit">${escapeHtml(item.unit)}</td>
+        <td data-translation-field="lesson">${escapeHtml(item.lesson)}</td>
+        <td data-translation-field="title">${escapeHtml(item.title)}</td>
+        <td data-translation-field="translationUrl">${renderLink(item.translationUrl, '번역본')}</td>
+        <td data-translation-field="resourceUrl">${renderLink(item.resourceUrl, '자료')}</td>
+        <td data-translation-field="note">${escapeHtml(item.note)}</td>
       </tr>
-    `).join('');
+    `;
+    }).join('');
+  }
+
+  function renderTranslations(translations) {
+    currentTranslations = Array.isArray(translations) ? translations : [];
+    window.ssamnoriTranslations = currentTranslations;
+    renderTranslationTable();
+    window.dispatchEvent(new CustomEvent('ssamnori:translations-rendered', {
+      detail: { translations: currentTranslations },
+    }));
+  }
+
+  async function loadTranslations() {
+    if (!translationTableBody) return;
+
+    try {
+      const response = await fetch('data/translations.json');
+      if (!response.ok) throw new Error(`Translation data request failed: ${response.status}`);
+      renderTranslations(await response.json());
+    } catch (error) {
+      console.error(error);
+      renderTranslations([]);
+    }
   }
 
   translationTabs.forEach((button) => {
@@ -354,6 +339,7 @@ document.addEventListener('DOMContentLoaded', () => {
       activeSubject = button.dataset.subject;
       translationTabs.forEach((tab) => tab.classList.toggle('active', tab === button));
       renderTranslationTable();
+      window.dispatchEvent(new CustomEvent('ssamnori:translations-rendered'));
     });
   });
 
@@ -362,10 +348,11 @@ document.addEventListener('DOMContentLoaded', () => {
       activeGrade = button.dataset.grade;
       gradeTabs.forEach((tab) => tab.classList.toggle('active', tab === button));
       renderTranslationTable();
+      window.dispatchEvent(new CustomEvent('ssamnori:translations-rendered'));
     });
   });
 
-  renderTranslationTable();
+  loadTranslations();
 
   copyEmailButton?.addEventListener('click', async () => {
     const email = copyEmailButton.dataset.email;

@@ -1021,6 +1021,26 @@ body {
   list-style-position: inside;
 }
 
+.program-image-block {
+  margin: 1.2rem 0 0;
+}
+
+.program-image-block img {
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  display: block;
+  max-height: 420px;
+  object-fit: contain;
+  width: 100%;
+}
+
+.program-image-block figcaption {
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  margin-top: 0.55rem;
+  text-align: center;
+}
+
 @media (max-width: 768px) {
   .program-hero {
     grid-template-columns: 1fr;

@@ -1,0 +1,79 @@
+[
+  {
+    "subject": "korean",
+    "grade": "1",
+    "semester": "1학기",
+    "unit": "자료 준비 중",
+    "lesson": "-",
+    "title": "국어 번역 자료",
+    "translationUrl": "",
+    "resourceUrl": "",
+    "note": "구글 드라이브 링크를 연결할 예정입니다."
+  },
+  {
+    "subject": "social",
+    "grade": "3",
+    "semester": "1학기",
+    "unit": "자료 준비 중",
+    "lesson": "-",
+    "title": "사회 번역 자료",
+    "translationUrl": "",
+    "resourceUrl": "",
+    "note": "구글 드라이브 링크를 연결할 예정입니다."
+  },
+  {
+    "subject": "science",
+    "grade": "3",
+    "semester": "1학기",
+    "unit": "자료 준비 중",
+    "lesson": "-",
+    "title": "과학 번역 자료",
+    "translationUrl": "",
+    "resourceUrl": "",
+    "note": "구글 드라이브 링크를 연결할 예정입니다."
+  },
+  {
+    "subject": "moral",
+    "grade": "3",
+    "semester": "1학기",
+    "unit": "자료 준비 중",
+    "lesson": "-",
+    "title": "도덕 번역 자료",
+    "translationUrl": "",
+    "resourceUrl": "",
+    "note": "구글 드라이브 링크를 연결할 예정입니다."
+  },
+  {
+    "subject": "korean",
+    "grade": "1",
+    "semester": "1학기",
+    "unit": "새 단원",
+    "lesson": "-",
+    "title": "새 번역 자료",
+    "translationUrl": "",
+    "resourceUrl": "",
+    "note": ""
+  },
+  {
+    "subject": "korean",
+    "grade": "4",
+    "semester": "1학기",
+    "unit": "새 단원",
+    "lesson": "-",
+    "title": "새 번역 자료",
+    "translationUrl": "",
+    "resourceUrl": "",
+    "note": ""
+  },
+  {
+    "subject": "korean",
+    "grade": "4",
+    "semester": "1학기",
+    "unit": "새 단원",
+    "lesson": "-",
+    "title": "새 번역 자료",
+    "translationUrl": "",
+    "resourceUrl": "",
+    "note": ""
+  }
+]
