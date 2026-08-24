@@ -1,12 +1,12 @@
 [
   {
     "id": "fractionman",
-    "updatedAt": "2026-08-24",
+    "updatedAt": "2026-08-25",
     "title": "분수맨",
     "category": "web-game",
     "badge": "웹게임",
     "thumbnail": "assets/thumbnails/fractionman.jpg",
-    "description": "분모와 분자를 찾고 분수의 종류를 구분하며 1을 단위분수로 가르고 모으는 전자칠판용 게임입니다.",
+    "description": "분모·분자와 분수의 종류부터 가르기·모으기, 분수와 대분수의 덧셈·뺄셈까지 익히는 전자칠판용 게임입니다.",
     "actions": [
       {
         "type": "play",
