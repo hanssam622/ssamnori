@@ -1011,6 +1011,7 @@
     }
     .ubar.plain { border-color: #c8cee0; }
     .ubar.dropzone { border-style: dashed; background: #f4fbfb; }
+    .ubar.waiting { border-style: dashed; border-color: #c3b4f2; background: #f8f6ff; }
     .ubar.dropzone.hot { border-color: var(--accent); background: #efeaff; box-shadow: 0 0 0 3px rgba(139,124,246,.25); }
     .ucell {
       position: relative;
@@ -1354,7 +1355,7 @@
           <span class="cap">최대 3명</span>
           <div class="emoji">➖</div>
           <h3>진분수 − 진분수</h3>
-          <p>빼는 만큼 조각에 ✕표를 하고, 남은 조각을 세어 답을 써요.</p>
+          <p>빼는 만큼 조각에 ✕표를 해요. 1은 분모·분자가 같은 분수로 바꾼 뒤 빼요.</p>
           <button class="primary-btn" type="button" onclick="startGame('sub')">시작</button>
         </article>
 
@@ -1446,7 +1447,7 @@
       split:   { title: '🍫 1 가르기와 모으기', sub: '단위분수 막대를 끌어와 가르고, 남은 부분을 채워 보세요' },
       mix:     { title: '🎲 섞어 풀기',        sub: '분모·분자 문제와 분수의 종류 문제가 번갈아 나와요' },
       add:     { title: '➕ 진분수의 덧셈',    sub: '두 묶음의 조각을 모으기 판으로 옮기고 답을 써 보세요' },
-      sub:     { title: '➖ 진분수의 뺄셈',    sub: '빼는 만큼 조각에 ✕표를 하고 남은 조각을 세어 보세요' },
+      sub:     { title: '➖ 진분수의 뺄셈',    sub: '빼는 만큼 조각에 ✕표를 하고 남은 조각을 세어 보세요. 1은 먼저 분수로 바꿔요' },
       addm:    { title: '🧩 대분수의 덧셈',    sub: '통칸과 조각을 모으고, 조각이 가득 차면 묶어서 1을 만들어요' },
       subm:    { title: '✂️ 대분수의 뺄셈',    sub: '조각이 모자라면 1을 쪼개고, 빼는 만큼 ✕표를 해요' },
       mixcalc: { title: '🎯 덧셈 · 뺄셈 섞기', sub: '네 가지 유형이 번갈아 나와요' },
@@ -1511,6 +1512,8 @@
       return (code - 0xac00) % 28 !== 0;
     }
     function topicParticle(text) { return hasBatchim(text) ? '은' : '는'; }
+    // 숫자를 한글로 읽었을 때 받침이 있으면 '으로'
+    function roParticle(n) { return hasBatchim(sino(n)) ? '으로' : '로'; }
 
     function speak(text) {
       if (!voiceOn || !('speechSynthesis' in window)) return;
@@ -1706,10 +1709,21 @@
 
     function makeSubQuestion() {
       const n = randInt(3, 9);
+      // 1을 분모·분자가 같은 분수(n분의 n)로 바꿔서 빼는 유형
+      if (Math.random() < 0.4) {
+        const b = randInt(1, n - 1);
+        return calcMeta({
+          kind: 'sub', n, a: n, b, fromOne: true,
+          t1: { w: 1, num: null, den: n },
+          t2: { w: 0, num: b, den: n },
+          needWhole: false,
+          ansWhole: 0, ansNum: n - b, ansDen: n
+        });
+      }
       const a = randInt(2, n - 1);
       const b = randInt(1, a - 1);
       return calcMeta({
-        kind: 'sub', n, a, b,
+        kind: 'sub', n, a, b, fromOne: false,
         t1: { w: 0, num: a, den: n },
         t2: { w: 0, num: b, den: n },
         needWhole: false,
@@ -1840,6 +1854,10 @@
         p.m2 = 0;            // 둘째 묶음에서 옮긴 조각 수
       } else if (question.kind === 'sub') {
         p.cells = Array.from({ length: question.a }, () => false);   // ✕표 여부
+        p.split = !question.fromOne;                                  // 1을 조각으로 바꿨는지
+        if (question.fromOne) {
+          p.message = `1을 ${n}분의 ${n}${roParticle(n)} 바꾼 뒤 ✕표를 해 보세요.`;
+        }
       } else if (question.kind === 'addm') {
         p.mw1 = 0; p.mu1 = 0;
         p.mw2 = 0; p.mu2 = 0;
@@ -2362,7 +2380,7 @@
     function ubarHtml(p, n, cells, opts) {
       const o = opts || {};
       const dense = calcDense(n) ? ' dense' : '';
-      const cls = ['ubar', o.plain ? 'plain' : '', o.dropzone ? 'dropzone' : '', dense].filter(Boolean).join(' ');
+      const cls = ['ubar', o.plain ? 'plain' : '', o.waiting ? 'waiting' : '', o.dropzone ? 'dropzone' : '', dense].filter(Boolean).join(' ');
       const drop = o.dropzone ? `data-drop="${o.dropzone}" data-p="${p.idx}"` : '';
       const inner = cells.map((c) => {
         if (!c) return '<div class="ucell"></div>';
@@ -2475,17 +2493,25 @@
     function subBody(p) {
       const q = p.question;
       const n = q.n;
+      const shown = p.split;
       const cells = Array.from({ length: n }, (_, i) =>
-        (i < q.a ? { tap: true, x: p.cells[i], i } : null));
+        (shown && i < q.a ? { tap: true, x: p.cells[i], i } : null));
       const crossed = p.cells.filter(Boolean).length;
+      const tag = q.fromOne ? (shown ? `${n}/${n}` : '1') : `${q.a}/${n}`;
+      const note = shown
+        ? `조각을 눌러 ✕표 — 지금 ${crossed}칸 / ${q.b}칸 지워야 해요`
+        : `1은 ${n}분의 ${n}과 같아요. 아래 버튼을 눌러 바꿔 보세요`;
 
       return `
         <div class="calc-body">
           ${exprCardHtml(p)}
           <div class="board">
             ${boardRow('기준', 1, wboxHtml(p, {}))}
-            ${boardRow(`${q.a}/${n}`, 1, ubarHtml(p, n, cells), `조각을 눌러 ✕표 — 지금 ${crossed}칸 / ${q.b}칸 지워야 해요`)}
+            ${boardRow(tag, 1, ubarHtml(p, n, cells, { waiting: !shown }), note)}
           </div>
+          ${q.fromOne && !shown
+            ? `<button class="carry-btn" type="button" onclick="doSplitOne(${p.idx})">✂️ 1을 ${n}분의 ${n}${roParticle(n)} 바꾸기</button>`
+            : ''}
           ${ansRowHtml(p)}
           ${numRowHtml(p)}
         </div>
@@ -2665,6 +2691,17 @@
       blip('ok');
     }
 
+    // 1을 분모·분자가 같은 분수(n분의 n)로 바꾸기
+    function doSplitOne(idx) {
+      const p = players[idx];
+      if (!gameActive || p.locked) return;
+      const q = p.question;
+      if (q.kind !== 'sub' || !q.fromOne || p.split) return;
+      p.split = true;
+      calcTouched(idx, `1을 ${q.n}분의 ${q.n}${roParticle(q.n)} 바꿨어요. 이제 ${q.b}칸에 ✕표를 해요.`);
+      blip('ok');
+    }
+
     // 통칸 1을 n조각으로 (받아내림)
     function doSplitWhole(idx) {
       const p = players[idx];
@@ -2716,7 +2753,7 @@
       if (!gameActive || p.locked) return;
       const q = p.question;
       if (q.kind === 'add') { p.m1 = 0; p.m2 = 0; }
-      else if (q.kind === 'sub') { p.cells = p.cells.map(() => false); }
+      else if (q.kind === 'sub') { p.cells = p.cells.map(() => false); p.split = !q.fromOne; }
       else if (q.kind === 'addm') { p.mw1 = 0; p.mu1 = 0; p.mw2 = 0; p.mu2 = 0; p.carried = 0; }
       else if (q.kind === 'subm') {
         p.wholes = Array.from({ length: q.w1 }, () => false);
@@ -2771,6 +2808,10 @@
           return;
         }
       } else if (q.kind === 'sub') {
+        if (q.fromOne && !p.split) {
+          calcHint(idx, `먼저 1을 ${n}분의 ${n}${roParticle(n)} 바꿔 보세요.`);
+          return;
+        }
         const crossed = p.cells.filter(Boolean).length;
         if (crossed !== q.b) {
           calcWrong(idx, `✕표를 ${q.b}칸 해야 하는데 지금 ${crossed}칸이에요.`);
