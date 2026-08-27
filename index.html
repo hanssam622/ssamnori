@@ -18,10 +18,26 @@
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "WebSite",
-    "name": "쌤노리",
-    "url": "https://hanssam622.github.io/ssamnori/",
-    "description": "전자칠판용 학생 학습 게임과 교사용 수업 도구 모음"
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "name": "쌤노리",
+        "url": "https://hanssam622.github.io/ssamnori/",
+        "description": "전자칠판용 학생 학습 게임과 교사용 수업 도구 모음"
+      },
+      {
+        "@type": "ItemList",
+        "name": "쌤노리 교육용 웹게임",
+        "itemListElement": [
+          {"@type": "ListItem", "position": 1, "url": "https://hanssam622.github.io/ssamnori/programs/fractionman.html", "name": "분수맨"},
+          {"@type": "ListItem", "position": 2, "url": "https://hanssam622.github.io/ssamnori/programs/graphman.html", "name": "그래프맨"},
+          {"@type": "ListItem", "position": 3, "url": "https://hanssam622.github.io/ssamnori/programs/angleman.html", "name": "각도맨"},
+          {"@type": "ListItem", "position": 4, "url": "https://hanssam622.github.io/ssamnori/programs/gugudan-fighter.html", "name": "구구단파이터"},
+          {"@type": "ListItem", "position": 5, "url": "https://hanssam622.github.io/ssamnori/programs/calcman.html", "name": "연산맨"},
+          {"@type": "ListItem", "position": 6, "url": "https://hanssam622.github.io/ssamnori/programs/shapeman.html", "name": "도형맨"}
+        ]
+      }
+    ]
   }
   </script>
   
@@ -91,8 +107,181 @@
       </div>
     </div>
 
-    <!-- Portfolio Card Grid -->
-    <div class="portfolio-grid" id="grid-container" aria-live="polite"></div>
+    <section class="project-intro" aria-labelledby="project-list-title">
+      <h2 id="project-list-title">전자칠판 학습 게임과 교사용 프로그램</h2>
+      <p>수학 개념을 익히는 학생용 웹게임과 수업에 바로 활용할 수 있는 교사용 도구를 모았습니다.</p>
+    </section>
+
+    <!-- Portfolio Card Grid: generated from data/projects.json -->
+    <div class="portfolio-grid" id="grid-container" aria-live="polite">
+      <!-- STATIC_PROJECTS_START -->
+      <article class="portfolio-card" data-category="web-game" id="static-card-fractionman">
+        <div class="card-thumb-container">
+          <img src="assets/thumbnails/fractionman.jpg" alt="분수맨 썸네일" class="card-thumb">
+          <span class="card-badge">웹게임</span>
+        </div>
+        <div class="card-content">
+          <h2 class="card-title">분수맨</h2>
+          <p class="card-desc">분모·분자와 분수의 종류부터 가르기·모으기, 분수와 대분수의 덧셈·뺄셈까지 익히는 전자칠판용 게임입니다.</p>
+          <div class="card-actions"><a href="games/fractionman/index.html" class="btn btn-secondary">바로 플레이</a><a href="games/fractionman/index.html" class="btn btn-secondary" target="_blank" rel="noopener">새 창</a><a href="programs/fractionman.html" class="btn btn-secondary">설명</a></div>
+        </div>
+      </article>
+      <article class="portfolio-card" data-category="other-program" id="static-card-batchnuki">
+        <div class="card-thumb-container">
+          <div class="card-thumb-fallback" aria-label="배치누끼 썸네일 준비 중">배치누끼</div>
+          <span class="card-badge">파일</span>
+        </div>
+        <div class="card-content">
+          <h2 class="card-title">배치누끼</h2>
+          <p class="card-desc">캐릭터 이미지를 한 번에 정리하고 배경을 제거하는 누끼 따기 프로그램입니다. 캔바나 다른 툴로 일일이 제거하기에 누끼 따야할 이미지가 너무 많을 때 활용해보세요!</p>
+          <div class="card-actions"><a href="programs/batchnuki.html" class="btn btn-secondary">설명</a></div>
+        </div>
+      </article>
+      <article class="portfolio-card" data-category="other-program" id="static-card-ieon">
+        <div class="card-thumb-container">
+          <img src="assets/thumbnails/ieon.png" alt="이어온 썸네일" class="card-thumb">
+          <span class="card-badge">파일</span>
+        </div>
+        <div class="card-content">
+          <h2 class="card-title">이어온</h2>
+          <p class="card-desc">다국어 수업자료 번역 프로그램입니다. 교과서와 PPT 등의 수업자료 파일을 받아 음성과 자막을 붙인 다국어 자료로 만들어줄 수 있습니다. (2025년 디지털 교육자료 연구대회 2등급 수상)</p>
+          <div class="card-actions"><a href="programs/ieon.html" class="btn btn-secondary">설명</a></div>
+        </div>
+      </article>
+      <article class="portfolio-card" data-category="other-program" id="static-card-dun-podo-escape">
+        <div class="card-thumb-container">
+          <img src="assets/thumbnails/dun-podo-escape.png" alt="둔포도 탈출기 썸네일" class="card-thumb">
+          <span class="card-badge">파일</span>
+        </div>
+        <div class="card-content">
+          <h2 class="card-title">둔포도 탈출기</h2>
+          <p class="card-desc">학생들과 함께 만드는 전자칠판용 보드게임입니다.</p>
+          <div class="card-actions"><a href="https://drive.google.com/file/d/1beCzsj1YXBwyDa2T7kL7H8J_ATLS-FZj/view?usp=sharing" class="btn btn-secondary" target="_blank" rel="noopener">다운로드</a></div>
+        </div>
+      </article>
+      <article class="portfolio-card" data-category="other-program" id="static-card-class-mafia">
+        <div class="card-thumb-container">
+          <img src="assets/thumbnails/class-mafia.png" alt="교실 마피아 게임 썸네일" class="card-thumb">
+          <span class="card-badge">파일</span>
+        </div>
+        <div class="card-content">
+          <h2 class="card-title">교실 마피아 게임</h2>
+          <p class="card-desc">교실에서 함께 즐길 수 있는 추리형 마피아 게임 자료입니다.</p>
+          <div class="card-actions"><a href="https://drive.google.com/file/d/1FLammY2oDp9q5nK-S5ZrkkCHry0Dq6Sn/view?usp=sharing" class="btn btn-secondary" target="_blank" rel="noopener">다운로드</a></div>
+        </div>
+      </article>
+      <article class="portfolio-card" data-category="web-game" id="static-card-graphman">
+        <div class="card-thumb-container">
+          <img src="assets/thumbnails/graphman.svg" alt="그래프맨 썸네일" class="card-thumb">
+          <span class="card-badge">웹게임</span>
+        </div>
+        <div class="card-content">
+          <h2 class="card-title">그래프맨</h2>
+          <p class="card-desc">표를 읽고 막대그래프의 높이를 직접 맞추며 자료 해석과 그래프 그리기를 연습하는 게임입니다.</p>
+          <div class="card-actions"><a href="games/graphman/index.html" class="btn btn-secondary">바로 플레이</a><a href="games/graphman/index.html" class="btn btn-secondary" target="_blank" rel="noopener">새 창</a><a href="programs/graphman.html" class="btn btn-secondary">설명</a></div>
+        </div>
+      </article>
+      <article class="portfolio-card" data-category="web-game" id="static-card-angleman">
+        <div class="card-thumb-container">
+          <img src="assets/thumbnails/angleman.png" alt="각도맨 썸네일" class="card-thumb">
+          <span class="card-badge">웹게임</span>
+        </div>
+        <div class="card-content">
+          <h2 class="card-title">각도맨</h2>
+          <p class="card-desc">제시되는 각도를 각도기로 맞추고 재어보며 각도의 개념을 읽히는 교육 게임입니다.</p>
+          <div class="card-actions"><a href="games/angleman/index.html" class="btn btn-secondary">바로 플레이</a><a href="games/angleman/index.html" class="btn btn-secondary" target="_blank" rel="noopener">새 창</a><a href="programs/angleman.html" class="btn btn-secondary">설명</a></div>
+        </div>
+      </article>
+      <article class="portfolio-card" data-category="web-game" id="static-card-gugudan-fighter">
+        <div class="card-thumb-container">
+          <img src="assets/thumbnails/gugudan.png" alt="구구단파이터 썸네일" class="card-thumb">
+          <span class="card-badge">웹게임</span>
+        </div>
+        <div class="card-content">
+          <h2 class="card-title">구구단파이터</h2>
+          <p class="card-desc">구구단 문제를 빠르게 풀며 몬스터와 대결하는 전자칠판용 곱셈 연습 게임입니다.</p>
+          <div class="card-actions"><a href="games/gugudan/index.html" class="btn btn-secondary">바로 플레이</a><a href="games/gugudan/index.html" class="btn btn-secondary" target="_blank" rel="noopener">새 창</a><a href="programs/gugudan-fighter.html" class="btn btn-secondary">설명</a></div>
+        </div>
+      </article>
+      <article class="portfolio-card" data-category="other-program" id="static-card-duckqr">
+        <div class="card-thumb-container">
+          <img src="assets/thumbnails/duckqr.png" alt="오리 QR 카메라 썸네일" class="card-thumb">
+          <span class="card-badge">안드로이드</span>
+        </div>
+        <div class="card-content">
+          <h2 class="card-title">오리 QR 카메라</h2>
+          <p class="card-desc">구형 안드로이드 태블릿에서 QR 코드 링크를 빠르게 열기 위한 단순한 카메라 앱입니다.</p>
+          <div class="card-actions"><a href="https://drive.google.com/file/d/11tIU1UZplCheH7RYSLjA1rYspp-IvRdd/view?usp=sharing" class="btn btn-secondary" target="_blank" rel="noopener">다운로드</a></div>
+        </div>
+      </article>
+      <article class="portfolio-card" data-category="web-game" id="static-card-calcman">
+        <div class="card-thumb-container">
+          <img src="assets/thumbnails/calcman.png" alt="연산맨 썸네일" class="card-thumb">
+          <span class="card-badge">웹게임</span>
+        </div>
+        <div class="card-content">
+          <h2 class="card-title">연산맨</h2>
+          <p class="card-desc">곱셈의 받아올림과 나눗셈의 계산 과정을 올바른 계산 과정에 맞게 연습해보는 게임입니다.</p>
+          <div class="card-actions"><a href="games/calcman/index.html" class="btn btn-secondary">바로 플레이</a><a href="games/calcman/index.html" class="btn btn-secondary" target="_blank" rel="noopener">새 창</a><a href="programs/calcman.html" class="btn btn-secondary">설명</a></div>
+        </div>
+      </article>
+      <article class="portfolio-card" data-category="web-game" id="static-card-shapeman">
+        <div class="card-thumb-container">
+          <img src="assets/thumbnails/shapeman.png" alt="도형맨 썸네일" class="card-thumb">
+          <span class="card-badge">웹게임</span>
+        </div>
+        <div class="card-content">
+          <h2 class="card-title">도형맨</h2>
+          <p class="card-desc">삼각형의 변의 길이와 각의 크기에 따른 분류 기준을 연습하고, 직접 삼각형을 만들며 삼각형 분류기준에 익숙해지는 게임입니다.</p>
+          <div class="card-actions"><a href="games/shapeman/index.html" class="btn btn-secondary">바로 플레이</a><a href="games/shapeman/index.html" class="btn btn-secondary" target="_blank" rel="noopener">새 창</a><a href="programs/shapeman.html" class="btn btn-secondary">설명</a></div>
+        </div>
+      </article>
+      <article class="portfolio-card" data-category="other-program" id="static-card-seat">
+        <div class="card-thumb-container">
+          <img src="assets/thumbnails/naejari.png" alt="내자리 썸네일" class="card-thumb">
+          <span class="card-badge">파일</span>
+        </div>
+        <div class="card-content">
+          <h2 class="card-title">내자리</h2>
+          <p class="card-desc">귀여운 캐릭터 감성으로 학생 자리를 바꾸고 뽑을 수 있는 교실용 자리바꾸기 프로그램입니다.</p>
+          <div class="card-actions"><a href="programs/naejari.html" class="btn btn-secondary">설명</a></div>
+        </div>
+      </article>
+      <article class="portfolio-card" data-category="other-program" id="static-card-mindmap">
+        <div class="card-thumb-container">
+          <img src="assets/thumbnails/thinkchain.png" alt="씽크체인 (test) 썸네일" class="card-thumb">
+          <span class="card-badge">파일</span>
+        </div>
+        <div class="card-content">
+          <h2 class="card-title">씽크체인 (test)</h2>
+          <p class="card-desc">간단한 마인드맵과 프로젝트 칸반보드를 사용할 수 있는 생각 정리 도구입니다.</p>
+          <div class="card-actions"><a href="programs/thinkchain.html" class="btn btn-secondary">설명</a></div>
+        </div>
+      </article>
+      <article class="portfolio-card" data-category="other-program" id="static-card-tlog">
+        <div class="card-thumb-container">
+          <img src="assets/thumbnails/tlog.png" alt="티로그 (test) 썸네일" class="card-thumb">
+          <span class="card-badge">파일</span>
+        </div>
+        <div class="card-content">
+          <h2 class="card-title">티로그 (test)</h2>
+          <p class="card-desc">디지털 교무수첩과 수업자료 관리를 한곳에 모으는 교사용 업무 정리 프로그램입니다. 타이머, 달력, 파일 저장과 기록 및 메모, 학생 관리 기능을 지원합니다. 구글 드라이브를 이용한 동기화도 가능합니다.</p>
+          <div class="card-actions"><a href="programs/tlog.html" class="btn btn-secondary">설명</a></div>
+        </div>
+      </article>
+      <article class="portfolio-card" data-category="other-program" id="static-card-mininori">
+        <div class="card-thumb-container">
+          <img src="assets/thumbnails/mininori.png" alt="미니노리 썸네일" class="card-thumb">
+          <span class="card-badge">파일</span>
+        </div>
+        <div class="card-content">
+          <h2 class="card-title">미니노리</h2>
+          <p class="card-desc">다같이 하는 전자칠판 종합 게임입니다. 교실 전체가 함께 참여하는 짧고 빠른 미니게임 묶음입니다. 창체 시간에 간단히 활용해보세요!</p>
+          <div class="card-actions"><a href="programs/mininori.html" class="btn btn-secondary">설명</a></div>
+        </div>
+      </article>
+      <!-- STATIC_PROJECTS_END -->
+    </div>
 
     <!-- Curriculum Translation Project -->
     <section class="translation-section hidden" id="translation-project">

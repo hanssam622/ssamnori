@@ -19,6 +19,12 @@
         "label": "새 창",
         "url": "games/fractionman/index.html",
         "downloadKey": ""
+      },
+      {
+        "type": "info",
+        "label": "설명",
+        "url": "programs/fractionman.html",
+        "downloadKey": ""
       }
     ]
   },
@@ -41,6 +47,12 @@
         "type": "external",
         "label": "새 창",
         "url": "games/gugudan/index.html",
+        "downloadKey": ""
+      },
+      {
+        "type": "info",
+        "label": "설명",
+        "url": "programs/gugudan-fighter.html",
         "downloadKey": ""
       }
     ]
@@ -65,6 +77,12 @@
         "label": "새 창",
         "url": "games/calcman/index.html",
         "downloadKey": ""
+      },
+      {
+        "type": "info",
+        "label": "설명",
+        "url": "programs/calcman.html",
+        "downloadKey": ""
       }
     ]
   },
@@ -87,6 +105,12 @@
         "type": "external",
         "label": "새 창",
         "url": "games/shapeman/index.html",
+        "downloadKey": ""
+      },
+      {
+        "type": "info",
+        "label": "설명",
+        "url": "programs/shapeman.html",
         "downloadKey": ""
       }
     ]
@@ -111,6 +135,12 @@
         "label": "새 창",
         "url": "games/angleman/index.html",
         "downloadKey": ""
+      },
+      {
+        "type": "info",
+        "label": "설명",
+        "url": "programs/angleman.html",
+        "downloadKey": ""
       }
     ]
   },
@@ -133,6 +163,12 @@
         "type": "external",
         "label": "새 창",
         "url": "games/graphman/index.html",
+        "downloadKey": ""
+      },
+      {
+        "type": "info",
+        "label": "설명",
+        "url": "programs/graphman.html",
         "downloadKey": ""
       }
     ]
