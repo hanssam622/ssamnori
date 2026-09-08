@@ -930,6 +930,13 @@
       color: #4a5066;
     }
     .expr .qm { color: var(--accent); }
+    /* 좁은 화면에서 '= ?' 가 갈라지지 않게 묶는다 */
+    .expr .tail {
+      display: inline-flex;
+      align-items: center;
+      gap: calc(var(--scale) * 7px);
+      white-space: nowrap;
+    }
     .expr .frac { padding: 0; gap: calc(var(--scale) * 6px); }
     .expr .frac .whole { font-size: calc(var(--scale) * 34px); padding: 0; }
     .expr .frac-col .num, .expr .frac-col .den {
@@ -1107,6 +1114,18 @@
       border: 0;
       box-shadow: none;
     }
+    .aw-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: calc(var(--scale) * 2px);
+    }
+    .aw-note {
+      font-size: calc(var(--scale) * 10px);
+      font-weight: 800;
+      color: #9aa0b0;
+      white-space: nowrap;
+    }
     .ans-mixed .and {
       font-size: calc(var(--scale) * 17px);
       font-weight: 1000;
@@ -1128,6 +1147,80 @@
       border-radius: 99px;
       background: var(--ink);
     }
+
+    .prog-chip {
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: #eef0fa;
+      border: 2px solid #d5d9ec;
+      color: #5b6177;
+      font-size: calc(var(--scale) * 15px);
+      font-weight: 1000;
+      white-space: nowrap;
+    }
+    .calc-body.plain { gap: calc(var(--scale) * 14px); }
+    .plain-tag {
+      align-self: center;
+      padding: calc(var(--scale) * 3px) calc(var(--scale) * 12px);
+      border-radius: 999px;
+      background: #f2effe;
+      border: 2px solid #d8cffb;
+      color: #5b4bb5;
+      font-size: calc(var(--scale) * 13px);
+      font-weight: 1000;
+      white-space: nowrap;
+    }
+    .calc-body.plain .expr-card { padding: calc(var(--scale) * 18px) calc(var(--scale) * 12px); }
+    .calc-body.plain .expr .op,
+    .calc-body.plain .expr .eq,
+    .calc-body.plain .expr .qm { font-size: calc(var(--scale) * 42px); }
+    .calc-body.plain .expr .frac .whole { font-size: calc(var(--scale) * 42px); }
+    .calc-body.plain .expr .frac-col .num,
+    .calc-body.plain .expr .frac-col .den { font-size: calc(var(--scale) * 32px); }
+    .calc-body.plain .expr .frac-col .line {
+      width: calc(var(--scale) * 50px);
+      height: calc(var(--scale) * 6px);
+    }
+
+    .done-card {
+      align-self: center;
+      width: 100%;
+      max-width: calc(var(--scale) * 330px);
+      padding: calc(var(--scale) * 18px) calc(var(--scale) * 16px);
+      border-radius: 20px;
+      background: #fff;
+      border: 3px solid rgba(255,255,255,.9);
+      box-shadow: 0 10px 26px rgba(65,70,98,.12);
+      text-align: center;
+    }
+    .done-emoji { font-size: calc(var(--scale) * 44px); line-height: 1; }
+    .done-score {
+      margin: calc(var(--scale) * 8px) 0 calc(var(--scale) * 4px);
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: calc(var(--scale) * 6px);
+    }
+    .done-score b { font-size: calc(var(--scale) * 52px); font-weight: 1000; color: var(--accent); }
+    .done-score span { font-size: calc(var(--scale) * 18px); font-weight: 900; color: var(--muted); }
+    .done-sub {
+      font-size: calc(var(--scale) * 15px);
+      font-weight: 900;
+      color: #5b6177;
+      margin-bottom: calc(var(--scale) * 12px);
+    }
+    .done-list { display: grid; gap: calc(var(--scale) * 5px); }
+    .done-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      padding: calc(var(--scale) * 6px) calc(var(--scale) * 10px);
+      border-radius: 10px;
+      background: var(--soft);
+      font-size: calc(var(--scale) * 14px);
+      font-weight: 900;
+    }
+    .ranking-row small { font-weight: 800; color: var(--muted); }
 
     /* =========================================================
        빠른 계산
@@ -1375,6 +1468,14 @@
           <button class="primary-btn" type="button" onclick="startGame('subm')">시작</button>
         </article>
 
+        <article class="game-card" style="--tint:#fff0f5">
+          <span class="cap">최대 3명</span>
+          <div class="emoji">🍕</div>
+          <h3>가분수로 계산하기</h3>
+          <p>1을 넘는 분수를 대분수로 바꾸지 않고 그대로 두고 더하고 빼요.</p>
+          <button class="primary-btn" type="button" onclick="startGame('imp')">시작</button>
+        </article>
+
         <article class="game-card" style="--tint:#f5eeff">
           <span class="cap">최대 3명</span>
           <div class="emoji">🎯</div>
@@ -1402,6 +1503,19 @@
             </select>
           </div>
           <button class="primary-btn" type="button" onclick="startGame('speed')">시작</button>
+        </article>
+      </div>
+    </div>
+
+    <div class="stage-block">
+      <h3 class="stage-heading"><span class="stage-no">5</span>단원 마무리</h3>
+      <div class="game-cards">
+        <article class="game-card wide" style="--tint:#eaf7ef">
+          <span class="cap">최대 3명 · 시간 무제한</span>
+          <div class="emoji">📋</div>
+          <h3>단원 마무리 평가</h3>
+          <p>20문제를 풀고 100점 만점으로 점수를 받아요. 가르기·모으기 2문제, 진분수 덧셈 6문제, 진분수 뺄셈 6문제, 대분수 덧셈·뺄셈 6문제가 나오고 그림 문제와 식 문제가 반반씩 섞여요.</p>
+          <button class="primary-btn" type="button" onclick="startGame('exam')">평가 시작</button>
         </article>
       </div>
     </div>
@@ -1451,11 +1565,13 @@
       addm:    { title: '🧩 대분수의 덧셈',    sub: '통칸과 조각을 모으고, 조각이 가득 차면 묶어서 1을 만들어요' },
       subm:    { title: '✂️ 대분수의 뺄셈',    sub: '조각이 모자라면 1을 쪼개고, 빼는 만큼 ✕표를 해요' },
       mixcalc: { title: '🎯 덧셈 · 뺄셈 섞기', sub: '네 가지 유형이 번갈아 나와요' },
-      speed:   { title: '⚡ 빠른 계산',        sub: '식을 보고 빠르게 답을 눌러요. 연속으로 맞히면 보너스!' }
+      imp:     { title: '🍕 가분수로 계산하기', sub: '1을 넘는 분수를 그대로 두고 계산해요' },
+      speed:   { title: '⚡ 빠른 계산',        sub: '식을 보고 빠르게 답을 눌러요. 연속으로 맞히면 보너스!' },
+      exam:    { title: '📋 단원 마무리 평가',  sub: '20문제를 풀고 100점 만점으로 점수를 받아요' }
     };
 
     // 그림 조작 게임은 가로 폭이 필요해 인원을 제한한다
-    const MAX_PLAYERS = { split: 4, add: 3, sub: 3, addm: 3, subm: 3, mixcalc: 3 };
+    const MAX_PLAYERS = { split: 4, add: 3, sub: 3, addm: 3, subm: 3, mixcalc: 3, imp: 3, exam: 3 };
     const CALC_KINDS = ['add', 'sub', 'addm', 'subm'];
 
     const SCALES = { 1: 1.3, 2: 1.2, 3: 1.05, 4: 0.95, 5: 0.85, 6: 0.76 };
@@ -1467,7 +1583,7 @@
       let table = SCALES;
       if (mode === 'split') table = SPLIT_SCALES;
       else if (mode === 'speed') table = SPEED_SCALES;
-      else if (mode === 'mixcalc' || CALC_KINDS.includes(mode)) table = CALC_SCALES;
+      else if (mode === 'mixcalc' || mode === 'imp' || mode === 'exam' || CALC_KINDS.includes(mode)) table = CALC_SCALES;
       const base = table[playerCount] || 1;
       if (window.innerWidth < 820) return Math.min(base, playerCount <= 1 ? 1 : 0.8);
       return base;
@@ -1483,6 +1599,9 @@
     let voiceOn = true;
     let speedType = 'all';
     let combos = [];
+    let examQueues = [];
+    let examIndex = [];
+    let examLog = [];
 
     /* =========================================================
        소리 (읽어 주기 + 효과음)
@@ -1676,8 +1795,7 @@
           ${termHtml(q.t1)}
           <span class="op">${q.op === '+' ? '+' : '−'}</span>
           ${termHtml(q.t2)}
-          <span class="eq">=</span>
-          <span class="qm">?</span>
+          <span class="tail"><span class="eq">=</span><span class="qm">?</span></span>
         </span>
       `;
     }
@@ -1793,6 +1911,73 @@
       });
     }
 
+    /* ---------- 가분수로 계산하기 ---------- */
+    // 분자를 한 자리로 유지해 숫자 블록 하나로 답할 수 있게 한다
+    function makeImpQuestion() {
+      const n = randInt(3, 5);
+      if (Math.random() < 0.5) {
+        // 덧셈: 합이 가분수가 되고, 적어도 한 항은 가분수
+        const total = randInt(n + 1, 9);
+        let a = randInt(n, total - 1);
+        let b = total - a;
+        if (Math.random() < 0.5) { const t = a; a = b; b = t; }
+        return calcMeta({
+          kind: 'add', n, a, b, imp: true,
+          t1: { w: 0, num: a, den: n },
+          t2: { w: 0, num: b, den: n },
+          needWhole: false,
+          ansWhole: 0, ansNum: total, ansDen: n
+        });
+      }
+      // 뺄셈: 빼어지는 수가 가분수
+      const a = randInt(n + 1, 9);
+      const b = randInt(1, a - 1);
+      return calcMeta({
+        kind: 'sub', n, a, b, imp: true, fromOne: false,
+        t1: { w: 0, num: a, den: n },
+        t2: { w: 0, num: b, den: n },
+        needWhole: false,
+        ansWhole: 0, ansNum: a - b, ansDen: n
+      });
+    }
+
+    /* ---------- 단원 마무리 평가 문제지 ---------- */
+    const EXAM_TOTAL = 20;
+    const EXAM_POINT = 5;
+    const EXAM_LABELS = {
+      split: '가르기와 모으기',
+      add: '진분수의 덧셈',
+      sub: '진분수의 뺄셈',
+      mixed: '대분수의 덧셈과 뺄셈'
+    };
+
+    // 가르기·모으기 2 / 진분수 덧셈 6 / 진분수 뺄셈 6 / 대분수 덧셈·뺄셈 6 = 20문제
+    // 가르기·모으기를 뺀 18문제는 그림 문제와 식 문제를 반반으로 섞는다
+    function buildExamQueue() {
+      const plan = [];
+      for (let i = 0; i < 2; i += 1) plan.push({ make: makeSplitQuestion, noPic: false, type: 'split' });
+      for (let i = 0; i < 6; i += 1) plan.push({ make: makeAddQuestion, noPic: i >= 3, type: 'add' });
+      for (let i = 0; i < 6; i += 1) plan.push({ make: makeSubQuestion, noPic: i >= 3, type: 'sub' });
+      plan.push({ make: makeAddmQuestion, noPic: false, type: 'mixed' });
+      plan.push({ make: makeAddmQuestion, noPic: false, type: 'mixed' });
+      plan.push({ make: makeAddmQuestion, noPic: true, type: 'mixed' });
+      plan.push({ make: makeSubmQuestion, noPic: false, type: 'mixed' });
+      plan.push({ make: makeSubmQuestion, noPic: true, type: 'mixed' });
+      plan.push({ make: makeSubmQuestion, noPic: true, type: 'mixed' });
+      return shuffle(plan).map((item) => {
+        const q = item.make();
+        q.noPic = item.noPic;
+        q.examType = item.type;
+        return q;
+      });
+    }
+
+    function examQuestionFor(idx) {
+      const queue = examQueues[idx];
+      if (!queue) return null;
+      return queue[examIndex[idx]] || null;
+    }
+
     /* ---------- 빠른 계산 문제 ---------- */
     function makeSpeedQuestion() {
       const type = speedType === 'all' ? pick(['pa', 'ps', 'ma', 'ms']) : speedType;
@@ -1808,7 +1993,8 @@
       add: makeAddQuestion,
       sub: makeSubQuestion,
       addm: makeAddmQuestion,
-      subm: makeSubmQuestion
+      subm: makeSubmQuestion,
+      imp: makeImpQuestion
     };
 
     function makeQuestion() {
@@ -1831,14 +2017,15 @@
     };
 
     function createPlayer(idx) {
-      const question = makeQuestion();
+      const question = mode === 'exam' ? examQuestionFor(idx) : makeQuestion();
+      if (!question) return { idx, question: null, locked: true, state: 'idle', message: '', tries: 0, picked: [], selNum: null };
       const n = question.n;
       const p = {
         idx,
         question,
         tries: 0,
         state: 'idle',
-        message: START_MESSAGE[question.kind] || '알맞은 답을 골라 보세요.',
+        message: question.noPic ? '식을 보고 계산해 답을 써 보세요.' : (START_MESSAGE[question.kind] || '알맞은 답을 골라 보세요.'),
         picked: [],
         // 가르기·모으기
         left: 1,
@@ -1883,6 +2070,11 @@
       if (cap && playerCount > cap) playerCount = cap;
       scores = Array(playerCount).fill(0);
       combos = Array(playerCount).fill(0);
+      if (mode === 'exam') {
+        examQueues = Array.from({ length: playerCount }, () => buildExamQueue());
+        examIndex = Array(playerCount).fill(0);
+        examLog = Array.from({ length: playerCount }, () => []);
+      }
       gameActive = true;
       players = Array.from({ length: playerCount }, (_, idx) => createPlayer(idx));
       document.getElementById('mode-title').textContent = MODES[mode].title;
@@ -1896,7 +2088,7 @@
 
     function startTimer() {
       if (timerId) { clearInterval(timerId); timerId = null; }
-      const selected = document.getElementById('timer-select').value;
+      const selected = mode === 'exam' ? 'none' : document.getElementById('timer-select').value;
       const display = document.getElementById('time-left');
       display.style.color = '';
       if (selected === 'none') {
@@ -1942,12 +2134,14 @@
       });
       document.getElementById('result-overlay').innerHTML = `
         <div class="result-card">
-          <h2>결과</h2>
+          <h2>${mode === 'exam' ? '마무리 평가 결과' : '결과'}</h2>
           ${ranking.map((item) => `
             <div class="ranking-row${item.score === best && best > 0 ? ' top' : ''}">
               <span>${item.rank}</span>
               <span>${item.animal.emoji} ${item.animal.name}</span>
-              <strong>${item.score}점</strong>
+              <strong>${mode === 'exam'
+                ? `${item.score} / 100점 <small>(${(examLog[item.idx] || []).filter((r) => r.correct).length}/${EXAM_TOTAL}문제)</small>`
+                : `${item.score}점`}</strong>
             </div>
           `).join('')}
           <div style="margin-top:18px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
@@ -1962,6 +2156,7 @@
 
     function hideResult() {
       document.getElementById('result-overlay').classList.add('hidden');
+      if (mode === 'exam') return;
       gameActive = true;
       startTimer();
     }
@@ -1971,6 +2166,11 @@
       document.getElementById('result-overlay').classList.add('hidden');
       scores = Array(playerCount).fill(0);
       combos = Array(playerCount).fill(0);
+      if (mode === 'exam') {
+        examQueues = Array.from({ length: playerCount }, () => buildExamQueue());
+        examIndex = Array(playerCount).fill(0);
+        examLog = Array.from({ length: playerCount }, () => []);
+      }
       gameActive = true;
       players = Array.from({ length: playerCount }, (_, idx) => createPlayer(idx));
       renderPlayers();
@@ -1989,7 +2189,7 @@
        렌더링
        ========================================================= */
     function columnCount() {
-      const wide = mode === 'split' || mode === 'mixcalc' || CALC_KINDS.includes(mode);
+      const wide = mode === 'split' || mode === 'mixcalc' || mode === 'imp' || mode === 'exam' || CALC_KINDS.includes(mode);
       if (window.innerWidth < 1100 && wide) return 1;
       if (window.innerWidth < 820) return Math.min(playerCount, 2);
       return playerCount;
@@ -2022,12 +2222,22 @@
 
     function cellInner(p) {
       const animal = ANIMALS[p.idx % ANIMALS.length];
-      const render = BODY_RENDERERS[p.question.kind];
-      const body = render ? render(p) : quizBody(p);
+      const q = p.question;
+      let body;
+      if (!q) body = examDoneBody(p);
+      else if (q.noPic) body = plainBody(p);
+      else {
+        const render = BODY_RENDERERS[q.kind];
+        body = render ? render(p) : quizBody(p);
+      }
+      const progress = mode === 'exam'
+        ? `<span class="prog-chip">${Math.min(examIndex[p.idx] + (q ? 1 : 0), EXAM_TOTAL)} / ${EXAM_TOTAL}</span>`
+        : '';
       return `
         <div class="answer-overlay" id="answer-overlay-${p.idx}"></div>
         <div class="player-header">
           <span class="player-name">${animal.emoji} ${animal.name}</span>
+          ${progress}
           <span class="score-line">${scores[p.idx]}점</span>
         </div>
         ${body}
@@ -2039,6 +2249,7 @@
     }
 
     function controlsHtml(p) {
+      if (!p.question) return '<div class="btn-col"></div>';
       const kind = p.question.kind;
       if (kind === 'split') {
         return `
@@ -2050,7 +2261,7 @@
       if (CALC_KINDS.includes(kind)) {
         return `
           <div class="btn-col">
-            <button class="reset-btn" type="button" onclick="resetCalc(${p.idx})">되돌리기</button>
+            ${p.question.noPic ? '' : `<button class="reset-btn" type="button" onclick="resetCalc(${p.idx})">되돌리기</button>`}
             <button class="check-btn" type="button" onclick="checkCalc(${p.idx})">확인</button>
           </div>`;
       }
@@ -2309,9 +2520,19 @@
 
     function checkSplit(idx) {
       const p = players[idx];
-      if (!gameActive || p.locked) return;
+      if (!gameActive || p.locked || !p.question) return;
       const q = p.question;
       const n = q.n;
+
+      if (mode === 'exam') {
+        if ([p.lnum, p.lden, p.rnum, p.rden].some((v) => v === null)) {
+          calcHint(idx, '왼쪽과 오른쪽 분수의 빈칸을 모두 채워 주세요.');
+          return;
+        }
+        const ok = p.lnum === q.take && p.lden === n && p.rnum === q.rest && p.rden === n;
+        examAdvance(idx, ok);
+        return;
+      }
 
       // 1) 막대를 알맞게 갈랐는지
       if (p.left !== q.take) {
@@ -2408,6 +2629,21 @@
       return out.join('');
     }
 
+    // 조각을 n칸짜리 막대 여러 줄로 그린다. total 만큼 칸을 만들고 filled 개만 채운다
+    function spreadBarsHtml(p, n, total, filled, makeCell, opts) {
+      const bars = Math.max(1, Math.ceil(total / n));
+      const out = [];
+      for (let bar = 0; bar < bars; bar += 1) {
+        const cells = [];
+        for (let k = 0; k < n; k += 1) {
+          const i = bar * n + k;
+          cells.push(i < filled ? makeCell(i) : null);
+        }
+        out.push(ubarHtml(p, n, cells, opts));
+      }
+      return out.join('');
+    }
+
     function boardRow(tag, slots, itemsHtml, note, drop) {
       const dropAttr = drop ? `data-drop="${drop.zone}" data-p="${drop.idx}"` : '';
       return `
@@ -2427,7 +2663,7 @@
         <div class="ans-row">
           <span class="lead">답</span>
           <div class="ans-mixed">
-            ${q.needWhole ? `${blank('aw', p.aw)}<span class="and">과</span>` : ''}
+            ${q.needWhole ? `<div class="aw-wrap">${blank('aw', p.aw)}<span class="aw-note">없으면 비워요</span></div><span class="and">과</span>` : ''}
             <div class="ans-frac">
               ${blank('an', p.an)}
               <div class="line"></div>
@@ -2462,26 +2698,24 @@
     function addBody(p) {
       const q = p.question;
       const n = q.n;
-      const restA = q.a - p.m1;
-      const restB = q.b - p.m2;
+      const total = q.a + q.b;
+      // 한 줄 = 1. 조각이 1을 넘으면 줄이 늘어난다 (가분수 계산도 같은 방식)
+      const slots = Math.max(Math.ceil(q.a / n), Math.ceil(q.b / n), Math.ceil(total / n), 1);
 
-      const rowA = ubarHtml(p, n, Array.from({ length: n }, (_, i) => (i < restA ? { drag: true, src: '1', i } : null)), { plain: true });
-      const rowB = ubarHtml(p, n, Array.from({ length: n }, (_, i) => (i < restB ? { drag: true, src: '2', b: true, i } : null)), { plain: true });
-      const matCells = Array.from({ length: n }, (_, i) => {
-        if (i < p.m1) return { drag: true, src: 'm1', i };
-        if (i < p.m1 + p.m2) return { drag: true, src: 'm2', b: true, i };
-        return null;
-      });
-      const mat = ubarHtml(p, n, matCells, { dropzone: 'mat' });
+      const rowA = spreadBarsHtml(p, n, q.a, q.a - p.m1, (i) => ({ drag: true, src: '1', i }), { plain: true });
+      const rowB = spreadBarsHtml(p, n, q.b, q.b - p.m2, (i) => ({ drag: true, src: '2', b: true, i }), { plain: true });
+      const mat = spreadBarsHtml(p, n, total, p.m1 + p.m2, (i) => (
+        i < p.m1 ? { drag: true, src: 'm1', i } : { drag: true, src: 'm2', b: true, i }
+      ), { dropzone: 'mat' });
 
       return `
         <div class="calc-body">
           ${exprCardHtml(p)}
           <div class="board">
-            ${boardRow(`${q.a}/${n}`, 1, rowA)}
-            ${boardRow(`${q.b}/${n}`, 1, rowB, '↓ 조각을 모으기 판으로 끌어오세요')}
-            ${boardRow('모으기', 1, mat, '', { zone: 'mat', idx: p.idx })}
-            ${boardRow('기준', 1, wboxHtml(p, {}))}
+            ${boardRow(`${q.a}/${n}`, slots, rowA)}
+            ${boardRow(`${q.b}/${n}`, slots, rowB, '↓ 조각을 모으기 판으로 끌어오세요')}
+            ${boardRow('모으기', slots, mat, '', { zone: 'mat', idx: p.idx })}
+            ${boardRow('기준', slots, wboxHtml(p, {}))}
           </div>
           ${ansRowHtml(p)}
           ${numRowHtml(p)}
@@ -2494,8 +2728,9 @@
       const q = p.question;
       const n = q.n;
       const shown = p.split;
-      const cells = Array.from({ length: n }, (_, i) =>
-        (shown && i < q.a ? { tap: true, x: p.cells[i], i } : null));
+      const slots = Math.max(1, Math.ceil(q.a / n));
+      const bars = spreadBarsHtml(p, n, q.a, shown ? q.a : 0,
+        (i) => ({ tap: true, x: p.cells[i], i }), { waiting: !shown });
       const crossed = p.cells.filter(Boolean).length;
       const tag = q.fromOne ? (shown ? `${n}/${n}` : '1') : `${q.a}/${n}`;
       const note = shown
@@ -2506,8 +2741,8 @@
         <div class="calc-body">
           ${exprCardHtml(p)}
           <div class="board">
-            ${boardRow('기준', 1, wboxHtml(p, {}))}
-            ${boardRow(tag, 1, ubarHtml(p, n, cells, { waiting: !shown }), note)}
+            ${boardRow('기준', slots, wboxHtml(p, {}))}
+            ${boardRow(tag, slots, bars, note)}
           </div>
           ${q.fromOne && !shown
             ? `<button class="carry-btn" type="button" onclick="doSplitOne(${p.idx})">✂️ 1을 ${n}분의 ${n}${roParticle(n)} 바꾸기</button>`
@@ -2595,6 +2830,49 @@
       `;
     }
 
+    /* ---------- 그림 없이 식만 나오는 문제 ---------- */
+    function plainBody(p) {
+      return `
+        <div class="calc-body plain">
+          <div class="plain-tag">그림 없이 계산해요</div>
+          ${exprCardHtml(p)}
+          ${ansRowHtml(p)}
+          ${numRowHtml(p)}
+        </div>
+      `;
+    }
+
+    /* ---------- 평가를 다 푼 뒤 ---------- */
+    function examDoneBody(p) {
+      const log = examLog[p.idx] || [];
+      const correct = log.filter((r) => r.correct).length;
+      const score = correct * EXAM_POINT;
+      const byType = {};
+      log.forEach((r) => {
+        byType[r.type] = byType[r.type] || { ok: 0, all: 0 };
+        byType[r.type].all += 1;
+        if (r.correct) byType[r.type].ok += 1;
+      });
+      const grade = score >= 90 ? '아주 잘했어요!' : score >= 70 ? '잘했어요!' : score >= 50 ? '조금만 더!' : '다시 한 번 해 봐요';
+      return `
+        <div class="calc-body">
+          <div class="done-card">
+            <div class="done-emoji">${score >= 90 ? '🏆' : score >= 70 ? '🎉' : '💪'}</div>
+            <div class="done-score"><b>${score}</b><span>/ 100점</span></div>
+            <div class="done-sub">${correct}문제 맞았어요 · ${grade}</div>
+            <div class="done-list">
+              ${['split', 'add', 'sub', 'mixed'].filter((t) => byType[t]).map((t) => `
+                <div class="done-row">
+                  <span>${EXAM_LABELS[t]}</span>
+                  <b>${byType[t].ok} / ${byType[t].all}</b>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
     /* ---------- ⑩ 빠른 계산 ---------- */
     function speedBody(p) {
       const q = p.question;
@@ -2619,7 +2897,7 @@
           <div class="ans-row">
             <span class="lead">답</span>
             <div class="ans-mixed">
-              ${q.needWhole ? `${blank('aw', p.aw, idxOf('aw'))}<span class="and">과</span>` : ''}
+              ${q.needWhole ? `<div class="aw-wrap">${blank('aw', p.aw, idxOf('aw'))}<span class="aw-note">없으면 비워요</span></div><span class="and">과</span>` : ''}
               <div class="ans-frac">
                 ${blank('an', p.an, idxOf('an'))}
                 <div class="line"></div>
@@ -2766,16 +3044,24 @@
       renderCell(idx);
     }
 
+    // 자연수 칸은 비워 둘 수 있다 (비우면 0으로 본다)
     function ansFilled(p) {
-      const q = p.question;
-      if (q.needWhole && p.aw === null) return false;
       return p.an !== null && p.ad !== null;
+    }
+
+    function ansWholeValue(p) {
+      return p.question.needWhole ? (p.aw === null ? 0 : p.aw) : 0;
     }
 
     function ansCorrect(p) {
       const q = p.question;
-      const w = q.needWhole ? p.aw : 0;
-      return w === q.ansWhole && p.an === q.ansNum && p.ad === q.ansDen;
+      return ansWholeValue(p) === q.ansWhole && p.an === q.ansNum && p.ad === q.ansDen;
+    }
+
+    function answerText(q) {
+      if (q.kind === 'split') return `${q.n}분의 ${q.take}와 ${q.n}분의 ${q.rest}`;
+      if (q.needWhole && q.ansWhole > 0) return `${q.ansWhole}과 ${q.ansDen}분의 ${q.ansNum}`;
+      return `${q.ansDen}분의 ${q.ansNum}`;
     }
 
     function calcWrong(idx, message) {
@@ -2795,11 +3081,47 @@
       renderCell(idx);
     }
 
+    // 평가에서는 그림은 생각을 돕는 도구로 두고 답만 채점한다
+    function examAdvance(idx, correct) {
+      const p = players[idx];
+      const q = p.question;
+      examLog[idx].push({ type: q.examType || q.kind, correct });
+      if (correct) scores[idx] += EXAM_POINT;
+      examIndex[idx] += 1;
+      p.locked = true;
+      p.state = correct ? 'ok' : 'no';
+      p.message = correct
+        ? `정답! (+${EXAM_POINT}점)`
+        : `아쉬워요. 정답은 ${answerText(q)}예요.`;
+      renderCell(idx);
+      showAnswerOverlay(idx, correct);
+      blip(correct ? 'ok' : 'no');
+      if (correct) speak(`정답입니다`);
+      setTimeout(() => {
+        if (players[idx] !== p) return;
+        players[idx] = createPlayer(idx);
+        renderCell(idx);
+        if (examIndex.every((v) => v >= EXAM_TOTAL)) finishGame();
+      }, correct ? 1000 : 2000);
+    }
+
     function checkCalc(idx) {
       const p = players[idx];
-      if (!gameActive || p.locked) return;
+      if (!gameActive || p.locked || !p.question) return;
       const q = p.question;
       const n = q.n;
+
+      if (mode === 'exam') {
+        if (!ansFilled(p)) { calcHint(idx, '분자와 분모 빈칸을 채워 주세요.'); return; }
+        examAdvance(idx, ansCorrect(p));
+        return;
+      }
+      if (q.noPic) {
+        if (!ansFilled(p)) { calcHint(idx, '분자와 분모 빈칸을 채워 주세요.'); return; }
+        if (!ansCorrect(p)) { calcWrong(idx, '답이 달라요. 다시 계산해 보세요.'); return; }
+        awardCorrect(idx, `정답! 답은 ${answerText(q)}예요.`, `정답입니다. ${answerText(q).replace(/\d+/g, (d) => sino(Number(d)))}`);
+        return;
+      }
 
       // 1) 그림 조작이 맞는지 먼저 본다
       if (q.kind === 'add') {
