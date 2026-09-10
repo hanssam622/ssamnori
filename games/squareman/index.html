@@ -1,0 +1,3194 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>사각맨</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ctext y='50' font-size='48'%3E%F0%9F%9F%A6%3C/text%3E%3C/svg%3E" />
+  <style>
+    :root {
+      --ink: #2f3240;
+      --muted: #747887;
+      --accent: #4a8bf0;
+      --accent-2: #45b7a5;
+      --good: #2fb36d;
+      --bad: #ef6b6b;
+      --paper: #ffffff;
+      --line: #d8dbe5;
+      --soft: #f4f6fb;
+      --yellow: #ffb020;
+      --scale: 1;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; }
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background: #eef4ff;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+    button { font: inherit; border: 0; cursor: pointer; color: inherit; }
+    .hidden { display: none !important; }
+
+    .samnori-home-float {
+      position: fixed;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 80;
+      display: grid;
+      place-items: center;
+      width: 78px;
+      height: 54px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.94);
+      border: 2px solid #ffe3a5;
+      color: #8a5b00;
+      font-size: 14px;
+      font-weight: 900;
+      text-decoration: none;
+      box-shadow: 0 10px 26px rgba(77, 70, 110, .18);
+    }
+    body.playing .samnori-home-float,
+    body.modal .samnori-home-float { display: none; }
+
+    /* ---------- 시작 / 선택 화면 ---------- */
+    .screen {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      justify-content: safe center;
+      padding: 28px 24px;
+      overflow-y: auto;
+      background:
+        radial-gradient(circle at 14% 14%, rgba(74,139,240,.22), transparent 32%),
+        radial-gradient(circle at 86% 20%, rgba(69,183,165,.2), transparent 34%),
+        radial-gradient(circle at 78% 88%, rgba(255,176,32,.16), transparent 34%),
+        linear-gradient(180deg, #fff 0%, #eef4ff 100%);
+    }
+
+    .hero-title {
+      margin: 0 0 10px;
+      font-size: clamp(48px, 8vw, 92px);
+      font-weight: 1000;
+      color: var(--ink);
+    }
+    .hero-sub {
+      margin: 0 0 34px;
+      color: var(--muted);
+      font-size: clamp(16px, 2.2vw, 22px);
+      font-weight: 800;
+      text-align: center;
+      line-height: 1.5;
+    }
+    .primary-btn, .back-btn, .fullscreen-btn {
+      min-height: 52px;
+      padding: 0 24px;
+      border-radius: 16px;
+      background: #fff;
+      color: var(--ink);
+      border: 2px solid var(--line);
+      font-weight: 900;
+      box-shadow: 0 10px 24px rgba(66, 70, 100, .12);
+    }
+    .primary-btn {
+      min-width: 200px;
+      background: linear-gradient(180deg, #5a9bf7, #3a76e0);
+      color: #fff;
+      border-color: transparent;
+      font-size: 22px;
+    }
+    .primary-btn:hover { filter: brightness(1.06); }
+
+    .section-title {
+      margin: 0 0 22px;
+      font-size: clamp(28px, 5vw, 42px);
+      font-weight: 1000;
+      text-align: center;
+    }
+    .settings-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 12px 22px;
+      margin-bottom: 26px;
+      padding: 14px 22px;
+      border-radius: 20px;
+      background: rgba(255,255,255,.8);
+      border: 2px solid rgba(216,219,229,.9);
+      box-shadow: 0 10px 26px rgba(66,70,100,.08);
+    }
+    .setting-row { display: flex; align-items: center; gap: 10px; }
+    .setting-label {
+      font-size: 17px;
+      font-weight: 900;
+      color: var(--ink);
+      white-space: nowrap;
+    }
+    .inline-player-grid { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+    .player-btn {
+      height: 50px;
+      min-width: 62px;
+      padding: 0 14px;
+      border-radius: 14px;
+      background: #fff;
+      color: var(--ink);
+      border: 3px solid var(--line);
+      font-size: 19px;
+      font-weight: 1000;
+      box-shadow: 0 6px 16px rgba(66, 70, 100, .1);
+    }
+    .player-btn.active { background: #fff6d8; border-color: var(--yellow); color: #8a5b00; }
+    .select {
+      height: 48px;
+      padding: 0 14px;
+      border-radius: 12px;
+      border: 2px solid var(--line);
+      background: #fff;
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--ink);
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(66, 70, 100, .08);
+    }
+    .select:focus { border-color: var(--accent); outline: none; }
+    .toggle-btn {
+      height: 48px;
+      padding: 0 16px;
+      border-radius: 12px;
+      border: 2px solid var(--line);
+      background: #fff;
+      font-size: 16px;
+      font-weight: 900;
+      box-shadow: 0 4px 12px rgba(66, 70, 100, .08);
+    }
+    .toggle-btn.on { background: #eefaf7; border-color: var(--accent-2); color: #16705f; }
+    .toggle-btn.off { background: #f4f5f8; color: #9aa0b0; }
+
+    /* ---------- 게임 카드 ---------- */
+    .game-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(236px, 1fr));
+      gap: 22px 18px;
+      width: min(1040px, calc(100vw - 44px));
+    }
+    .game-card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 26px 18px 20px;
+      border-radius: 24px;
+      background: #fff;
+      border: 3px solid var(--line);
+      text-align: center;
+      box-shadow: 0 16px 34px rgba(66, 70, 100, .12);
+      transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+    }
+    .game-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--accent);
+      box-shadow: 0 22px 44px rgba(58, 118, 224, .2);
+    }
+    .game-card .emoji {
+      width: 74px;
+      height: 74px;
+      border-radius: 24px;
+      display: grid;
+      place-items: center;
+      font-size: 40px;
+      line-height: 1;
+      margin: 8px 0 12px;
+      background: var(--tint, #eaf1ff);
+    }
+    .game-card h3 { margin: 0 0 8px; font-size: 23px; font-weight: 1000; }
+    .game-card p {
+      margin: 0 0 16px;
+      color: var(--muted);
+      font-size: 15px;
+      font-weight: 750;
+      line-height: 1.45;
+      flex: 1 1 auto;
+    }
+    .game-card .primary-btn { min-width: 0; width: 100%; font-size: 19px; min-height: 48px; }
+    .card-setting {
+      display: flex;
+      gap: 6px;
+      width: 100%;
+      margin-bottom: 12px;
+    }
+    .opt-btn {
+      flex: 1 1 0;
+      min-height: 38px;
+      padding: 0 6px;
+      border-radius: 11px;
+      border: 2px solid var(--line);
+      background: #fff;
+      font-size: 14px;
+      font-weight: 900;
+      color: #8b90a3;
+      white-space: nowrap;
+    }
+    .opt-btn.on { background: #e8f1ff; border-color: var(--accent); color: #1f4f9c; }
+    .game-card .cap {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: #f1f3fb;
+      color: #6d7288;
+      font-size: 11px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+    .game-card.wide { grid-column: span 2; }
+
+    .stage-block { width: min(1080px, calc(100vw - 44px)); margin-bottom: 26px; }
+    .stage-heading {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0 0 14px;
+      font-size: 20px;
+      font-weight: 1000;
+      color: #4b4f63;
+    }
+    .stage-heading::after {
+      content: "";
+      flex: 1 1 auto;
+      height: 2px;
+      border-radius: 2px;
+      background: linear-gradient(90deg, rgba(74,139,240,.35), rgba(74,139,240,0));
+    }
+    .stage-no {
+      flex: 0 0 auto;
+      width: 28px;
+      height: 28px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(180deg, #5a9bf7, #3a76e0);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 1000;
+    }
+
+    /* ---------- 게임 화면 ---------- */
+    .game-screen {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      background: #fff;
+    }
+    .topbar {
+      flex: 0 0 92px;
+      display: grid;
+      grid-template-columns: 190px 1fr auto 276px;
+      align-items: center;
+      padding: 12px 22px 10px;
+      border-bottom: 2px solid #edf0f6;
+      background: rgba(255,255,255,.96);
+      z-index: 5;
+    }
+    .top-title { min-width: 0; overflow: hidden; text-align: center; }
+    .top-title h1 {
+      margin: 0;
+      font-size: clamp(24px, 3.2vw, 40px);
+      line-height: 1;
+      font-weight: 1000;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+    .top-title p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 15px;
+      font-weight: 850;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .timer-display {
+      color: #ff6b6b;
+      font-size: 44px;
+      font-weight: 900;
+      text-align: center;
+      padding: 0 14px;
+      line-height: 1.2;
+      font-variant-numeric: tabular-nums;
+    }
+    .timer-display.infinite { color: var(--accent); }
+    .top-actions { display: flex; justify-content: flex-end; gap: 8px; }
+    .fullscreen-btn { min-height: 44px; padding: 0 14px; font-size: 14px; white-space: nowrap; }
+    .back-btn { white-space: nowrap; }
+
+    .players {
+      flex: 1 1 auto;
+      min-height: 0;
+      display: grid;
+      width: 100%;
+      overflow: hidden;
+    }
+    .player-cell {
+      position: relative;
+      min-width: 0;
+      min-height: 0;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      border-right: 2px solid rgba(60, 64, 82, .16);
+      border-bottom: 2px solid rgba(60, 64, 82, .16);
+      background: var(--cell-bg, #f8fbff);
+      overflow: hidden;
+    }
+    .theme-0 { --cell-bg: #fff0f3; --theme: #f46b8a; }
+    .theme-1 { --cell-bg: #eef8ff; --theme: #46a7e8; }
+    .theme-2 { --cell-bg: #f9efff; --theme: #a479e8; }
+    .theme-3 { --cell-bg: #effaf2; --theme: #50b96a; }
+    .theme-4 { --cell-bg: #fff8e3; --theme: #f1a80f; }
+    .theme-5 { --cell-bg: #eefaf7; --theme: #2fae9b; }
+
+    .player-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 9px 12px 6px;
+      text-align: center;
+    }
+    .player-name {
+      font-size: calc(var(--scale) * 25px);
+      font-weight: 1000;
+      line-height: 1.05;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .score-line {
+      padding: 3px 11px;
+      border-radius: 999px;
+      background: #fff;
+      border: 2px solid rgba(255,149,0,.35);
+      color: #e07800;
+      font-size: calc(var(--scale) * 19px);
+      font-weight: 1000;
+      white-space: nowrap;
+    }
+
+    .cell-body {
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: calc(var(--scale) * 10px);
+      padding: calc(var(--scale) * 6px) calc(var(--scale) * 12px);
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    .q-prompt {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: calc(var(--scale) * 9px) calc(var(--scale) * 12px);
+      border-radius: 14px;
+      background: rgba(255,255,255,.92);
+      border: 2px solid rgba(255,255,255,.8);
+      box-shadow: 0 6px 16px rgba(65, 70, 98, .08);
+      font-size: calc(var(--scale) * 19px);
+      font-weight: 1000;
+      line-height: 1.35;
+      text-align: center;
+      word-break: keep-all;
+    }
+    .spk {
+      flex: 0 0 auto;
+      width: calc(var(--scale) * 38px);
+      height: calc(var(--scale) * 38px);
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      background: #f0f2fa;
+      border: 2px solid var(--line);
+      font-size: calc(var(--scale) * 17px);
+    }
+    .spk:hover { background: #e6e9f7; }
+    .spk.mini {
+      width: calc(var(--scale) * 30px);
+      height: calc(var(--scale) * 30px);
+      border-radius: 9px;
+      font-size: calc(var(--scale) * 14px);
+    }
+
+    /* ---------- 도형 그림 ---------- */
+    .fig-stage {
+      flex: 1 1 auto;
+      min-height: calc(var(--scale) * 160px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: calc(var(--scale) * 8px);
+      border-radius: 18px;
+      background: #fff;
+      border: 3px solid rgba(255,255,255,.9);
+      box-shadow: inset 0 0 0 1px rgba(120,126,150,.08), 0 8px 20px rgba(65,70,98,.08);
+      overflow: hidden;
+    }
+    /* 칸 높이에 맞춰 정사각형으로 줄어들게 한다 */
+    .fig {
+      flex: 0 1 auto;
+      width: auto;
+      height: 100%;
+      max-width: min(100%, calc(var(--scale) * 300px));
+      max-height: calc(var(--scale) * 300px);
+      aspect-ratio: 1 / 1;
+      display: block;
+    }
+    @keyframes figPulse {
+      0%, 100% { stroke: #ef4444; }
+      50% { stroke: #ffb0b0; }
+    }
+    @keyframes figPulseFill {
+      0%, 100% { fill: rgba(239,68,68,.26); }
+      50% { fill: rgba(239,68,68,.07); }
+    }
+    .fig .pulse { animation: figPulse 1.5s ease-in-out infinite; }
+    .fig .pulse-fill { animation: figPulseFill 1.5s ease-in-out infinite; }
+    .fig.tappable { cursor: pointer; touch-action: manipulation; }
+    .fig-tag {
+      flex: 0 0 auto;
+      margin-top: calc(var(--scale) * -2px);
+      font-size: calc(var(--scale) * 15px);
+      font-weight: 900;
+      color: var(--muted);
+      text-align: center;
+      word-break: keep-all;
+    }
+
+    /* ---------- 선택지 ---------- */
+    .choice-row {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: calc(var(--scale) * 9px);
+      padding-bottom: calc(var(--scale) * 4px);
+    }
+    .choice-btn {
+      position: relative;
+      min-height: calc(var(--scale) * 60px);
+      padding: 0 calc(var(--scale) * 10px);
+      border-radius: 16px;
+      background: #fff;
+      border: 3px solid var(--line);
+      font-size: calc(var(--scale) * 25px);
+      font-weight: 1000;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: calc(var(--scale) * 6px);
+      box-shadow: 0 8px 18px rgba(66, 70, 100, .1);
+      transition: transform .12s ease, border-color .12s ease, background .12s ease;
+    }
+    .choice-btn:hover { border-color: var(--theme); transform: translateY(-2px); }
+    .choice-btn .label { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .choice-btn.selected { background: #e8f1ff; border-color: var(--accent); color: #1f4f9c; }
+    .choice-btn.wrong { background: #ffeded; border-color: #f0a3a3; color: #b34141; opacity: .6; transform: none; }
+    .choice-btn.right { background: #e6fff1; border-color: #4fc98c; color: #12693f; }
+    .choice-btn:disabled { cursor: default; }
+
+    /* ---------- 아래 컨트롤 ---------- */
+    .controls {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: center;
+      padding: calc(var(--scale) * 7px) calc(var(--scale) * 12px) calc(var(--scale) * 11px);
+    }
+    .message {
+      min-height: calc(var(--scale) * 38px);
+      display: flex;
+      align-items: center;
+      padding: calc(var(--scale) * 6px) calc(var(--scale) * 10px);
+      border-radius: 10px;
+      background: rgba(255,255,255,.78);
+      color: var(--muted);
+      font-size: calc(var(--scale) * 14px);
+      font-weight: 900;
+      line-height: 1.35;
+      word-break: keep-all;
+    }
+    .message.ok { color: #116a3b; background: #e8fff2; }
+    .message.no { color: #9e2929; background: #fff0f0; }
+    /* 정답 낱말이 한눈에 들어오게 표시한다 */
+    .message b { color: inherit; }
+    /* 글자 사이가 벌어지지 않도록 밑줄 형태로 표시한다 */
+    .message.ok b {
+      background: linear-gradient(transparent 58%, rgba(47,179,109,.38) 58%);
+    }
+    .btn-col { display: flex; gap: 6px; }
+    .reset-btn {
+      height: calc(var(--scale) * 46px);
+      min-width: calc(var(--scale) * 54px);
+      padding: 0 calc(var(--scale) * 10px);
+      border-radius: 14px;
+      background: #fff;
+      border: 2px solid var(--line);
+      font-weight: 1000;
+      font-size: calc(var(--scale) * 15px);
+      color: #6a7086;
+    }
+
+    .answer-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 30;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      opacity: 0;
+      transform: scale(.75);
+      transition: opacity .16s ease, transform .16s ease;
+    }
+    .answer-overlay.show { opacity: 1; transform: scale(1); }
+    .answer-mark {
+      width: min(42%, 170px);
+      aspect-ratio: 1;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: rgba(255,255,255,.9);
+      border: 10px solid currentColor;
+      font-size: clamp(64px, 8vw, 130px);
+      font-weight: 1000;
+      line-height: 1;
+      box-shadow: 0 22px 50px rgba(45, 48, 66, .24);
+      animation: answerPop .58s ease both;
+    }
+    .answer-overlay.correct { color: #1ca35f; }
+    .answer-overlay.wrong { color: #e04444; }
+    @keyframes answerPop {
+      0% { transform: scale(.55) rotate(-7deg); }
+      52% { transform: scale(1.12) rotate(2deg); }
+      100% { transform: scale(1) rotate(0); }
+    }
+
+    .result-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 70;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(34,38,54,.62);
+      padding: 24px;
+    }
+    .result-card {
+      width: min(620px, 92vw);
+      max-height: 90vh;
+      overflow-y: auto;
+      border-radius: 26px;
+      background: #fff;
+      padding: 28px;
+      text-align: center;
+      box-shadow: 0 30px 80px rgba(0,0,0,.24);
+    }
+    .result-card h2 { margin: 0 0 16px; font-size: 40px; font-weight: 1000; }
+    .ranking-row {
+      display: grid;
+      grid-template-columns: 44px 1fr auto;
+      gap: 10px;
+      align-items: center;
+      margin: 8px 0;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: var(--soft);
+      font-weight: 900;
+      text-align: left;
+    }
+    .ranking-row.top { background: #fff6d8; }
+
+    /* ---------- 개념 카드 ---------- */
+    .concept-card { text-align: left; }
+    .concept-card h2 { text-align: center; }
+    .concept-row {
+      display: grid;
+      grid-template-columns: 132px 1fr;
+      gap: 14px;
+      align-items: center;
+      margin: 12px 0;
+      padding: 14px;
+      border-radius: 18px;
+      background: var(--soft);
+    }
+    .concept-row .fig { width: 132px; height: auto; max-width: 132px; max-height: none; }
+    .concept-word {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 6px;
+      font-size: 26px;
+      font-weight: 1000;
+    }
+    .concept-word .spk { width: 34px; height: 34px; font-size: 15px; }
+    .concept-row p {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 800;
+      line-height: 1.5;
+      color: #565b70;
+      word-break: keep-all;
+    }
+    .concept-row b { color: #d64545; }
+
+    @media (max-width: 1200px) {
+      .topbar { grid-template-columns: 110px 1fr auto 178px; }
+      .fullscreen-btn { font-size: 12px; padding: 0 9px; }
+      .back-btn { font-size: 13px; padding: 0 12px; }
+      .timer-display { font-size: 32px; padding: 0 8px; }
+    }
+
+    /* 버튼 3개가 한 줄에 다 들어가지 못하는 폭부터 상단 바를 2줄로 쌓는다 */
+    @media (max-width: 900px) {
+      .topbar {
+        flex: 0 0 auto;
+        grid-template-columns: auto minmax(0, 1fr) auto;
+        grid-template-rows: auto auto;
+        gap: 6px;
+        padding: 7px 8px;
+      }
+      .topbar > .back-btn { grid-area: 1 / 1 / 2 / 2; }
+      .top-title { grid-area: 1 / 2 / 2 / 3; }
+      .timer-display { grid-area: 1 / 3 / 2 / 4; }
+      .top-actions { grid-area: 2 / 1 / 3 / 4; justify-content: center; }
+      .top-title h1 { font-size: clamp(17px, 5.2vw, 24px); }
+      .top-title p { display: none; }
+      .timer-display { padding: 0 2px; font-size: clamp(22px, 7vw, 32px); }
+      .top-actions { gap: 6px; }
+      .back-btn, .fullscreen-btn {
+        min-height: 38px;
+        padding: 0 7px;
+        border-radius: 12px;
+        font-size: 11px;
+        white-space: nowrap;
+      }
+    }
+
+    @media (max-width: 820px) {
+      .players { overflow-y: auto; }
+      .player-cell { min-height: max(78vh, 560px); }
+      .cell-body { overflow: visible; justify-content: flex-start; }
+      .controls { grid-template-columns: 1fr; }
+      .controls .btn-col { justify-content: flex-end; }
+    }
+
+    @media (max-width: 640px) {
+      .samnori-home-float {
+        width: 62px;
+        height: 42px;
+        right: 8px;
+        top: auto;
+        bottom: 10px;
+        transform: none;
+        font-size: 11px;
+      }
+      .screen { padding: 22px 14px 76px; }
+      .settings-bar { gap: 10px 14px; padding: 12px 14px; }
+      .game-cards { grid-template-columns: 1fr; width: 100%; }
+      .stage-block { width: min(420px, calc(100vw - 28px)); }
+      .game-card.wide { grid-column: span 1; }
+      .game-card { padding: 22px 16px 16px; }
+      .game-card .emoji { width: 58px; height: 58px; border-radius: 18px; font-size: 30px; margin: 6px 0 10px; }
+      .game-card h3 { font-size: 21px; }
+      .game-card p { font-size: 14px; margin-bottom: 13px; }
+      .concept-row { grid-template-columns: 84px 1fr; gap: 10px; padding: 11px; }
+      .concept-row .fig { width: 84px; max-width: 84px; }
+      .concept-word { font-size: 22px; }
+      .concept-row p { font-size: 14px; }
+      .top-title h1 { font-size: clamp(16px, 5vw, 22px); }
+    }
+  </style>
+</head>
+<body>
+  <a class="samnori-home-float" href="https://hanssam622.github.io/ssamnori/" aria-label="쌤노리 홈화면으로 가기">쌤노리 홈</a>
+
+  <section id="start-screen" class="screen">
+    <h1 class="hero-title">🟦 사각맨</h1>
+    <p class="hero-sub">수직과 수선부터 여러 가지 사각형까지<br />그림을 보면서 차근차근 익혀요</p>
+    <button class="primary-btn" type="button" onclick="showScreen('game-select-screen')">시작하기 →</button>
+  </section>
+
+  <section id="game-select-screen" class="screen hidden">
+    <h2 class="section-title">게임을 선택하세요</h2>
+    <div class="settings-bar">
+      <div class="setting-row">
+        <span class="setting-label">참가 인원</span>
+        <div class="inline-player-grid" id="player-grid"></div>
+      </div>
+      <div class="setting-row">
+        <span class="setting-label">제한 시간</span>
+        <select id="timer-select" class="select">
+          <option value="60">1분</option>
+          <option value="90" selected>1분 30초</option>
+          <option value="180">3분</option>
+          <option value="none">무제한</option>
+        </select>
+      </div>
+      <div class="setting-row">
+        <span class="setting-label">읽어 주기</span>
+        <button id="voice-toggle" class="toggle-btn on" type="button" onclick="toggleVoice()">🔊 켜짐</button>
+      </div>
+    </div>
+
+    <div class="stage-block">
+      <h3 class="stage-heading"><span class="stage-no">1</span>수직과 수선</h3>
+      <div class="game-cards">
+        <article class="game-card" style="--tint:#eaf1ff">
+          <div class="emoji">📖</div>
+          <h3>개념 알아보기</h3>
+          <p>수직 · 수선 · 직각이 각각 무엇을 가리키는 말인지 그림으로 먼저 살펴봐요.</p>
+          <button class="primary-btn" type="button" onclick="showConcept('perp')">펼쳐 보기</button>
+        </article>
+
+        <article class="game-card" style="--tint:#ffeef0">
+          <div class="emoji">📏</div>
+          <h3>수직 · 수선 · 직각 찾기</h3>
+          <p>빨갛게 표시한 곳이 수직인지, 수선인지, 직각인지 세 가지 중에서 골라요.</p>
+          <button class="primary-btn" type="button" onclick="startGame('term')">시작</button>
+        </article>
+      </div>
+    </div>
+
+    <div class="stage-block">
+      <h3 class="stage-heading"><span class="stage-no">2</span>평행과 평행선</h3>
+      <div class="game-cards">
+        <article class="game-card" style="--tint:#eaf1ff">
+          <div class="emoji">📖</div>
+          <h3>개념 알아보기</h3>
+          <p>평행과 평행선이 무엇인지, 한 직선에 수직인 두 직선을 그어 보며 알아봐요.</p>
+          <button class="primary-btn" type="button" onclick="showConcept('para')">펼쳐 보기</button>
+        </article>
+
+        <article class="game-card" style="--tint:#effaf2">
+          <div class="emoji">🛤️</div>
+          <h3>평행 찾기</h3>
+          <p>두 직선이 평행한지 아닌지 골라요. 답을 고르면 직선을 길게 늘여서 보여 줘요.</p>
+          <button class="primary-btn" type="button" onclick="startGame('para')">시작</button>
+        </article>
+      </div>
+    </div>
+
+    <div class="stage-block">
+      <h3 class="stage-heading"><span class="stage-no">3</span>평행선 사이의 거리</h3>
+      <div class="game-cards">
+        <article class="game-card" style="--tint:#eaf1ff">
+          <div class="emoji">📖</div>
+          <h3>개념 알아보기</h3>
+          <p>평행선 사이의 거리가 어디를 잰 길이인지, 왜 수직으로 재는지 알아봐요.</p>
+          <button class="primary-btn" type="button" onclick="showConcept('gap')">펼쳐 보기</button>
+        </article>
+
+        <article class="game-card" style="--tint:#fdeaf4">
+          <div class="emoji">📐</div>
+          <h3>거리를 나타내는 선분 찾기</h3>
+          <p>평행선 사이에 그은 선분 세 개 중에서 거리를 나타내는 선분을 골라요.</p>
+          <button class="primary-btn" type="button" onclick="startGame('gap')">시작</button>
+        </article>
+
+        <article class="game-card" style="--tint:#eefaf7">
+          <div class="emoji">📏</div>
+          <h3>거리 재기</h3>
+          <p>모눈 한 칸을 1 cm로 보고, 평행선 사이의 거리가 몇 cm인지 세어 봐요.</p>
+          <button class="primary-btn" type="button" onclick="startGame('cm')">시작</button>
+        </article>
+      </div>
+    </div>
+
+    <div class="stage-block">
+      <h3 class="stage-heading"><span class="stage-no">4</span>사다리꼴</h3>
+      <div class="game-cards">
+        <article class="game-card" style="--tint:#eaf1ff">
+          <div class="emoji">📖</div>
+          <h3>개념 알아보기</h3>
+          <p>사다리꼴이 무엇인지, 직사각형도 사다리꼴인 까닭을 그림으로 살펴봐요.</p>
+          <button class="primary-btn" type="button" onclick="showConcept('trap')">펼쳐 보기</button>
+        </article>
+
+        <article class="game-card" style="--tint:#fff5e6">
+          <div class="emoji">🪜</div>
+          <h3>사다리꼴 찾기</h3>
+          <p>모눈 위의 사각형에 평행한 변이 있는지 살펴보고 사다리꼴인지 골라요.</p>
+          <button class="primary-btn" type="button" onclick="startGame('trap')">시작</button>
+        </article>
+
+
+        <article class="game-card" style="--tint:#f0fbf3">
+          <span class="cap">최대 4명</span>
+          <div class="emoji">✏️</div>
+          <h3>완성하기</h3>
+          <p>선분 두 개가 주어져요. 모눈의 점을 눌러 남은 꼭짓점을 찍고 사다리꼴을 만들어요.</p>
+          <button class="primary-btn" type="button" onclick="startGame('build')">시작</button>
+        </article>
+      </div>
+    </div>
+
+    <div class="stage-block">
+      <h3 class="stage-heading"><span class="stage-no">5</span>평행사변형</h3>
+      <div class="game-cards">
+        <article class="game-card" style="--tint:#eaf1ff">
+          <div class="emoji">📖</div>
+          <h3>개념 알아보기</h3>
+          <p>평행사변형이 무엇인지, 마주 보는 변의 길이가 왜 같은지 살펴봐요.</p>
+          <button class="primary-btn" type="button" onclick="showConcept('para4')">펼쳐 보기</button>
+        </article>
+
+        <article class="game-card" style="--tint:#f9efff">
+          <div class="emoji">🔷</div>
+          <h3>평행사변형 찾기</h3>
+          <p>마주 보는 두 쌍의 변이 서로 평행한지 살펴보고 평행사변형인지 맞혀요.</p>
+          <button class="primary-btn" type="button" onclick="startGame('ispara')">시작</button>
+        </article>
+
+        <article class="game-card" style="--tint:#fff8e3">
+          <div class="emoji">🧮</div>
+          <h3>변의 길이 · 각의 크기</h3>
+          <p>마주 보는 변의 길이가 같고 마주 보는 각의 크기도 같다는 것을 이용해요.</p>
+          <div class="card-setting" id="opt-lenpara"></div>
+          <button class="primary-btn" type="button" onclick="startGame('lenpara')">시작</button>
+        </article>
+
+        <article class="game-card" style="--tint:#f0fbf3">
+          <span class="cap">최대 4명</span>
+          <div class="emoji">✏️</div>
+          <h3>완성하기</h3>
+          <p>모눈의 점을 눌러 마주 보는 두 쌍의 변이 평행해지도록 꼭짓점을 찍어요.</p>
+          <button class="primary-btn" type="button" onclick="startGame('bpara')">시작</button>
+        </article>
+      </div>
+    </div>
+
+    <div class="stage-block">
+      <h3 class="stage-heading"><span class="stage-no">6</span>마름모</h3>
+      <div class="game-cards">
+        <article class="game-card" style="--tint:#eaf1ff">
+          <div class="emoji">📖</div>
+          <h3>개념 알아보기</h3>
+          <p>마름모가 무엇인지, 마름모가 왜 평행사변형이기도 한지 살펴봐요.</p>
+          <button class="primary-btn" type="button" onclick="showConcept('rhom')">펼쳐 보기</button>
+        </article>
+
+        <article class="game-card" style="--tint:#eefaf7">
+          <div class="emoji">💠</div>
+          <h3>마름모 찾기</h3>
+          <p>네 변의 길이가 모두 같은지 살펴보고 마름모인지 맞혀요.</p>
+          <button class="primary-btn" type="button" onclick="startGame('isrhom')">시작</button>
+        </article>
+
+        <article class="game-card" style="--tint:#fff8e3">
+          <div class="emoji">🧮</div>
+          <h3>변의 길이 · 각의 크기</h3>
+          <p>네 변의 길이가 모두 같다는 것과 각의 성질을 이용해 구해요.</p>
+          <div class="card-setting" id="opt-lenrhom"></div>
+          <button class="primary-btn" type="button" onclick="startGame('lenrhom')">시작</button>
+        </article>
+
+        <article class="game-card" style="--tint:#f0fbf3">
+          <span class="cap">최대 4명</span>
+          <div class="emoji">✏️</div>
+          <h3>완성하기</h3>
+          <p>모눈의 점을 눌러 네 변의 길이가 모두 같아지도록 꼭짓점을 찍어요.</p>
+          <button class="primary-btn" type="button" onclick="startGame('brhom')">시작</button>
+        </article>
+      </div>
+    </div>
+
+    <div class="stage-block">
+      <h3 class="stage-heading"><span class="stage-no">7</span>직사각형과 정사각형</h3>
+      <div class="game-cards">
+        <article class="game-card" style="--tint:#eaf1ff">
+          <div class="emoji">📖</div>
+          <h3>개념 알아보기</h3>
+          <p>직사각형과 정사각형이 각각 어떤 사각형인지 그림으로 살펴봐요.</p>
+          <button class="primary-btn" type="button" onclick="showConcept('rect')">펼쳐 보기</button>
+        </article>
+
+        <article class="game-card" style="--tint:#fff0f3">
+          <div class="emoji">🟥</div>
+          <h3>직사각형 찾기</h3>
+          <p>네 각이 모두 직각인지 살펴보고 직사각형인지 맞혀요.</p>
+          <button class="primary-btn" type="button" onclick="startGame('isrect')">시작</button>
+        </article>
+
+        <article class="game-card" style="--tint:#fff8e3">
+          <div class="emoji">🧮</div>
+          <h3>변의 길이 · 각의 크기</h3>
+          <p>마주 보는 변의 길이가 같고 네 각이 모두 직각이라는 것을 이용해요.</p>
+          <div class="card-setting" id="opt-lenrect"></div>
+          <button class="primary-btn" type="button" onclick="startGame('lenrect')">시작</button>
+        </article>
+
+        <article class="game-card" style="--tint:#f0fbf3">
+          <span class="cap">최대 4명</span>
+          <div class="emoji">✏️</div>
+          <h3>완성하기</h3>
+          <p>모눈의 점을 눌러 네 각이 모두 직각이 되도록 꼭짓점을 찍어요.</p>
+          <button class="primary-btn" type="button" onclick="startGame('brect')">시작</button>
+        </article>
+      </div>
+    </div>
+
+    <div class="stage-block">
+      <h3 class="stage-heading"><span class="stage-no">8</span>전체 복습</h3>
+      <div class="game-cards">
+        <article class="game-card wide" style="--tint:#eaf1ff">
+          <div class="emoji">🧩</div>
+          <h3>사각형 분류하기</h3>
+          <p>사다리꼴 · 평행사변형 · 마름모 · 직사각형 · 그냥 사각형 중에서 해당하는 이름을 모두 골라요. 한 사각형이 여러 이름을 가질 수 있어요.</p>
+          <button class="primary-btn" type="button" onclick="startGame('sort')">시작</button>
+        </article>
+
+        <article class="game-card" style="--tint:#fff8e3">
+          <div class="emoji">🧮</div>
+          <h3>변과 각 섞어 풀기</h3>
+          <p>평행사변형 · 마름모 · 직사각형 · 정사각형이 번갈아 나와요. 변의 길이와 각의 크기를 구해요.</p>
+          <div class="card-setting" id="opt-lenmix"></div>
+          <button class="primary-btn" type="button" onclick="startGame('lenmix')">시작</button>
+        </article>
+
+        <article class="game-card" style="--tint:#fff8e3">
+          <div class="emoji">🎲</div>
+          <h3>섞어 풀기</h3>
+          <p>지금까지 배운 문제가 골고루 번갈아 나와요. 같은 유형이 연달아 나오지 않아요.</p>
+          <button class="primary-btn" type="button" onclick="startGame('mix')">시작</button>
+        </article>
+
+        <article class="game-card" style="--tint:#f0fbf3">
+          <span class="cap">최대 4명</span>
+          <div class="emoji">🎯</div>
+          <h3>완성하기 섞기</h3>
+          <p>사다리꼴 · 평행사변형 · 마름모 · 직사각형을 번갈아 완성해요.</p>
+          <button class="primary-btn" type="button" onclick="startGame('bmix')">시작</button>
+        </article>
+      </div>
+    </div>
+
+    <button class="back-btn" style="margin-top:20px" type="button" onclick="showScreen('start-screen')">← 처음으로</button>
+  </section>
+
+  <section id="game-screen" class="game-screen hidden">
+    <div class="topbar">
+      <button class="back-btn" type="button" onclick="exitGame()">← 게임 목록</button>
+      <div class="top-title">
+        <h1 id="mode-title">🟦 사각맨</h1>
+        <p id="mode-sub"></p>
+      </div>
+      <div class="timer-display" id="time-left">∞</div>
+      <div class="top-actions">
+        <button class="fullscreen-btn" id="voice-toggle-2" type="button" onclick="toggleVoice()">🔊 소리</button>
+        <button class="fullscreen-btn" type="button" onclick="toggleFullscreen()">전체화면</button>
+        <button class="fullscreen-btn" type="button" onclick="finishGame()">결과 보기</button>
+      </div>
+    </div>
+    <div class="players" id="players"></div>
+  </section>
+
+  <div id="result-overlay" class="result-overlay hidden"></div>
+  <div id="concept-overlay" class="result-overlay hidden"></div>
+
+  <script>
+    /* =========================================================
+       사각맨 - 공통 상태
+       ========================================================= */
+    const ANIMALS = [
+      { emoji: '🐶', name: '강아지' },
+      { emoji: '🐱', name: '고양이' },
+      { emoji: '🐰', name: '토끼' },
+      { emoji: '🦊', name: '여우' },
+      { emoji: '🐻', name: '곰' },
+      { emoji: '🐼', name: '판다' }
+    ];
+
+    const MODES = {
+      term: { title: '📏 수직 · 수선 · 직각', sub: '빨갛게 표시한 곳을 무엇이라고 하는지 골라 보세요' },
+      para: { title: '🛤️ 평행 찾기', sub: '두 직선이 서로 평행한지 아닌지 골라 보세요' },
+      gap:  { title: '📐 평행선 사이의 거리', sub: '다른 직선에 수직인 선분을 찾아 골라 보세요' },
+      cm:   { title: '📏 거리 재기', sub: '모눈을 세어 평행선 사이의 거리를 구해 보세요' },
+      trap:  { title: '🪜 사다리꼴 찾기', sub: '평행한 변이 한 쌍이라도 있는지 살펴보세요' },
+      build: { title: '✏️ 사다리꼴 완성하기', sub: '모눈의 점을 눌러 남은 꼭짓점을 찍어 보세요' },
+      lenpara: { title: '🧮 평행사변형의 변과 각', sub: '마주 보는 변과 각의 성질을 이용해요' },
+      lenrhom: { title: '🧮 마름모의 변과 각', sub: '네 변의 길이가 같다는 것과 각의 성질을 이용해요' },
+      lenrect: { title: '🧮 직사각형의 변과 각', sub: '마주 보는 변의 길이가 같고 네 각이 직각이에요' },
+      lenmix:  { title: '🧮 변과 각 섞어 풀기', sub: '여러 사각형의 변의 길이와 각의 크기를 구해 보세요' },
+      ispara: { title: '🔷 평행사변형 찾기', sub: '마주 보는 두 쌍의 변이 평행한지 살펴보세요' },
+      isrhom: { title: '💠 마름모 찾기', sub: '네 변의 길이가 모두 같은지 살펴보세요' },
+      isrect: { title: '🟥 직사각형 찾기', sub: '네 각이 모두 직각인지 살펴보세요' },
+      bpara:  { title: '✏️ 평행사변형 완성하기', sub: '모눈의 점을 눌러 남은 꼭짓점을 찍어 보세요' },
+      brhom:  { title: '✏️ 마름모 완성하기', sub: '모눈의 점을 눌러 남은 꼭짓점을 찍어 보세요' },
+      brect:  { title: '✏️ 직사각형 완성하기', sub: '모눈의 점을 눌러 남은 꼭짓점을 찍어 보세요' },
+      sort:   { title: '🧩 사각형 분류하기', sub: '알맞은 이름을 모두 고르고 확인을 눌러요' },
+      mix:    { title: '🎲 섞어 풀기', sub: '지금까지 배운 문제가 골고루 번갈아 나와요' },
+      bmix:   { title: '🎯 완성하기 섞기', sub: '네 가지 사각형을 번갈아 완성해 보세요' }
+    };
+
+    // 어떤 사각형을 다루는 게임인지
+    const SHAPE_TARGET = { ispara: '평행사변형', isrhom: '마름모', isrect: '직사각형' };
+    const BUILD_TARGET = { build: '사다리꼴', bpara: '평행사변형', brhom: '마름모', brect: '직사각형' };
+
+    // 점을 눌러 그리는 게임은 칸이 좁으면 누르기 어려워 인원을 제한한다
+    const MAX_PLAYERS = { build: 4, bpara: 4, brhom: 4, brect: 4, bmix: 4 };
+
+    const SCALES = { 1: 1.3, 2: 1.2, 3: 1.05, 4: 0.95, 5: 0.85, 6: 0.76 };
+    function cellScale() {
+      const base = SCALES[playerCount] || 1;
+      if (window.innerWidth < 820) return Math.min(base, playerCount <= 1 ? 1 : 0.8);
+      return base;
+    }
+
+    let playerCount = 4;
+    let players = [];
+    let scores = [];
+    let mode = 'term';
+    let timerId = null;
+    let timeLeft = 0;
+    let gameActive = false;
+    let voiceOn = true;
+
+    /* =========================================================
+       소리 (읽어 주기 + 효과음)
+       ========================================================= */
+    function speak(text) {
+      if (!voiceOn || !('speechSynthesis' in window)) return;
+      try {
+        window.speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = 'ko-KR';
+        u.rate = 0.86;
+        u.pitch = 1.05;
+        const ko = window.speechSynthesis.getVoices().find((v) => (v.lang || '').toLowerCase().startsWith('ko'));
+        if (ko) u.voice = ko;
+        window.speechSynthesis.speak(u);
+      } catch (err) { /* 음성 미지원 브라우저는 조용히 무시 */ }
+    }
+
+    let audioCtx = null;
+    function blip(kind) {
+      try {
+        audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+        const notes = kind === 'ok' ? [660, 880] : [320, 240];
+        notes.forEach((freq, i) => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'sine';
+          osc.frequency.value = freq;
+          const t0 = audioCtx.currentTime + i * 0.09;
+          gain.gain.setValueAtTime(0.0001, t0);
+          gain.gain.exponentialRampToValueAtTime(0.14, t0 + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.16);
+          osc.connect(gain).connect(audioCtx.destination);
+          osc.start(t0);
+          osc.stop(t0 + 0.18);
+        });
+      } catch (err) { /* 무시 */ }
+    }
+
+    function toggleVoice() {
+      voiceOn = !voiceOn;
+      if (!voiceOn && 'speechSynthesis' in window) window.speechSynthesis.cancel();
+      const a = document.getElementById('voice-toggle');
+      a.textContent = voiceOn ? '🔊 켜짐' : '🔈 꺼짐';
+      a.className = `toggle-btn ${voiceOn ? 'on' : 'off'}`;
+      document.getElementById('voice-toggle-2').textContent = voiceOn ? '🔊 소리' : '🔈 소리';
+    }
+
+    /* =========================================================
+       화면 전환 / 설정
+       ========================================================= */
+    function showScreen(id) {
+      document.querySelectorAll('.screen, .game-screen').forEach((el) => el.classList.add('hidden'));
+      document.getElementById(id).classList.remove('hidden');
+      document.body.classList.remove('playing');
+      if (id === 'game-select-screen') { renderPlayerButtons(); renderMeasureOpts(); }
+    }
+
+    function renderPlayerButtons() {
+      const grid = document.getElementById('player-grid');
+      grid.innerHTML = '';
+      for (let i = 1; i <= 6; i += 1) {
+        const btn = document.createElement('button');
+        btn.className = `player-btn${i === playerCount ? ' active' : ''}`;
+        btn.textContent = `${i}명`;
+        btn.onclick = () => { playerCount = i; renderPlayerButtons(); };
+        grid.appendChild(btn);
+      }
+    }
+
+    function randInt(min, max) { return min + Math.floor(Math.random() * (max - min + 1)); }
+    function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    /* =========================================================
+       그림 그리기 (수직으로 만나는 두 직선)
+       ========================================================= */
+    // cross: 서로 지나며 교차(＋)  tee: 한쪽에서 만남(⊥)  ell: 끝점끼리 만남(∟)
+    const SHAPES = ['cross', 'tee', 'ell'];
+    const THETAS = [0, 15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165];
+    const INK = '#3a3f52';
+    const RED = '#ef4444';
+
+    function figureSvg(q) {
+      const rad = (q.theta * Math.PI) / 180;
+      const u = [Math.cos(rad), Math.sin(rad)];    // 직선 가의 방향
+      const v = [-Math.sin(rad), Math.cos(rad)];   // 직선 나의 방향 (가와 수직)
+      const L = q.shape === 'ell' ? 105 : 80;
+      const move = (p, d, k) => [p[0] + d[0] * k, p[1] + d[1] * k];
+      const O = [0, 0];
+
+      let aStart, aEnd, bStart, bEnd;
+      if (q.shape === 'cross') {
+        aStart = move(O, u, -L); aEnd = move(O, u, L);
+        bStart = move(O, v, -L); bEnd = move(O, v, L);
+      } else if (q.shape === 'tee') {
+        aStart = move(O, u, -L); aEnd = move(O, u, L);
+        bStart = O;              bEnd = move(O, v, L);
+      } else {
+        aStart = O; aEnd = move(O, u, L);
+        bStart = O; bEnd = move(O, v, L);
+      }
+
+      // 직각 표시는 +u, +v 쪽 사분면에 놓는다
+      const s = 24;
+      const m1 = move(O, u, s);
+      const m2 = move(m1, v, s);
+      const m3 = move(O, v, s);
+
+      // 선 굵기와 이름표는 그림 종류가 달라도 같은 크기로 보이게 고정한다
+      const labelOff = 27;
+      const labelR = 17;
+      const font = 20;
+      const lineW = 5;
+      const hotW = 9;
+      const markW = 3.2;
+      const markHotW = 5.6;
+
+      const aLabel = move(aEnd, u, labelOff);
+      const bLabel = move(bEnd, v, labelOff);
+
+      // 그림이 항상 화면 가운데 오도록 테두리를 계산한다
+      const pts = [aStart, aEnd, bStart, bEnd, m1, m2, m3,
+        [aLabel[0] - labelR, aLabel[1] - labelR], [aLabel[0] + labelR, aLabel[1] + labelR],
+        [bLabel[0] - labelR, bLabel[1] - labelR], [bLabel[0] + labelR, bLabel[1] + labelR]];
+      const xs = pts.map((p) => p[0]);
+      const ys = pts.map((p) => p[1]);
+      const pad = 8;
+      const minX = Math.min(...xs) - pad;
+      const maxX = Math.max(...xs) + pad;
+      const minY = Math.min(...ys) - pad;
+      const maxY = Math.max(...ys) + pad;
+      // ∟처럼 작은 그림도 선이 너무 굵어 보이지 않도록 최소 크기를 둔다
+      const size = Math.max(maxX - minX, maxY - minY, 215);
+      const vbX = (minX + maxX) / 2 - size / 2;
+      const vbY = (minY + maxY) / 2 - size / 2;
+
+      const hotA = q.spot === 'both' || (q.spot === 'one' && q.hl === 'a');
+      const hotB = q.spot === 'both' || (q.spot === 'one' && q.hl === 'b');
+      const hotMark = q.spot === 'angle';
+      const n = (x) => Math.round(x * 100) / 100;
+
+      const seg = (p1, p2, hot) => `<line x1="${n(p1[0])}" y1="${n(p1[1])}" x2="${n(p2[0])}" y2="${n(p2[1])}"
+        stroke="${hot ? RED : INK}" stroke-width="${n(hot ? hotW : lineW)}" stroke-linecap="round"
+        class="${hot ? 'pulse' : ''}" />`;
+
+      const label = (p, text, hot) => `
+        <circle cx="${n(p[0])}" cy="${n(p[1])}" r="${labelR}" fill="#fff" stroke="${hot ? '#f5b5b5' : '#dfe2ec'}" stroke-width="2.5" />
+        <text x="${n(p[0])}" y="${n(p[1])}" text-anchor="middle" dominant-baseline="central"
+          font-size="${n(font)}" font-weight="900" fill="${hot ? '#d64545' : '#5b6076'}">${text}</text>`;
+
+      return `
+        <svg class="fig" viewBox="${n(vbX)} ${n(vbY)} ${n(size)} ${n(size)}" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          ${hotMark ? `<polygon points="${n(O[0])},${n(O[1])} ${n(m1[0])},${n(m1[1])} ${n(m2[0])},${n(m2[1])} ${n(m3[0])},${n(m3[1])}"
+            fill="rgba(239,68,68,.26)" class="pulse-fill" />` : ''}
+          ${seg(aStart, aEnd, hotA)}
+          ${seg(bStart, bEnd, hotB)}
+          <polyline points="${n(m1[0])},${n(m1[1])} ${n(m2[0])},${n(m2[1])} ${n(m3[0])},${n(m3[1])}"
+            fill="none" stroke="${hotMark ? RED : '#8b90a6'}" stroke-width="${n(hotMark ? markHotW : markW)}"
+            stroke-linejoin="miter" class="${hotMark ? 'pulse' : ''}" />
+          ${label(aLabel, '가', hotA)}
+          ${label(bLabel, '나', hotB)}
+        </svg>
+      `;
+    }
+
+    /* =========================================================
+       그림 그리기 (평행한 두 직선)
+       ========================================================= */
+    const PINK = '#ec4899';
+
+    // 정사각형 틀 안에서 직선을 잘라 낸다 (직선이 화면을 가로지르게 그린다)
+    function clipLine(P, d, F) {
+      let tMin = -Infinity;
+      let tMax = Infinity;
+      for (let i = 0; i < 2; i += 1) {
+        if (Math.abs(d[i]) < 1e-6) {
+          if (Math.abs(P[i]) > F) return null;
+        } else {
+          let t1 = (-F - P[i]) / d[i];
+          let t2 = (F - P[i]) / d[i];
+          if (t1 > t2) { const tmp = t1; t1 = t2; t2 = tmp; }
+          tMin = Math.max(tMin, t1);
+          tMax = Math.min(tMax, t2);
+        }
+      }
+      if (tMin > tMax) return null;
+      return [tMin, tMax];
+    }
+
+    // 문제를 낼 때와 답을 확인할 때 좌표계를 똑같이 쓴다.
+    // 화면이 확대·축소되지 않으므로 직선이 제자리에서 늘어나기만 한다.
+    const PARA_IN = 100;                 // 문제로 보여 주는 직선 길이
+    const PARA_OUT = 185;                // 답을 확인할 때 늘여서 그리는 길이
+    const PARA_BOX = PARA_OUT + 14;      // 그림 한 변의 절반
+
+    function paraFigureSvg(q) {
+      const rad = (q.theta * Math.PI) / 180;
+      const rad2 = ((q.theta + q.delta) * Math.PI) / 180;
+      const u = [Math.cos(rad), Math.sin(rad)];    // 직선 가의 방향
+      const v = [-Math.sin(rad), Math.cos(rad)];   // 가에 수직인 방향
+      const u2 = [Math.cos(rad2), Math.sin(rad2)]; // 직선 나의 방향
+      const half = q.sep / 2;
+      const at = (P, d, t) => [P[0] + d[0] * t, P[1] + d[1] * t];
+      const P1 = at([0, 0], v, half);
+      const P2 = at([0, 0], v, -half);
+      const cross2 = (a, b) => a[0] * b[1] - a[1] * b[0];
+
+      // 두 직선이 만나는 점 (평행하면 없다)
+      const den = cross2(u, u2);
+      let meet = null;
+      if (Math.abs(den) > 1e-6) {
+        const t = cross2([P2[0] - P1[0], P2[1] - P1[1]], u2) / den;
+        meet = at(P1, u, t);
+      }
+
+      const inA = clipLine(P1, u, PARA_IN);
+      const inB = clipLine(P2, u2, PARA_IN);
+      const outA = clipLine(P1, u, PARA_OUT);
+      const outB = clipLine(P2, u2, PARA_OUT);
+      const showMeet = Boolean(q.reveal && meet
+        && Math.max(Math.abs(meet[0]), Math.abs(meet[1])) <= PARA_OUT);
+
+      const lineW = 5;
+      const hotW = 8.5;
+      const labelR = 17;
+      const markS = 20;
+      const markW = 3.2;
+      const n = (x) => Math.round(x * 100) / 100;
+
+      // 이름표는 문제로 보여 준 직선 끝에 옆으로 비켜 붙인다.
+      // 늘어난 직선이 이름표를 지나가도 자리가 그대로라 선이 움직여 보이지 않는다.
+      const endIdx = (meet && (meet[0] * u[0] + meet[1] * u[1]) > 0) ? 0 : 1;
+      const outward = half >= 0 ? 1 : -1;
+      const side = labelR + 11;
+      const aLabel = at(at(P1, u, inA[endIdx]), v, outward * side);
+      const bLabel = at(at(P2, u2, inB[endIdx]), v, -outward * side);
+
+      const box = q.compact ? PARA_IN + 24 : PARA_BOX;
+      const size = box * 2;
+
+      const line = (P, d, span, color, width, dash) => {
+        const s1 = at(P, d, span[0]);
+        const s2 = at(P, d, span[1]);
+        return `<line x1="${n(s1[0])}" y1="${n(s1[1])}" x2="${n(s2[0])}" y2="${n(s2[1])}"
+          stroke="${color}" stroke-width="${n(width)}" stroke-linecap="round"
+          ${dash ? 'stroke-dasharray="9 9" opacity=".5"' : ''} />`;
+      };
+
+      const label = (pt, text, hot) => `
+        <circle cx="${n(pt[0])}" cy="${n(pt[1])}" r="${labelR}" fill="#fff" stroke="${hot ? '#f5b5b5' : '#dfe2ec'}" stroke-width="2.5" />
+        <text x="${n(pt[0])}" y="${n(pt[1])}" text-anchor="middle" dominant-baseline="central"
+          font-size="20" font-weight="900" fill="${hot ? '#d64545' : '#5b6076'}">${text}</text>`;
+
+      // 개념 설명에서는 두 직선에 수직인 직선을 함께 그린다
+      let transHtml = '';
+      if (q.trans) {
+        const spanT = clipLine([0, 0], v, PARA_IN);
+        const mark = (P, dirV) => {
+          const c1 = at(P, u, markS);
+          const c2 = at(c1, dirV, markS);
+          const c3 = at(P, dirV, markS);
+          return `<polyline points="${n(c1[0])},${n(c1[1])} ${n(c2[0])},${n(c2[1])} ${n(c3[0])},${n(c3[1])}"
+            fill="none" stroke="${PINK}" stroke-width="${n(markW * 1.2)}" stroke-linejoin="miter" />`;
+        };
+        transHtml = line([0, 0], v, spanT, INK, lineW * 0.85, false)
+          + mark(P1, [-v[0], -v[1]]) + mark(P2, v);
+      }
+
+      const hot = q.hl === 'both';
+      const color = hot ? RED : INK;
+      const width = hot ? hotW : lineW;
+
+      return `
+        <svg class="fig" viewBox="${-box} ${-box} ${size} ${size}" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          ${q.reveal ? line(P1, u, outA, color, width, true) + line(P2, u2, outB, color, width, true) : ''}
+          ${transHtml}
+          ${line(P1, u, inA, color, width, false)}
+          ${line(P2, u2, inB, color, width, false)}
+          ${showMeet ? `<circle cx="${n(meet[0])}" cy="${n(meet[1])}" r="9" fill="${RED}" stroke="#fff" stroke-width="2.4" />` : ''}
+          ${label(aLabel, '가', hot)}
+          ${label(bLabel, '나', hot)}
+        </svg>
+      `;
+    }
+
+    /* =========================================================
+       그림 그리기 (평행선 사이의 거리)
+       ========================================================= */
+    const SEG_MARKS = ['①', '②', '③'];
+
+    // 평행선 사이에 그은 선분 세 개 중 하나만 수직이다
+    function gapFigureSvg(q) {
+      const rad = (q.theta * Math.PI) / 180;
+      const u = [Math.cos(rad), Math.sin(rad)];
+      const v = [-Math.sin(rad), Math.cos(rad)];
+      const at = (P, d, t) => [P[0] + d[0] * t, P[1] + d[1] * t];
+      const half = q.sep / 2;
+      const P1 = at([0, 0], v, half);
+      const P2 = at([0, 0], v, -half);
+
+      const segs = q.ts.map((t, i) => {
+        const S = at(P1, u, t);
+        const E = at(P2, u, t + q.shifts[i]);
+        const dx = E[0] - S[0];
+        const dy = E[1] - S[1];
+        const len = Math.hypot(dx, dy) || 1;
+        const w = [dx / len, dy / len];
+        let nrm = [-w[1], w[0]];
+        if (nrm[0] * u[0] + nrm[1] * u[1] < 0) nrm = [-nrm[0], -nrm[1]];
+        const mid = [(S[0] + E[0]) / 2, (S[1] + E[1]) / 2];
+        return { idx: i, S, E, w, nrm, label: mid, hit: i === q.slot };
+      });
+
+      let far = 0;
+      q.ts.forEach((t, i) => { far = Math.max(far, Math.abs(t), Math.abs(t + q.shifts[i])); });
+      const span = Math.max(far + 34, Math.abs(q.sep) * 0.85, 70);
+
+      const lineW = 5;
+      const segW = 5.5;
+      const hotW = 8;
+      const labelR = 16;
+      const markM = 15;
+      const n = (x) => Math.round(x * 100) / 100;
+
+      const pts = [at(P1, u, -span), at(P1, u, span), at(P2, u, -span), at(P2, u, span)];
+      segs.forEach((sg) => {
+        pts.push([sg.label[0] - labelR, sg.label[1] - labelR], [sg.label[0] + labelR, sg.label[1] + labelR]);
+      });
+      const xs = pts.map((pt) => pt[0]);
+      const ys = pts.map((pt) => pt[1]);
+      const pad = 10;
+      const minX = Math.min(...xs) - pad;
+      const maxX = Math.max(...xs) + pad;
+      const minY = Math.min(...ys) - pad;
+      const maxY = Math.max(...ys) + pad;
+      const bw = maxX - minX;
+      const bh = maxY - minY;
+
+      const seg = (a, b, color, width, cap) => `<line x1="${n(a[0])}" y1="${n(a[1])}" x2="${n(b[0])}" y2="${n(b[1])}"
+        stroke="${color}" stroke-width="${n(width)}" stroke-linecap="${cap || 'round'}" />`;
+
+      // 정답 선분의 양 끝에 직각 표시를 그린다
+      const corner = (P, along, side) => {
+        const c1 = at(P, along, markM);
+        const c2 = at(c1, side, markM);
+        const c3 = at(P, side, markM);
+        return `<polyline points="${n(c1[0])},${n(c1[1])} ${n(c2[0])},${n(c2[1])} ${n(c3[0])},${n(c3[1])}"
+          fill="none" stroke="${PINK}" stroke-width="3.2" stroke-linejoin="miter" />`;
+      };
+
+      const body = segs.map((sg) => {
+        const hit = sg.hit;
+        const dim = q.reveal && !hit;
+        const color = q.reveal && hit ? PINK : dim ? '#9aa1b5' : '#6b7186';
+        const width = q.reveal && hit ? hotW : segW;
+        const marks = q.reveal && hit
+          ? corner(sg.S, sg.w, u) + corner(sg.E, [-sg.w[0], -sg.w[1]], u)
+          : '';
+        if (q.noLabel) return seg(sg.S, sg.E, color, width, 'butt') + marks;
+        return seg(sg.S, sg.E, color, width, 'butt') + marks + `
+          <circle cx="${n(sg.label[0])}" cy="${n(sg.label[1])}" r="${labelR}" fill="#fff"
+            stroke="${q.reveal && hit ? '#f7b6d8' : '#dfe2ec'}" stroke-width="2.5" />
+          <text x="${n(sg.label[0])}" y="${n(sg.label[1])}" text-anchor="middle" dominant-baseline="central"
+            font-size="20" font-weight="900" fill="${q.reveal && hit ? '#c0257a' : dim ? '#9aa1b5' : '#5b6076'}">${SEG_MARKS[sg.idx]}</text>`;
+      });
+
+      return `
+        <svg class="fig" style="aspect-ratio:${n(bw)}/${n(bh)}"
+          viewBox="${n(minX)} ${n(minY)} ${n(bw)} ${n(bh)}" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          ${seg(at(P1, u, -span), at(P1, u, span), INK, lineW)}
+          ${seg(at(P2, u, -span), at(P2, u, span), INK, lineW)}
+          ${body.join('')}
+        </svg>
+      `;
+    }
+
+    // 모눈 위에서 평행선 사이의 거리를 세어 본다 (한 칸 = 1 cm)
+    function cmFigureSvg(q) {
+      const cell = 30;
+      const cols = 7;
+      const rows = 7;
+      const W = cols * cell;
+      const H = rows * cell;
+      const n = (x) => Math.round(x * 100) / 100;
+      const vertical = q.vertical;
+
+      let grid = '';
+      for (let i = 0; i <= cols; i += 1) {
+        grid += `<line x1="${i * cell}" y1="0" x2="${i * cell}" y2="${H}" stroke="#bcdcf5" stroke-width="1.6" stroke-dasharray="5 4" />`;
+      }
+      for (let j = 0; j <= rows; j += 1) {
+        grid += `<line x1="0" y1="${j * cell}" x2="${W}" y2="${j * cell}" stroke="#bcdcf5" stroke-width="1.6" stroke-dasharray="5 4" />`;
+      }
+
+      const a = q.start * cell;
+      const b = (q.start + q.gap) * cell;
+      const c = q.foot * cell;
+      const lineA = vertical ? [[a, 0], [a, H]] : [[0, a], [W, a]];
+      const lineB = vertical ? [[b, 0], [b, H]] : [[0, b], [W, b]];
+      const segS = vertical ? [a, c] : [c, a];
+      const segE = vertical ? [b, c] : [c, b];
+
+      const line = (pair, color, width) => `<line x1="${n(pair[0][0])}" y1="${n(pair[0][1])}" x2="${n(pair[1][0])}" y2="${n(pair[1][1])}"
+        stroke="${color}" stroke-width="${width}" stroke-linecap="butt" />`;
+
+      // 거리를 나타내는 선분의 양 끝 직각 표시
+      const m = 13;
+      const along = vertical ? [1, 0] : [0, 1];
+      const side = vertical ? [0, 1] : [1, 0];
+      const corner = (P, dir) => {
+        const c1 = [P[0] + dir[0] * m, P[1] + dir[1] * m];
+        const c2 = [c1[0] + side[0] * m, c1[1] + side[1] * m];
+        const c3 = [P[0] + side[0] * m, P[1] + side[1] * m];
+        return `<polyline points="${n(c1[0])},${n(c1[1])} ${n(c2[0])},${n(c2[1])} ${n(c3[0])},${n(c3[1])}"
+          fill="none" stroke="${PINK}" stroke-width="2.4" stroke-linejoin="miter" />`;
+      };
+
+      return `
+        <svg class="fig" viewBox="-12 -12 ${W + 24} ${H + 24}" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect x="0" y="0" width="${W}" height="${H}" fill="#fff" stroke="#8fc6ec" stroke-width="2.4" rx="4" />
+          ${grid}
+          ${line(lineA, INK, 4)}
+          ${line(lineB, INK, 4)}
+          ${line([segS, segE], PINK, 4.5)}
+          ${corner(segS, along)}
+          ${corner(segE, [-along[0], -along[1]])}
+        </svg>
+      `;
+    }
+
+    /* =========================================================
+       그림 그리기 (사다리꼴)
+       ========================================================= */
+    const TRAP_N = 8;        // 모눈 칸 수
+    const TRAP_CELL = 26;
+
+    // 네 변의 방향 벡터 (0-1, 1-2, 2-3, 3-0)
+    function sideDirs(P) {
+      return [0, 1, 2, 3].map((i) => {
+        const a = P[i];
+        const b = P[(i + 1) % 4];
+        return [b[0] - a[0], b[1] - a[1]];
+      });
+    }
+
+    // 두 변이 이루는 각의 사인값 (0이면 평행)
+    function sinBetween(a, b) {
+      const c = Math.abs(a[0] * b[1] - a[1] * b[0]);
+      return c / (Math.hypot(a[0], a[1]) * Math.hypot(b[0], b[1]));
+    }
+
+    // 마주 보는 두 쌍이 각각 평행한지
+    function parallelPairs(P) {
+      const d = sideDirs(P);
+      return [sinBetween(d[0], d[2]) < 1e-9, sinBetween(d[1], d[3]) < 1e-9];
+    }
+
+    function trapFigureSvg(q) {
+      const S = TRAP_CELL;
+      const W = TRAP_N * S;
+      const px = q.pts.map((p) => [p[0] * S, p[1] * S]);
+      const n = (x) => Math.round(x * 100) / 100;
+      const par = parallelPairs(q.pts);
+      const showPar = Boolean(q.showPar || q.reveal);
+
+      let grid = '';
+      if (!q.noGrid) {
+        for (let i = 0; i <= TRAP_N; i += 1) {
+          grid += `<line x1="${i * S}" y1="0" x2="${i * S}" y2="${W}" stroke="#bcdcf5" stroke-width="1.6" stroke-dasharray="5 4" />`;
+          grid += `<line x1="0" y1="${i * S}" x2="${W}" y2="${i * S}" stroke="#bcdcf5" stroke-width="1.6" stroke-dasharray="5 4" />`;
+        }
+      }
+
+      // 평행한 쌍이 둘이면 색을 나눠 칠해 두 쌍임이 보이게 한다
+      const bothPar = par[0] && par[1];
+      const sides = [0, 1, 2, 3].map((i) => {
+        const a = px[i];
+        const b = px[(i + 1) % 4];
+        const hot = showPar && par[i % 2];
+        const color = !hot ? INK : (bothPar && i % 2 === 1 ? '#2f7fe0' : RED);
+        return `<line x1="${n(a[0])}" y1="${n(a[1])}" x2="${n(b[0])}" y2="${n(b[1])}"
+          stroke="${color}" stroke-width="${hot ? 7 : 4.5}" stroke-linecap="round" />`;
+      }).join('');
+
+      if (q.noGrid) {
+        // 개념 그림에서는 모눈 없이 도형만 꽉 차게 보여 준다
+        const xs = px.map((p) => p[0]);
+        const ys = px.map((p) => p[1]);
+        const pad = 14;
+        const minX = Math.min(...xs) - pad;
+        const minY = Math.min(...ys) - pad;
+        const bw = Math.max(...xs) - Math.min(...xs) + pad * 2;
+        const bh = Math.max(...ys) - Math.min(...ys) + pad * 2;
+        return `<svg class="fig" style="aspect-ratio:${n(bw)}/${n(bh)}"
+          viewBox="${n(minX)} ${n(minY)} ${n(bw)} ${n(bh)}" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">${sides}</svg>`;
+      }
+
+      return `
+        <svg class="fig" viewBox="-12 -12 ${W + 24} ${W + 24}" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect x="0" y="0" width="${W}" height="${W}" fill="#fff" stroke="#8fc6ec" stroke-width="2.4" rx="4" />
+          ${grid}
+          ${sides}
+        </svg>
+      `;
+    }
+
+    /* =========================================================
+       그림 그리기 (사다리꼴 완성하기)
+       ========================================================= */
+    const NEW_SIDE = '#2f7fe0';
+
+    // 두 선분이 서로 엇갈리는지 (끝점이 다른 변에 닿는 경우도 엇갈린 것으로 본다)
+    function segCross(p1, p2, p3, p4) {
+      const side = (a, b, c) => (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0]);
+      const onSeg = (a, b, c) => side(a, b, c) === 0
+        && Math.min(a[0], b[0]) <= c[0] && c[0] <= Math.max(a[0], b[0])
+        && Math.min(a[1], b[1]) <= c[1] && c[1] <= Math.max(a[1], b[1]);
+      const d1 = side(p3, p4, p1);
+      const d2 = side(p3, p4, p2);
+      const d3 = side(p1, p2, p3);
+      const d4 = side(p1, p2, p4);
+      if (((d1 > 0 && d2 < 0) || (d1 < 0 && d2 > 0)) && ((d3 > 0 && d4 < 0) || (d3 < 0 && d4 > 0))) return true;
+      return onSeg(p3, p4, p1) || onSeg(p3, p4, p2) || onSeg(p1, p2, p3) || onSeg(p1, p2, p4);
+    }
+
+    // 모눈 정수 좌표에서 도형의 종류를 정확히 판정한다
+    function shapeMatches(P, target) {
+      const d = sideDirs(P);
+      const L2 = d.map((v) => v[0] * v[0] + v[1] * v[1]);
+      const par = parallelPairs(P);
+      if (target === '사다리꼴') return par[0] || par[1];
+      if (target === '평행사변형') return par[0] && par[1];
+      if (target === '마름모') return par[0] && par[1] && L2[0] === L2[1] && L2[1] === L2[2] && L2[2] === L2[3];
+      if (target === '직사각형') {
+        return [0, 1, 2, 3].every((i) => {
+          const back = d[(i + 3) % 4];
+          return back[0] * d[i][0] + back[1] * d[i][1] === 0;
+        });
+      }
+      return false;
+    }
+
+    // 찍은 점으로 목표한 사각형이 되는지 판정한다
+    function completionResult(P, target = '사다리꼴') {
+      const same = (a, b) => a[0] === b[0] && a[1] === b[1];
+      for (let i = 0; i < 4; i += 1) {
+        for (let j = i + 1; j < 4; j += 1) if (same(P[i], P[j])) return 'dup';
+      }
+      // 이웃한 두 변이 한 줄이면 삼각형이 된다
+      for (let i = 0; i < 4; i += 1) {
+        const a = P[i];
+        const b = P[(i + 1) % 4];
+        const c = P[(i + 2) % 4];
+        if ((b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0]) === 0) return 'flat';
+      }
+      if (segCross(P[0], P[1], P[2], P[3]) || segCross(P[1], P[2], P[3], P[0])) return 'crossed';
+      if (!shapeMatches(P, target)) return target === '사다리꼴' ? 'notpar' : 'nomatch';
+      return 'ok';
+    }
+
+    function buildFigureSvg(q, p) {
+      const S = TRAP_CELL;
+      const W = TRAP_N * S;
+      const n = (x) => Math.round(x * 100) / 100;
+      const G = q.given;
+      const D = p.tapped;
+      const full = D ? [...G, D] : null;
+      const done = p.locked;
+      const par = full ? parallelPairs(full) : [false, false];
+      const bothPar = par[0] && par[1];
+
+      let grid = '';
+      for (let i = 0; i <= TRAP_N; i += 1) {
+        grid += `<line x1="${i * S}" y1="0" x2="${i * S}" y2="${W}" stroke="#bcdcf5" stroke-width="1.6" stroke-dasharray="5 4" />`;
+        grid += `<line x1="0" y1="${i * S}" x2="${W}" y2="${i * S}" stroke="#bcdcf5" stroke-width="1.6" stroke-dasharray="5 4" />`;
+      }
+      let dots = '';
+      for (let a = 0; a <= TRAP_N; a += 1) {
+        for (let b = 0; b <= TRAP_N; b += 1) dots += `<circle cx="${a * S}" cy="${b * S}" r="3" fill="#9dc4e6" />`;
+      }
+
+      const seg = (a, b, color, w) => `<line x1="${n(a[0] * S)}" y1="${n(a[1] * S)}" x2="${n(b[0] * S)}" y2="${n(b[1] * S)}"
+        stroke="${color}" stroke-width="${w}" stroke-linecap="round" />`;
+
+      const target = q.target || '사다리꼴';
+      const markPar = done && (target === '사다리꼴' || target === '평행사변형');
+      let shape = '';
+      if (full) {
+        for (let i = 0; i < 4; i += 1) {
+          let color = INK;
+          let w = 4.5;
+          if (markPar && par[i % 2]) { color = bothPar && i % 2 === 1 ? NEW_SIDE : RED; w = 7; }
+          else if (!done && i >= 2) color = NEW_SIDE;   // 새로 그은 두 변
+          shape += seg(full[i], full[(i + 1) % 4], color, w);
+        }
+        // 마름모는 네 변에 눈금을, 직사각형은 네 꼭짓점에 직각 표시를 그린다
+        if (done && target === '마름모') {
+          for (let i = 0; i < 4; i += 1) {
+            const A = full[i];
+            const B = full[(i + 1) % 4];
+            const mx = ((A[0] + B[0]) / 2) * S;
+            const my = ((A[1] + B[1]) / 2) * S;
+            const L = Math.hypot(B[0] - A[0], B[1] - A[1]);
+            const nx = (-(B[1] - A[1]) / L) * 8;
+            const ny = ((B[0] - A[0]) / L) * 8;
+            shape += `<line x1="${n(mx - nx)}" y1="${n(my - ny)}" x2="${n(mx + nx)}" y2="${n(my + ny)}"
+              stroke="${PINK}" stroke-width="3.4" stroke-linecap="round" />`;
+          }
+        }
+        if (done && target === '직사각형') {
+          const m = 0.5;
+          for (let i = 0; i < 4; i += 1) {
+            const V = full[i];
+            const nx = full[(i + 1) % 4];
+            const pv = full[(i + 3) % 4];
+            const u1 = [(nx[0] - V[0]), (nx[1] - V[1])];
+            const u2 = [(pv[0] - V[0]), (pv[1] - V[1])];
+            const l1 = Math.hypot(u1[0], u1[1]);
+            const l2 = Math.hypot(u2[0], u2[1]);
+            const c1 = [(V[0] + (u1[0] / l1) * m) * S, (V[1] + (u1[1] / l1) * m) * S];
+            const c3 = [(V[0] + (u2[0] / l2) * m) * S, (V[1] + (u2[1] / l2) * m) * S];
+            const c2 = [c1[0] + c3[0] - V[0] * S, c1[1] + c3[1] - V[1] * S];
+            shape += `<polyline points="${n(c1[0])},${n(c1[1])} ${n(c2[0])},${n(c2[1])} ${n(c3[0])},${n(c3[1])}"
+              fill="none" stroke="${PINK}" stroke-width="3.4" stroke-linejoin="miter" />`;
+          }
+        }
+      } else {
+        shape = seg(G[0], G[1], INK, 4.5) + seg(G[1], G[2], INK, 4.5);
+      }
+
+      const dot = (pt, r, fill, stroke) => `<circle cx="${n(pt[0] * S)}" cy="${n(pt[1] * S)}" r="${r}"
+        fill="${fill}" ${stroke ? `stroke="${stroke}" stroke-width="3"` : ''} />`;
+      // 이어야 할 두 끝점은 속이 빈 동그라미로 표시한다
+      let verts = dot(G[1], 5, INK, '');
+      verts += full ? dot(G[0], 5, INK, '') + dot(G[2], 5, INK, '')
+        : dot(G[0], 5.5, '#fff', INK) + dot(G[2], 5.5, '#fff', INK);
+      if (D) verts += dot(D, 6.5, done ? RED : NEW_SIDE, '');
+
+      return `
+        <svg class="fig tappable" viewBox="-12 -12 ${W + 24} ${W + 24}" xmlns="http://www.w3.org/2000/svg"
+          onclick="buildTap(event, ${p.idx})">
+          <rect x="0" y="0" width="${W}" height="${W}" fill="#fff" stroke="#8fc6ec" stroke-width="2.4" rx="4" />
+          ${grid}
+          ${dots}
+          ${shape}
+          ${verts}
+        </svg>
+      `;
+    }
+
+    /* =========================================================
+       그림 그리기 (여러 가지 사각형)
+       ========================================================= */
+    // 네 변의 길이, 평행한 쌍, 직각인 꼭짓점을 좌표에서 직접 구한다
+    function quadProps(V) {
+      const d = sideDirs(V);
+      const len = d.map((v) => Math.hypot(v[0], v[1]));
+      const par = [sinBetween(d[0], d[2]) < 1e-9, sinBetween(d[1], d[3]) < 1e-9];
+      const rightAt = [0, 1, 2, 3].map((i) => {
+        const back = d[(i + 3) % 4];
+        const dot = Math.abs(back[0] * d[i][0] + back[1] * d[i][1]);
+        return dot / (Math.hypot(back[0], back[1]) * len[i]) < 1e-7;
+      });
+      const same = (x, y) => Math.abs(x - y) < 1e-6;
+      const allSame = same(len[0], len[1]) && same(len[1], len[2]) && same(len[2], len[3]);
+      return {
+        len, par, rightAt,
+        isPara: par[0] && par[1],
+        isRhombus: par[0] && par[1] && allSame,
+        isRect: rightAt.every(Boolean)
+      };
+    }
+
+    function shapeFigureSvg(q) {
+      const rad = (q.rot * Math.PI) / 180;
+      const cs = Math.cos(rad);
+      const sn = Math.sin(rad);
+      const R = q.verts.map((v) => [v[0] * cs - v[1] * sn, v[0] * sn + v[1] * cs]);
+      const xs = R.map((v) => v[0]);
+      const ys = R.map((v) => v[1]);
+      const minX = Math.min(...xs);
+      const minY = Math.min(...ys);
+      const w = Math.max(...xs) - minX;
+      const h = Math.max(...ys) - minY;
+      const k = 200 / Math.max(w, h);
+      const P = R.map((v) => [(v[0] - minX) * k, (v[1] - minY) * k]);
+      const n = (x) => Math.round(x * 100) / 100;
+      const props = quadProps(q.verts);
+
+      const cx = (P[0][0] + P[1][0] + P[2][0] + P[3][0]) / 4;
+      const cy = (P[0][1] + P[1][1] + P[2][1] + P[3][1]) / 4;
+      const info = [0, 1, 2, 3].map((i) => {
+        const A = P[i];
+        const B = P[(i + 1) % 4];
+        const mid = [(A[0] + B[0]) / 2, (A[1] + B[1]) / 2];
+        const L = Math.hypot(B[0] - A[0], B[1] - A[1]);
+        const u = [(B[0] - A[0]) / L, (B[1] - A[1]) / L];
+        let nrm = [-u[1], u[0]];
+        // 바깥쪽을 향하게 뒤집는다
+        if ((mid[0] + nrm[0] - cx) ** 2 + (mid[1] + nrm[1] - cy) ** 2 < (mid[0] - cx) ** 2 + (mid[1] - cy) ** 2) {
+          nrm = [-nrm[0], -nrm[1]];
+        }
+        return { A, B, mid, u, nrm, L };
+      });
+
+      const bothPar = props.par[0] && props.par[1];
+      const want = (k) => q.showWhat === 'all' || q.showWhat === k
+        || (Array.isArray(q.showWhat) && q.showWhat.includes(k));
+      const showPar = q.reveal && want('para');
+      const sides = [0, 1, 2, 3].map((i) => {
+        const hot = showPar && props.par[i % 2];
+        const color = !hot ? INK : (bothPar && i % 2 === 1 ? NEW_SIDE : RED);
+        return `<line x1="${n(info[i].A[0])}" y1="${n(info[i].A[1])}" x2="${n(info[i].B[0])}" y2="${n(info[i].B[1])}"
+          stroke="${color}" stroke-width="${hot ? 7 : 4.5}" stroke-linecap="round" />`;
+      }).join('');
+
+      // 길이가 같은 변끼리 같은 개수의 눈금을 그린다
+      let ticks = '';
+      if (q.reveal && want('len')) {
+        const groups = [];
+        props.len.forEach((L) => {
+          if (!groups.some((g) => Math.abs(g - L) < 1e-6)) groups.push(L);
+        });
+        groups.sort((a, b) => a - b);
+        [0, 1, 2, 3].forEach((i) => {
+          const count = groups.findIndex((g) => Math.abs(g - props.len[i]) < 1e-6) + 1;
+          const { mid, u, nrm } = info[i];
+          for (let t = 0; t < count; t += 1) {
+            const off = (t - (count - 1) / 2) * 8;
+            const c = [mid[0] + u[0] * off, mid[1] + u[1] * off];
+            ticks += `<line x1="${n(c[0] - nrm[0] * 8)}" y1="${n(c[1] - nrm[1] * 8)}"
+              x2="${n(c[0] + nrm[0] * 8)}" y2="${n(c[1] + nrm[1] * 8)}"
+              stroke="${PINK}" stroke-width="3.4" stroke-linecap="round" />`;
+          }
+        });
+      }
+
+      // 직각인 꼭짓점에 네모 표시
+      let corners = '';
+      if (q.reveal && want('right')) {
+        const m = 15;
+        [0, 1, 2, 3].forEach((i) => {
+          if (!props.rightAt[i]) return;
+          const out = info[i].u;
+          const back = info[(i + 3) % 4].u;
+          const V = P[i];
+          const c1 = [V[0] + out[0] * m, V[1] + out[1] * m];
+          const c3 = [V[0] - back[0] * m, V[1] - back[1] * m];
+          const c2 = [c1[0] + (c3[0] - V[0]), c1[1] + (c3[1] - V[1])];
+          corners += `<polyline points="${n(c1[0])},${n(c1[1])} ${n(c2[0])},${n(c2[1])} ${n(c3[0])},${n(c3[1])}"
+            fill="none" stroke="${PINK}" stroke-width="3.4" stroke-linejoin="miter" />`;
+        });
+      }
+
+      // 각의 크기 표시 (호 + 숫자)
+      let angles = '';
+      const anglePad = [];
+      if (q.angleLabels) {
+        q.angleLabels.forEach((text, i) => {
+          if (!text) return;
+          const V = P[i];
+          const uNext = info[i].u;
+          const uPrev = [-info[(i + 3) % 4].u[0], -info[(i + 3) % 4].u[1]];
+          const a0 = Math.atan2(uPrev[1], uPrev[0]);
+          let da = Math.atan2(uNext[1], uNext[0]) - a0;
+          while (da > Math.PI) da -= 2 * Math.PI;
+          while (da < -Math.PI) da += 2 * Math.PI;
+          const r = 21;
+          const arc = [];
+          for (let k = 0; k <= 12; k += 1) {
+            const t = a0 + (da * k) / 12;
+            arc.push(`${n(V[0] + Math.cos(t) * r)},${n(V[1] + Math.sin(t) * r)}`);
+          }
+          angles += `<polyline points="${arc.join(' ')}" fill="none" stroke="${PINK}" stroke-width="3.2" />`;
+          const mid = a0 + da / 2;
+          const at = [V[0] + Math.cos(mid) * (r + 17), V[1] + Math.sin(mid) * (r + 17)];
+          anglePad.push([at[0] - 24, at[1] - 15], [at[0] + 24, at[1] + 15]);
+          if (text === '□') {
+            angles += `<rect x="${n(at[0] - 14)}" y="${n(at[1] - 12)}" width="28" height="24" rx="6"
+              fill="#fff" stroke="${PINK}" stroke-width="3.2" />`;
+            return;
+          }
+          angles += `<text x="${n(at[0])}" y="${n(at[1])}" text-anchor="middle" dominant-baseline="central"
+            font-size="21" font-weight="900" fill="${INK}" stroke="#fff" stroke-width="5" paint-order="stroke">${text}</text>`;
+        });
+      }
+
+      // 변의 길이 글자
+      let labels = '';
+      const labelPad = [];
+      if (q.labels) {
+        q.labels.forEach((text, i) => {
+          if (!text) return;
+          const { mid, nrm } = info[i];
+          const at = [mid[0] + nrm[0] * 26, mid[1] + nrm[1] * 26];
+          labelPad.push([at[0] - 30, at[1] - 18], [at[0] + 30, at[1] + 18]);
+          if (text === '□') {
+            // 구해야 할 자리는 빈 네모로 크게 그린다
+            labels += `<rect x="${n(at[0] - 16)}" y="${n(at[1] - 14)}" width="32" height="28" rx="6"
+              fill="#fff" stroke="${PINK}" stroke-width="3.4" />`;
+            return;
+          }
+          labels += `<text x="${n(at[0])}" y="${n(at[1])}" text-anchor="middle" dominant-baseline="central"
+            font-size="21" font-weight="900" fill="${INK}"
+            stroke="#fff" stroke-width="5" paint-order="stroke">${text}</text>`;
+        });
+      }
+
+      const pts = [...P, ...labelPad, ...anglePad];
+      const px = pts.map((v) => v[0]);
+      const py = pts.map((v) => v[1]);
+      const pad = 16;
+      const bx = Math.min(...px) - pad;
+      const by = Math.min(...py) - pad;
+      const bw = Math.max(...px) - Math.min(...px) + pad * 2;
+      const bh = Math.max(...py) - Math.min(...py) + pad * 2;
+
+      return `
+        <svg class="fig" style="aspect-ratio:${n(bw)}/${n(bh)}"
+          viewBox="${n(bx)} ${n(by)} ${n(bw)} ${n(bh)}" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          ${sides}${ticks}${corners}${angles}${labels}
+        </svg>
+      `;
+    }
+
+    function questionFigure(q) {
+      if (q.kind === 'para') return paraFigureSvg(q);
+      if (q.kind === 'gap') return gapFigureSvg(q);
+      if (q.kind === 'cm') return cmFigureSvg(q);
+      if (q.kind === 'trap') return trapFigureSvg(q);
+      if (q.kind === 'shape' || q.kind === 'len') return shapeFigureSvg(q);
+      return figureSvg(q);
+    }
+
+    /* =========================================================
+       문제 만들기
+       ========================================================= */
+    const TERM_SAY = {
+      수직: '두 직선이 만나서 이루는 각이 직각일 때, 두 직선은 서로 수직이라고 합니다.',
+      수선: '두 직선이 서로 수직으로 만나면, 한 직선을 다른 직선에 대한 수선이라고 합니다.',
+      직각: '반듯하게 벌어진 구십도인 각을 직각이라고 합니다.',
+      평행: '한 직선에 수직인 두 직선을 그었을 때 만나지 않는 두 직선을 서로 평행하다고 합니다.',
+      평행선: '평행한 두 직선을 평행선이라고 합니다.',
+      '평행선 사이의 거리': '평행선의 한 직선에서 다른 직선에 수직인 선분을 그었을 때, 이 선분의 길이를 평행선 사이의 거리라고 합니다.',
+      '가장 짧은 선분': '평행선 사이에 그은 선분 가운데 수직인 선분이 가장 짧습니다. 비스듬히 그은 선분은 더 깁니다.',
+      사다리꼴: '평행한 변이 한 쌍이라도 있는 사각형을 사다리꼴이라고 합니다.',
+      '직사각형도 사다리꼴': '직사각형이나 정사각형처럼 평행한 변이 두 쌍인 사각형도 사다리꼴입니다.',
+      평행사변형: '마주 보는 두 쌍의 변이 서로 평행한 사각형을 평행사변형이라고 합니다.',
+      '마주 보는 변의 길이': '평행사변형은 마주 보는 두 변의 길이가 서로 같습니다.',
+      마름모: '네 변의 길이가 모두 같은 사각형을 마름모라고 합니다.',
+      '마름모도 평행사변형': '마름모는 마주 보는 두 쌍의 변이 서로 평행하므로 평행사변형이기도 합니다.',
+      직사각형: '네 각이 모두 직각인 사각형을 직사각형이라고 합니다.',
+      정사각형: '네 각이 모두 직각이면서 네 변의 길이도 같은 사각형을 정사각형이라고 합니다.'
+    };
+    const TERM_DESC = {
+      수직: '두 직선이 만나서 이루는 각이 직각일 때, 두 직선은 서로 <b>수직</b>이라고 해요.',
+      수선: '두 직선이 서로 수직으로 만나면, 한 직선을 다른 직선에 대한 <b>수선</b>이라고 해요.',
+      직각: '반듯하게 벌어진 90°인 각을 <b>직각</b>이라고 해요. 그림에서는 작은 네모로 표시해요.',
+      평행: '한 직선에 수직인 두 직선을 그었을 때 만나지 않는 두 직선을 서로 <b>평행</b>하다고 해요.',
+      평행선: '평행한 두 직선을 <b>평행선</b>이라고 해요. 아무리 길게 늘여도 서로 만나지 않아요.',
+      '평행선 사이의 거리': '평행선의 한 직선에서 다른 직선에 <b>수직</b>인 선분을 그어요. 이 선분의 길이가 <b>평행선 사이의 거리</b>예요.',
+      '가장 짧은 선분': '평행선 사이에 그은 선분 중에서 <b>수직인 선분이 가장 짧아요</b>. 비스듬히 그은 선분은 더 길어요.',
+      사다리꼴: '평행한 변이 한 쌍이라도 있는 사각형을 <b>사다리꼴</b>이라고 해요.',
+      '직사각형도 사다리꼴': '직사각형이나 정사각형처럼 평행한 변이 <b>두 쌍</b>인 사각형도 사다리꼴이에요.',
+      평행사변형: '마주 보는 두 쌍의 변이 서로 <b>평행한</b> 사각형을 <b>평행사변형</b>이라고 해요.',
+      '마주 보는 변의 길이': '평행사변형은 마주 보는 두 변의 <b>길이가 같아요</b>. 눈금 수가 같은 변끼리 길이가 같아요.',
+      마름모: '네 변의 길이가 <b>모두 같은</b> 사각형을 <b>마름모</b>라고 해요.',
+      '마름모도 평행사변형': '마름모는 마주 보는 두 쌍의 변이 평행해서 <b>평행사변형</b>이기도 해요.',
+      직사각형: '네 각이 모두 <b>직각</b>인 사각형을 <b>직사각형</b>이라고 해요.',
+      정사각형: '네 각이 직각이면서 네 변의 길이도 같은 사각형을 <b>정사각형</b>이라고 해요.'
+    };
+
+    function makeTermQuestion() {
+      const spot = pick(['both', 'one', 'angle']);
+      // ∟ 모양은 두 선분이 끝점에서 만나는 그림이라 직각 문제에만 쓴다
+      const shape = spot === 'angle' ? pick(SHAPES) : pick(['cross', 'tee']);
+      const theta = pick(THETAS);
+      // ⊥ 모양에서는 다른 직선 위에 내려온 직선 나만 수선이 된다
+      const hl = shape === 'tee' ? 'b' : pick(['a', 'b']);
+      const other = hl === 'a' ? '나' : '가';
+      const answer = spot === 'both' ? '수직' : spot === 'one' ? '수선' : '직각';
+      const prompt = spot === 'both'
+        ? '빨간색 두 직선은 서로 무엇이라고 하나요?'
+        : spot === 'one'
+          ? `직선 ${other}에 대하여 빨간색 직선을 무엇이라고 하나요?`
+          : '빨간색으로 표시한 부분을 무엇이라고 하나요?';
+      const tag = spot === 'both'
+        ? '두 직선을 함께 보세요'
+        : spot === 'one'
+          ? `직선 ${other}와 견주어 보세요`
+          : '두 직선이 만나서 생긴 곳이에요';
+      return { kind: 'term', shape, theta, spot, hl, other, answer, prompt, tag, choices: ['수직', '수선', '직각'] };
+    }
+
+    // 두 직선이 만나는 점이 어디에 생기는지 재는 함수 (그림의 가로·세로 좌표 기준)
+    function meetDist(theta, sep, delta) {
+      const rad = (theta * Math.PI) / 180;
+      const rad2 = ((theta + delta) * Math.PI) / 180;
+      const u = [Math.cos(rad), Math.sin(rad)];
+      const v = [-Math.sin(rad), Math.cos(rad)];
+      const u2 = [Math.cos(rad2), Math.sin(rad2)];
+      const h = sep / 2;
+      const P1 = [v[0] * h, v[1] * h];
+      const P2 = [-v[0] * h, -v[1] * h];
+      const den = u[0] * u2[1] - u[1] * u2[0];
+      if (Math.abs(den) < 1e-9) return Infinity;
+      const dx = P2[0] - P1[0];
+      const dy = P2[1] - P1[1];
+      const t = (dx * u2[1] - dy * u2[0]) / den;
+      return Math.max(Math.abs(P1[0] + u[0] * t), Math.abs(P1[1] + u[1] * t));
+    }
+
+    // 기울기가 클수록 가까운 곳에서 만나므로, 원하는 자리에서 만나도록 이분법으로 찾는다
+    function deltaForMeet(theta, sep, sign, target) {
+      let lo = 1;
+      let hi = 70;
+      for (let i = 0; i < 40; i += 1) {
+        const mid = (lo + hi) / 2;
+        if (meetDist(theta, sep, sign * mid) > target) lo = mid; else hi = mid;
+      }
+      return sign * ((lo + hi) / 2);
+    }
+
+    function makeParaQuestion() {
+      const isPar = Math.random() < 0.5;
+      const theta = pick(THETAS);
+      const sep = pick([1, -1]) * randInt(46, 76);
+      // 문제로 보여 주는 범위 밖에서 만나고, 답을 확인할 때는 화면 안에 들어오게 한다
+      const target = PARA_IN * 1.1 + Math.random() * (PARA_OUT * 0.92 - PARA_IN * 1.1);
+      const delta = isPar ? 0 : deltaForMeet(theta, sep, pick([1, -1]), target);
+      const answer = isPar ? '평행하다' : '평행하지 않다';
+      return {
+        kind: 'para',
+        theta, delta, sep, isPar, answer,
+        reveal: false,
+        prompt: '직선 가와 직선 나는 서로 평행할까요?',
+        tag: '길게 늘여도 만나지 않으면 평행이에요',
+        choices: ['평행하다', '평행하지 않다']
+      };
+    }
+
+    /* ---------- 사다리꼴 ---------- */
+    // 평행한 두 변이 향할 수 있는 방향들
+    const TRAP_DIRS = [[1, 0], [0, 1], [1, 1], [1, -1], [2, 1], [2, -1], [1, 2], [1, -2], [3, 1], [3, -1]];
+
+    function isConvexQuad(P) {
+      let sign = 0;
+      for (let i = 0; i < 4; i += 1) {
+        const o = P[i];
+        const a = P[(i + 1) % 4];
+        const b = P[(i + 2) % 4];
+        const c = (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]);
+        if (Math.abs(c) < 1e-9) return false;   // 세 꼭짓점이 한 직선 위
+        const sgn = c > 0 ? 1 : -1;
+        if (sign === 0) sign = sgn;
+        else if (sign !== sgn) return false;
+      }
+      return true;
+    }
+
+    function polyArea(P) {
+      let a = 0;
+      for (let i = 0; i < 4; i += 1) {
+        const u = P[i];
+        const w = P[(i + 1) % 4];
+        a += u[0] * w[1] - w[0] * u[1];
+      }
+      return Math.abs(a) / 2;
+    }
+
+    // 변이 너무 짧거나, 납작하거나, 평행한 듯 아닌 듯 애매한 모양은 쓰지 않는다
+    function goodQuad(P, wantTrap) {
+      const d = sideDirs(P);
+      if (d.some((v) => Math.hypot(v[0], v[1]) < 2)) return false;
+      if (polyArea(P) < 12) return false;
+      // 꼭짓점이 뾰족하거나 거의 펴져 있으면 사각형으로 보이지 않는다
+      for (let i = 0; i < 4; i += 1) {
+        const back = d[(i + 3) % 4];
+        if (sinBetween([-back[0], -back[1]], d[i]) < 0.3) return false;
+      }
+      const s1 = sinBetween(d[0], d[2]);
+      const s2 = sinBetween(d[1], d[3]);
+      const par1 = s1 < 1e-9;
+      const par2 = s2 < 1e-9;
+      if (!par1 && s1 < 0.24) return false;
+      if (!par2 && s2 < 0.24) return false;
+      return wantTrap ? (par1 || par2) : (!par1 && !par2);
+    }
+
+    // 모눈 한가운데로 옮긴다
+    function fitToGrid(P) {
+      const xs = P.map((p) => p[0]);
+      const ys = P.map((p) => p[1]);
+      const w = Math.max(...xs) - Math.min(...xs);
+      const h = Math.max(...ys) - Math.min(...ys);
+      if (w < 3 || h < 3 || w > TRAP_N || h > TRAP_N) return null;
+      const ox = Math.round((TRAP_N - w) / 2) - Math.min(...xs);
+      const oy = Math.round((TRAP_N - h) / 2) - Math.min(...ys);
+      return P.map((p) => [p[0] + ox, p[1] + oy]);
+    }
+
+    // 무게중심 기준으로 각도 순서로 늘어놓아 꼬이지 않은 사각형을 만든다
+    function orderConvex(P) {
+      const cx = (P[0][0] + P[1][0] + P[2][0] + P[3][0]) / 4;
+      const cy = (P[0][1] + P[1][1] + P[2][1] + P[3][1]) / 4;
+      const sorted = [...P].sort((a, b) => Math.atan2(a[1] - cy, a[0] - cx) - Math.atan2(b[1] - cy, b[0] - cx));
+      for (let i = 0; i < 4; i += 1) {
+        for (let j = i + 1; j < 4; j += 1) {
+          if (sorted[i][0] === sorted[j][0] && sorted[i][1] === sorted[j][1]) return null;
+        }
+      }
+      return sorted;
+    }
+
+    function randomQuad(wantTrap) {
+      for (let tries = 0; tries < 500; tries += 1) {
+        let P;
+        if (wantTrap) {
+          const d = pick(TRAP_DIRS);
+          const perp = [-d[1], d[0]];
+          // 방향 벡터의 길이가 제각각이라 칸 수로 환산해서 배수를 정한다
+          const len = Math.hypot(d[0], d[1]);
+          const steps = (from, to) => Math.max(1, Math.round(randInt(from, to) / 10 / len));
+          const m = steps(30, 60);          // 평행한 한 변의 길이 3~6칸
+          const k = pick([1, -1]) * steps(28, 48);  // 두 평행한 변 사이 거리 2.8~4.8칸
+          const j = randInt(-1, 1);
+          // 평행한 변의 길이가 같으면 평행사변형·직사각형이 된다. 그것도 사다리꼴이지만
+          // 너무 자주 나오면 사다리꼴다운 모양을 못 보므로 4번에 1번만 허용한다
+          let nn = m;
+          if (Math.random() >= 0.25) {
+            for (let t = 0; t < 20 && nn === m; t += 1) nn = steps(30, 60);
+            if (nn === m) nn = Math.max(1, m - 1);
+          }
+          const A = [0, 0];
+          const B = [m * d[0], m * d[1]];
+          const D = [k * perp[0] + j * d[0], k * perp[1] + j * d[1]];
+          const C = [D[0] + nn * d[0], D[1] + nn * d[1]];
+          P = [A, B, C, D];
+        } else {
+          P = orderConvex([0, 1, 2, 3].map(() => [randInt(0, TRAP_N), randInt(0, TRAP_N)]));
+          if (!P) continue;
+        }
+        const fitted = fitToGrid(P);
+        if (!fitted) continue;
+        if (!isConvexQuad(fitted)) continue;
+        if (!goodQuad(fitted, wantTrap)) continue;
+        return fitted;
+      }
+      return null;
+    }
+
+    function makeTrapQuestion() {
+      let isTrap = Math.random() < 0.5;
+      let pts = randomQuad(isTrap);
+      if (!pts) { isTrap = !isTrap; pts = randomQuad(isTrap); }
+      const answer = isTrap ? '사다리꼴이다' : '사다리꼴이 아니다';
+      return {
+        kind: 'trap',
+        pts, isTrap, answer,
+        reveal: false,
+        prompt: '이 사각형은 사다리꼴일까요?',
+        tag: '평행한 변이 한 쌍이라도 있으면 사다리꼴이에요',
+        choices: ['사다리꼴이다', '사다리꼴이 아니다']
+      };
+    }
+
+    // 모눈 위에서 목표한 사각형이 되는 점이 몇 개인지 센다
+    function countSolutions(given, target) {
+      let count = 0;
+      for (let a = 0; a <= TRAP_N; a += 1) {
+        for (let b = 0; b <= TRAP_N; b += 1) {
+          if (completionResult([...given, [a, b]], target) === 'ok') count += 1;
+        }
+      }
+      return count;
+    }
+
+    // 평행사변형·마름모·직사각형은 두 변 벡터로 바로 만든다
+    const VEC_POOL = [];
+    for (let vx = -5; vx <= 5; vx += 1) {
+      for (let vy = -5; vy <= 5; vy += 1) {
+        if (vx * vx + vy * vy >= 4) VEC_POOL.push([vx, vy]);
+      }
+    }
+    // 길이가 같은 벡터끼리 묶어 두면 마름모를 만들 수 있다
+    const EQUAL_LEN_GROUPS = (() => {
+      const byLen = {};
+      VEC_POOL.forEach((v) => {
+        const k = v[0] * v[0] + v[1] * v[1];
+        (byLen[k] = byLen[k] || []).push(v);
+      });
+      return Object.values(byLen).filter((g) => g.length >= 4);
+    })();
+    // 직각을 만들 때 쓰는 기본 벡터
+    const PRIM_VECS = [[1, 0], [0, 1], [2, 1], [1, 2], [3, 1], [1, 3], [3, 2], [2, 3], [1, -1], [2, -1], [1, -2]];
+
+    function buildTargetQuad(target) {
+      for (let tries = 0; tries < 800; tries += 1) {
+        let u = null;
+        let v = null;
+        if (target === '평행사변형') {
+          u = pick(VEC_POOL); v = pick(VEC_POOL);
+        } else if (target === '마름모') {
+          const g = pick(EQUAL_LEN_GROUPS);
+          u = pick(g); v = pick(g);
+        } else if (target === '직사각형') {
+          const q = pick(PRIM_VECS);
+          u = [q[0] * randInt(1, 3), q[1] * randInt(1, 3)];
+          const b = randInt(1, 3);
+          v = [-q[1] * b, q[0] * b];
+        }
+        if (!u || !v) continue;
+        const P = [[0, 0], u, [u[0] + v[0], u[1] + v[1]], v];
+        const fitted = fitToGrid(P);
+        if (!fitted) continue;
+        if (!isConvexQuad(fitted)) continue;
+        if (!goodQuad(fitted, true)) continue;
+        if (!shapeMatches(fitted, target)) continue;
+        return fitted;
+      }
+      return null;
+    }
+
+    /* ---------- 여러 가지 사각형 ---------- */
+    const QUAD_ROT = [0, 8, -8, 15, -15];
+    // 각의 크기를 5도 단위로 끊어 아이들이 계산하기 쉽게 한다.
+    // 90도와 헷갈리지 않도록 70도까지만 쓴다
+    const QUAD_ANGLES = [50, 55, 60, 65, 70];
+
+    // 밑변 a, 빗변 b, 두 변이 이루는 각으로 사각형의 꼭짓점을 만든다
+    function quadVerts(a, b, ang) {
+      const t = (ang * Math.PI) / 180;
+      const dx = b * Math.cos(t);
+      const dy = b * Math.sin(t);
+      return [[0, 0], [a, 0], [a + dx, -dy], [dx, -dy]];
+    }
+
+    function makeQuadShape(kind) {
+      const rot = pick(QUAD_ROT);
+      if (kind === '정사각형') {
+        const a = randInt(4, 8);
+        return { kind, a, b: a, verts: quadVerts(a, a, 90), rot };
+      }
+      if (kind === '직사각형' || kind === '평행사변형') {
+        const b = randInt(3, 6);
+        const a = Math.min(12, randInt(Math.ceil(b * 1.4), Math.floor(b * 2.2)));
+        const ang = kind === '직사각형' ? 90 : pick(QUAD_ANGLES);
+        return { kind, a, b, verts: quadVerts(a, b, ang), rot };
+      }
+      if (kind === '마름모') {
+        const a = randInt(4, 8);
+        return { kind, a, b: a, verts: quadVerts(a, a, pick(QUAD_ANGLES)), rot };
+      }
+      // 사다리꼴: 윗변과 아랫변만 평행하고 나머지 두 변은 나란하지 않다
+      const bottom = randInt(7, 10);
+      let top = randInt(3, 6);
+      if (top === bottom) top -= 1;
+      const hh = randInt(4, 6);
+      const off = randInt(1, Math.max(1, bottom - top - 1));
+      return { kind, verts: [[0, 0], [bottom, 0], [off + top, -hh], [off, -hh]], rot };
+    }
+
+    const SHAPE_HINT = {
+      평행사변형: '마주 보는 두 쌍의 변이 서로 평행한지 봐요',
+      마름모: '네 변의 길이가 모두 같은지 봐요',
+      직사각형: '네 각이 모두 직각인지 봐요'
+    };
+    const SHAPE_WHAT = { 평행사변형: 'para', 마름모: 'len', 직사각형: 'right' };
+
+    function makeShapeQuestion(target) {
+      const shape = makeQuadShape(pick(['사다리꼴', '평행사변형', '마름모', '직사각형', '정사각형']));
+      const props = quadProps(shape.verts);
+      const yes = target === '평행사변형' ? props.isPara
+        : target === '마름모' ? props.isRhombus : props.isRect;
+      return {
+        kind: 'shape',
+        verts: shape.verts, rot: shape.rot, target,
+        showWhat: SHAPE_WHAT[target],
+        answer: yes ? '맞다' : '아니다',
+        reveal: false,
+        prompt: `이 사각형은 ${target}일까요?`,
+        tag: SHAPE_HINT[target],
+        choices: ['맞다', '아니다']
+      };
+    }
+
+    /* ---------- 사각형 분류하기 ---------- */
+    const SORT_CHOICES = ['사다리꼴', '평행사변형', '마름모', '직사각형', '그냥 사각형'];
+
+    // 그림의 좌표에서 해당하는 이름을 모두 구한다
+    function sortAnswer(V) {
+      const pr = quadProps(V);
+      const set = [];
+      if (pr.par[0] || pr.par[1]) set.push('사다리꼴');
+      if (pr.isPara) set.push('평행사변형');
+      if (pr.isRhombus) set.push('마름모');
+      if (pr.isRect) set.push('직사각형');
+      return set.length ? set : ['그냥 사각형'];
+    }
+
+    function makeSortQuestion() {
+      const kind = pick(['그냥 사각형', '사다리꼴', '평행사변형', '마름모', '직사각형', '정사각형']);
+      let verts;
+      if (kind === '그냥 사각형') {
+        verts = randomQuad(false) || [[0, 0], [7, 1], [8, 6], [1, 5]];
+      } else {
+        verts = makeQuadShape(kind).verts;
+      }
+      return {
+        kind: 'sort',
+        verts, rot: pick(QUAD_ROT),
+        showWhat: 'all', reveal: false,
+        answers: sortAnswer(verts),
+        prompt: '이 사각형의 이름을 모두 골라 보세요.',
+        tag: '해당하는 이름을 모두 고르고 확인을 눌러요',
+        choices: [...SORT_CHOICES]
+      };
+    }
+
+    // 보기 세 개를 작은 수부터 늘어놓되, 정답이 늘 가운데 오지 않도록
+    // 오답을 아래·위 어느 쪽에 둘지 고른다
+    function numberChoices(answer, candidates, unit = ' cm') {
+      const pool = [...new Set(candidates)].filter((x) => x > 0 && x < 180 && x !== answer);
+      const below = pool.filter((x) => x < answer);
+      const above = pool.filter((x) => x > answer);
+      const plans = [];
+      if (below.length >= 2) plans.push([2, 0]);
+      if (below.length >= 1 && above.length >= 1) plans.push([1, 1]);
+      if (above.length >= 2) plans.push([0, 2]);
+      const plan = plans.length ? pick(plans) : [Math.min(2, below.length), 0];
+      const others = [...shuffle(below).slice(0, plan[0]), ...shuffle(above).slice(0, plan[1])];
+      return [answer, ...others].sort((x, y) => x - y).map((x) => `${x}${unit}`);
+    }
+
+    // 네 꼭짓점의 각의 크기 (만들 때 정수 각을 쓰므로 정확히 떨어진다)
+    function interiorAngles(V) {
+      return [0, 1, 2, 3].map((i) => {
+        const cur = V[i];
+        const prev = V[(i + 3) % 4];
+        const next = V[(i + 1) % 4];
+        const u1 = [prev[0] - cur[0], prev[1] - cur[1]];
+        const u2 = [next[0] - cur[0], next[1] - cur[1]];
+        const cos = (u1[0] * u2[0] + u1[1] * u2[1]) / (Math.hypot(u1[0], u1[1]) * Math.hypot(u2[0], u2[1]));
+        return Math.round((Math.acos(Math.max(-1, Math.min(1, cos))) * 180) / Math.PI);
+      });
+    }
+
+    function makeAngleQuestion(kinds) {
+      const shape = makeQuadShape(pick(kinds));
+      const degs = interiorAngles(shape.verts);
+      const angleLabels = [null, null, null, null];
+      const box = randInt(0, 3);
+      let answer;
+      let prompt = '□ 안에 알맞은 수는 몇 도일까요?';
+      let tag;
+      let wrong;
+      if (shape.kind === '직사각형' || shape.kind === '정사각형') {
+        answer = 90;
+        tag = '네 각이 모두 직각이에요';
+        wrong = '아쉬워요. 직사각형은 네 각이 모두 직각이에요.';
+      } else if (Math.random() < 0.5) {
+        // 마주 보는 두 각은 크기가 같다
+        const known = (box + 2) % 4;
+        angleLabels[known] = `${degs[known]}°`;
+        answer = degs[known];
+        tag = '마주 보는 두 각의 크기를 견주어 봐요';
+        wrong = '아쉬워요. 마주 보는 두 각은 크기가 같아요.';
+      } else {
+        // 이웃한 두 각의 크기의 합은 180도
+        const known = (box + 1) % 4;
+        angleLabels[known] = `${degs[known]}°`;
+        answer = 180 - degs[known];
+        tag = '이웃한 두 각의 크기의 합은 180°예요';
+        wrong = '아쉬워요. 이웃한 두 각을 더하면 180°가 돼요.';
+      }
+      angleLabels[box] = '□';
+      return {
+        kind: 'len', unit: '°',
+        verts: shape.verts, rot: shape.rot, angleLabels,
+        showWhat: 'none', reveal: false,
+        answer: `${answer}°`, value: answer, wrong,
+        prompt, tag,
+        choices: numberChoices(answer, [180 - answer, answer - 5, answer + 5, answer - 10, answer + 10, answer - 20, answer + 20, 90], '°')
+      };
+    }
+
+    const LEN_KINDS = {
+      lenpara: ['평행사변형'],
+      lenrhom: ['마름모'],
+      lenrect: ['직사각형', '정사각형']
+    };
+    const ALL_QUAD_KINDS = ['평행사변형', '마름모', '직사각형', '정사각형'];
+
+    // 게임마다 어떤 문제를 낼지 (변의 길이 / 각의 크기)
+    const measureOpt = {
+      lenpara: { len: true, ang: true },
+      lenrhom: { len: true, ang: true },
+      lenrect: { len: true, ang: true },
+      lenmix: { len: true, ang: true }
+    };
+
+    function toggleMeasure(m, key) {
+      const o = measureOpt[m];
+      const other = key === 'len' ? 'ang' : 'len';
+      if (o[key] && !o[other]) return;   // 둘 다 끌 수는 없다
+      o[key] = !o[key];
+      renderMeasureOpts();
+    }
+
+    function renderMeasureOpts() {
+      Object.keys(measureOpt).forEach((m) => {
+        const box = document.getElementById(`opt-${m}`);
+        if (!box) return;
+        const o = measureOpt[m];
+        box.innerHTML = `
+          <button class="opt-btn ${o.len ? 'on' : 'off'}" type="button" onclick="toggleMeasure('${m}','len')">변의 길이</button>
+          <button class="opt-btn ${o.ang ? 'on' : 'off'}" type="button" onclick="toggleMeasure('${m}','ang')">각의 크기</button>
+        `;
+      });
+    }
+
+    const lastMeasure = [];
+    function makeMeasureQuestion(idx, kinds, opt) {
+      const both = opt.len && opt.ang;
+      let wantAng = opt.ang;
+      if (both) {
+        wantAng = Math.random() < 0.5;
+        // 같은 종류가 세 번 이어지지 않게 한다
+        const h = lastMeasure[idx] || [];
+        if (h.length >= 2 && h[0] === h[1] && wantAng === h[0]) wantAng = !wantAng;
+        lastMeasure[idx] = [wantAng, h[0]];
+      }
+      return wantAng ? makeAngleQuestion(kinds) : makeLenQuestion(idx, kinds);
+    }
+
+    const lastLenType = [];
+    function makeLenQuestion(idx, kinds) {
+      const shape = makeQuadShape(pick(kinds || ['평행사변형', '마름모', '직사각형', '정사각형']));
+      const props = quadProps(shape.verts);
+      const a = shape.a;
+      const b = shape.b;
+      const perim = 2 * (a + b);
+      // 두 유형 중 하나를 뽑되, 같은 유형이 세 번 이어지지는 않게 한다
+      let wantSide = Math.random() < 0.5;
+      if (idx !== undefined) {
+        const h = lastLenType[idx] || [];
+        if (h.length >= 2 && h[0] === h[1] && wantSide === h[0]) wantSide = !wantSide;
+        lastLenType[idx] = [wantSide, h[0]];
+      }
+      if (wantSide) {
+        // 빈 변의 길이 구하기: 마주 보는 변의 길이가 같다
+        const u = randInt(0, 3);
+        const opp = (u + 2) % 4;
+        const answer = Math.round(props.len[opp]);
+        const labels = [null, null, null, null];
+        labels[u] = '□';
+        labels[opp] = `${answer} cm`;
+        return {
+          kind: 'len', unit: ' cm',
+          verts: shape.verts, rot: shape.rot, labels,
+          showWhat: 'len', reveal: false, answer: `${answer} cm`, value: answer,
+          wrong: '아쉬워요. 마주 보는 변의 길이가 같다는 것을 떠올려 보세요.',
+          prompt: '□ 안에 알맞은 수는 몇 cm일까요?',
+          tag: '마주 보는 변의 길이를 살펴봐요',
+          choices: numberChoices(answer, [answer - 2, answer - 1, answer + 1, answer + 2, a === b ? answer + 3 : (u % 2 === 0 ? b : a)])
+        };
+      }
+      // 네 변의 길이의 합 구하기
+      const labels = [null, null, null, null];
+      labels[0] = `${a} cm`;
+      if (a !== b) labels[1] = `${b} cm`;
+      return {
+        kind: 'len', unit: ' cm',
+        verts: shape.verts, rot: shape.rot, labels,
+        showWhat: 'len', reveal: false, answer: `${perim} cm`, value: perim,
+        wrong: '아쉬워요. 마주 보는 변의 길이가 같다는 것을 떠올려 보세요.',
+        prompt: '네 변의 길이의 합은 몇 cm일까요?',
+        tag: a === b ? '네 변의 길이가 모두 같아요' : '마주 보는 변의 길이가 같아요',
+        choices: numberChoices(perim, [a + b, 2 * a + b, a + 2 * b, perim - 2, perim - 4, perim + 2, perim + 4, perim + a])
+      };
+    }
+
+    const BUILD_TAG = {
+      사다리꼴: '마주 보는 두 변이 나란해지는 점을 찾아요',
+      평행사변형: '마주 보는 두 쌍의 변이 모두 나란해지는 점을 찾아요',
+      마름모: '네 변의 길이가 모두 같아지는 점을 찾아요',
+      직사각형: '네 각이 모두 직각이 되는 점을 찾아요'
+    };
+
+    function makeBuildQuestion(target) {
+      let given = null;
+      for (let tries = 0; tries < 40 && !given; tries += 1) {
+        const pts = target === '사다리꼴' ? randomQuad(true) : buildTargetQuad(target);
+        if (!pts) continue;
+        // 네 꼭짓점 중 하나를 가려 두고, 나머지 세 점을 이은 길을 보여 준다
+        const r = randInt(0, 3);
+        const rot = [0, 1, 2, 3].map((i) => pts[(i + r) % 4]).slice(0, 3);
+        // 사다리꼴은 답이 여럿이라 너무 막막하지 않게 세 곳 이상인 문제만 낸다
+        if (countSolutions(rot, target) >= (target === '사다리꼴' ? 3 : 1)) given = rot;
+      }
+      if (!given) given = [[1, 6], [6, 6], [5, 2]];
+      return {
+        kind: 'build',
+        given, target,
+        prompt: `점을 눌러 ${target}을 완성해 보세요.`,
+        tag: BUILD_TAG[target],
+        choices: []
+      };
+    }
+
+    function makeGapQuestion() {
+      const theta = pick(THETAS);
+      const sep = pick([1, -1]) * randInt(88, 112);
+      const slot = randInt(0, 2);
+      const ts = [-52, 0, 52];
+      const lean = Math.round(Math.abs(sep) * (randInt(50, 72) / 100));
+      // 수직인 선분에서 바깥쪽으로 기울여 선분끼리 겹치지 않게 한다
+      const shifts = ts.map((t, i) => (i === slot ? 0 : (i < slot ? -lean : lean)));
+      return {
+        kind: 'gap',
+        theta, sep, ts, shifts, slot,
+        reveal: false,
+        answer: SEG_MARKS[slot],
+        prompt: '평행선 사이의 거리를 나타내는 선분은 어느 것일까요?',
+        tag: '다른 직선에 수직으로 그은 선분을 찾아요',
+        choices: [...SEG_MARKS]
+      };
+    }
+
+    function makeCmQuestion() {
+      const gap = randInt(2, 5);
+      const start = randInt(0, 7 - gap);
+      const answer = `${gap} cm`;
+      const below = [gap - 2, gap - 1].filter((x) => x >= 1);
+      const above = [gap + 1, gap + 2].filter((x) => x <= 7);
+      // 보기를 작은 수부터 늘어놓으므로, 정답이 늘 가운데 오지 않도록
+      // 오답 두 개를 아래·위 어느 쪽에 둘지 고른다
+      const plans = [];
+      if (below.length >= 2) plans.push([2, 0]);
+      if (below.length >= 1 && above.length >= 1) plans.push([1, 1]);
+      if (above.length >= 2) plans.push([0, 2]);
+      const plan = pick(plans);
+      const others = [...shuffle(below).slice(0, plan[0]), ...shuffle(above).slice(0, plan[1])];
+      return {
+        kind: 'cm',
+        vertical: Math.random() < 0.5,
+        gap, start,
+        foot: randInt(1, 6),
+        answer,
+        prompt: '평행선 사이의 거리는 몇 cm일까요?',
+        tag: '모눈 한 칸은 1 cm예요',
+        choices: [gap, ...others].sort((a, b) => a - b).map((x) => `${x} cm`)
+      };
+    }
+
+    // 섞어 풀기에 나오는 문제들
+    const MIX_PICKERS = [
+      (i) => makeTermQuestion(),
+      (i) => makeParaQuestion(),
+      (i) => makeGapQuestion(),
+      (i) => makeCmQuestion(),
+      (i) => makeTrapQuestion(),
+      (i) => makeShapeQuestion('평행사변형'),
+      (i) => makeShapeQuestion('마름모'),
+      (i) => makeShapeQuestion('직사각형'),
+      (i) => makeMeasureQuestion(i, ALL_QUAD_KINDS, { len: true, ang: false }),
+      (i) => makeMeasureQuestion(i, ALL_QUAD_KINDS, { len: false, ang: true }),
+      (i) => makeSortQuestion()
+    ];
+    const BUILD_MIX = ['사다리꼴', '평행사변형', '마름모', '직사각형'];
+
+    // 같은 사람에게 같은 유형이 연달아 나오지 않게 한다
+    const lastPick = [];
+    function pickDifferent(idx, count) {
+      let n = randInt(0, count - 1);
+      for (let t = 0; t < 8 && n === lastPick[idx]; t += 1) n = randInt(0, count - 1);
+      lastPick[idx] = n;
+      return n;
+    }
+
+    function makeQuestion(idx) {
+      if (mode === 'mix') return MIX_PICKERS[pickDifferent(idx, MIX_PICKERS.length)](idx);
+      if (mode === 'bmix') return makeBuildQuestion(BUILD_MIX[pickDifferent(idx, BUILD_MIX.length)]);
+      if (mode === 'para') return makeParaQuestion();
+      if (mode === 'gap') return makeGapQuestion();
+      if (mode === 'cm') return makeCmQuestion();
+      if (mode === 'trap') return makeTrapQuestion();
+      if (BUILD_TARGET[mode]) return makeBuildQuestion(BUILD_TARGET[mode]);
+      if (SHAPE_TARGET[mode]) return makeShapeQuestion(SHAPE_TARGET[mode]);
+      if (mode === 'sort') return makeSortQuestion();
+      if (LEN_KINDS[mode]) return makeMeasureQuestion(idx, LEN_KINDS[mode], measureOpt[mode]);
+      if (mode === 'lenmix') return makeMeasureQuestion(idx, ALL_QUAD_KINDS, measureOpt.lenmix);
+      if (mode === 'len') return makeLenQuestion(idx);
+      return makeTermQuestion();
+    }
+
+    const WRONG_MESSAGE = {
+      gap: '아쉬워요. 다른 직선에 수직으로 그은 선분을 찾아보세요.',
+      cm: '아쉬워요. 두 직선 사이의 모눈을 한 칸씩 세어 보세요.',
+      len: '아쉬워요. 마주 보는 변의 길이가 같다는 것을 떠올려 보세요.'
+    };
+
+    const START_MESSAGE = {
+      term: '알맞은 답을 골라 보세요.',
+      para: '평행한지 아닌지 골라 보세요.',
+      gap: '수직인 선분을 찾아 보세요.',
+      cm: '모눈을 세어 보세요.',
+      trap: '평행한 변이 있는지 살펴보세요.',
+      shape: '그림을 보고 맞는지 골라 보세요.',
+      len: '알맞은 수를 골라 보세요.',
+      sort: '알맞은 이름을 모두 고른 뒤 확인을 눌러요.',
+      build: '빈 꼭짓점 자리를 눌러 보세요.'
+    };
+
+    const BUILD_MESSAGE = {
+      dup: '이미 있는 꼭짓점이에요. 다른 점을 눌러 보세요.',
+      flat: '세 꼭짓점이 한 줄에 있어요. 다른 점을 눌러 보세요.',
+      crossed: '변끼리 엇갈렸어요. 다른 점을 눌러 보세요.',
+      notpar: '평행한 변이 없어요. 마주 보는 변이 나란해지게 해 보세요.',
+      nomatch: '아직 아니에요. 다른 점을 눌러 보세요.'
+    };
+
+    function createPlayer(idx) {
+      const p = {
+        idx,
+        question: makeQuestion(idx),
+        tries: 0,
+        state: 'idle',
+        message: '',
+        picked: [],
+        sel: [],
+        tapped: null,
+        locked: false
+      };
+      p.message = START_MESSAGE[p.question.kind] || '알맞은 답을 골라 보세요.';
+      return p;
+    }
+
+    /* =========================================================
+       게임 시작 / 종료
+       ========================================================= */
+    function startGame(selectedMode) {
+      mode = selectedMode;
+      const cap = MAX_PLAYERS[mode];
+      if (cap && playerCount > cap) playerCount = cap;
+      scores = Array(playerCount).fill(0);
+      gameActive = true;
+      players = Array.from({ length: playerCount }, (_, idx) => createPlayer(idx));
+      document.getElementById('mode-title').textContent = MODES[mode].title;
+      document.getElementById('mode-sub').textContent = MODES[mode].sub;
+      document.querySelectorAll('.screen').forEach((el) => el.classList.add('hidden'));
+      document.getElementById('game-screen').classList.remove('hidden');
+      document.body.classList.add('playing');
+      renderPlayers();
+      startTimer();
+    }
+
+    function startTimer() {
+      if (timerId) { clearInterval(timerId); timerId = null; }
+      const selected = document.getElementById('timer-select').value;
+      const display = document.getElementById('time-left');
+      display.style.color = '';
+      if (selected === 'none') {
+        display.textContent = '∞';
+        display.classList.add('infinite');
+        return;
+      }
+      display.classList.remove('infinite');
+      timeLeft = Number.parseInt(selected, 10) || 90;
+      display.textContent = String(timeLeft);
+      timerId = setInterval(() => {
+        if (!gameActive) return;
+        timeLeft -= 1;
+        display.textContent = String(Math.max(0, timeLeft));
+        if (timeLeft <= 10) display.style.color = '#e04444';
+        if (timeLeft <= 0) finishGame();
+      }, 1000);
+    }
+
+    function exitGame() {
+      gameActive = false;
+      if (timerId) { clearInterval(timerId); timerId = null; }
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+      document.getElementById('time-left').style.color = '';
+      showScreen('game-select-screen');
+    }
+
+    function finishGame() {
+      gameActive = false;
+      if (timerId) { clearInterval(timerId); timerId = null; }
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+      document.getElementById('time-left').style.color = '';
+      const ranking = scores
+        .map((score, idx) => ({ score, idx, animal: ANIMALS[idx % ANIMALS.length] }))
+        .sort((a, b) => b.score - a.score);
+      const best = ranking.length ? ranking[0].score : 0;
+      // 같은 점수는 같은 등수로 표시한다
+      let rank = 0;
+      let prev = null;
+      ranking.forEach((item, pos) => {
+        if (item.score !== prev) { rank = pos + 1; prev = item.score; }
+        item.rank = rank;
+      });
+      document.getElementById('result-overlay').innerHTML = `
+        <div class="result-card">
+          <h2>결과</h2>
+          ${ranking.map((item) => `
+            <div class="ranking-row${item.score === best && best > 0 ? ' top' : ''}">
+              <span>${item.rank}</span>
+              <span>${item.animal.emoji} ${item.animal.name}</span>
+              <strong>${item.score}점</strong>
+            </div>
+          `).join('')}
+          <div style="margin-top:18px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+            <button class="primary-btn" type="button" onclick="hideResult()">계속하기</button>
+            <button class="back-btn" type="button" onclick="restartGame()">다시 하기</button>
+            <button class="back-btn" type="button" onclick="hideResult(); exitGame()">게임 목록</button>
+          </div>
+        </div>
+      `;
+      document.getElementById('result-overlay').classList.remove('hidden');
+    }
+
+    function hideResult() {
+      document.getElementById('result-overlay').classList.add('hidden');
+      gameActive = true;
+      startTimer();
+    }
+
+    // 점수를 0부터 새로 시작한다
+    function restartGame() {
+      document.getElementById('result-overlay').classList.add('hidden');
+      scores = Array(playerCount).fill(0);
+      gameActive = true;
+      players = Array.from({ length: playerCount }, (_, idx) => createPlayer(idx));
+      renderPlayers();
+      startTimer();
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen?.();
+      } else {
+        document.exitFullscreen?.();
+      }
+    }
+
+    /* =========================================================
+       개념 알아보기
+       ========================================================= */
+    const CONCEPTS = {
+      perp: {
+        title: '수직과 수선',
+        mode: 'term',
+        rows: [
+          { word: '수직', q: { shape: 'cross', theta: 0, spot: 'both', hl: 'b' } },
+          { word: '수선', q: { shape: 'tee', theta: 0, spot: 'one', hl: 'b' } },
+          { word: '직각', q: { shape: 'ell', theta: 0, spot: 'angle', hl: 'b' } }
+        ]
+      },
+      para: {
+        title: '평행과 평행선',
+        mode: 'para',
+        rows: [
+          { word: '평행', q: { kind: 'para', theta: 0, delta: 0, sep: -96, trans: true, hl: 'none', compact: true } },
+          { word: '평행선', q: { kind: 'para', theta: 0, delta: 0, sep: -96, hl: 'both', compact: true } }
+        ]
+      },
+      gap: {
+        title: '평행선 사이의 거리',
+        mode: 'gap',
+        rows: [
+          { word: '평행선 사이의 거리', q: { kind: 'gap', theta: 0, sep: -104, ts: [0], shifts: [0], slot: 0, reveal: true, noLabel: true } },
+          { word: '가장 짧은 선분', q: { kind: 'gap', theta: 0, sep: -104, ts: [-34, 34], shifts: [0, 46], slot: 0, reveal: true, noLabel: true } }
+        ]
+      },
+      trap: {
+        title: '사다리꼴',
+        mode: 'trap',
+        rows: [
+          { word: '사다리꼴', q: { kind: 'trap', pts: [[1, 7], [7, 7], [7, 2], [3, 2]], noGrid: true, showPar: true } },
+          { word: '직사각형도 사다리꼴', q: { kind: 'trap', pts: [[1, 6], [7, 6], [7, 2], [1, 2]], noGrid: true, showPar: true } }
+        ]
+      },
+      para4: {
+        title: '평행사변형',
+        mode: 'ispara',
+        rows: [
+          { word: '평행사변형', q: { kind: 'shape', verts: quadVerts(8, 5, 62), rot: 0, reveal: true, showWhat: 'para' } },
+          { word: '마주 보는 변의 길이', q: { kind: 'shape', verts: quadVerts(8, 5, 62), rot: 0, reveal: true, showWhat: 'len' } }
+        ]
+      },
+      rhom: {
+        title: '마름모',
+        mode: 'isrhom',
+        rows: [
+          { word: '마름모', q: { kind: 'shape', verts: quadVerts(6, 6, 62), rot: 0, reveal: true, showWhat: 'len' } },
+          { word: '마름모도 평행사변형', q: { kind: 'shape', verts: quadVerts(6, 6, 62), rot: 0, reveal: true, showWhat: 'para' } }
+        ]
+      },
+      rect: {
+        title: '직사각형과 정사각형',
+        mode: 'isrect',
+        rows: [
+          { word: '직사각형', q: { kind: 'shape', verts: quadVerts(9, 5, 90), rot: 0, reveal: true, showWhat: 'right' } },
+          { word: '정사각형', q: { kind: 'shape', verts: quadVerts(6, 6, 90), rot: 0, reveal: true, showWhat: ['right', 'len'] } }
+        ]
+      }
+    };
+
+    function showConcept(key) {
+      const c = CONCEPTS[key];
+      document.getElementById('concept-overlay').innerHTML = `
+        <div class="result-card concept-card">
+          <h2>${c.title}</h2>
+          ${c.rows.map((row) => `
+            <div class="concept-row">
+              ${questionFigure(row.q)}
+              <div>
+                <p class="concept-word">${row.word}
+                  <button class="spk" type="button" onclick="speak('${TERM_SAY[row.word]}')" aria-label="${row.word} 설명 읽어 주기">🔊</button>
+                </p>
+                <p>${TERM_DESC[row.word]}</p>
+              </div>
+            </div>
+          `).join('')}
+          <div style="margin-top:18px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+            <button class="primary-btn" type="button" onclick="hideConcept(); startGame('${c.mode}')">문제 풀러 가기</button>
+            <button class="back-btn" type="button" onclick="hideConcept()">닫기</button>
+          </div>
+        </div>
+      `;
+      document.getElementById('concept-overlay').classList.remove('hidden');
+      document.body.classList.add('modal');
+    }
+
+    function hideConcept() {
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+      document.getElementById('concept-overlay').classList.add('hidden');
+      document.body.classList.remove('modal');
+    }
+
+    /* =========================================================
+       렌더링
+       ========================================================= */
+    function columnCount() {
+      if (window.innerWidth < 820) return Math.min(playerCount, 2);
+      return playerCount;
+    }
+
+    function renderPlayers() {
+      const grid = document.getElementById('players');
+      grid.style.gridTemplateColumns = `repeat(${columnCount()}, minmax(0, 1fr))`;
+      grid.style.setProperty('--scale', cellScale());
+      grid.dataset.count = String(playerCount);
+      grid.innerHTML = players.map((p) => `
+        <section class="player-cell theme-${p.idx % 6}" id="cell-${p.idx}">${cellInner(p)}</section>
+      `).join('');
+    }
+
+    function renderCell(idx) {
+      const cell = document.getElementById(`cell-${idx}`);
+      if (cell) cell.innerHTML = cellInner(players[idx]);
+    }
+
+    function cellInner(p) {
+      const animal = ANIMALS[p.idx % ANIMALS.length];
+      return `
+        <div class="answer-overlay" id="answer-overlay-${p.idx}"></div>
+        <div class="player-header">
+          <span class="player-name">${animal.emoji} ${animal.name}</span>
+          <span class="score-line">${scores[p.idx]}점</span>
+        </div>
+        ${p.question.kind === 'build' ? buildBody(p) : p.question.kind === 'sort' ? sortBody(p) : quizBody(p)}
+        <div class="controls">
+          <div class="message ${p.state === 'ok' ? 'ok' : p.state === 'no' ? 'no' : ''}">${p.message}</div>
+          <div class="btn-col">
+            ${p.question.kind === 'build' ? `<button class="reset-btn" type="button" onclick="clearBuild(${p.idx})">지우기</button>` : ''}
+            ${p.question.kind === 'sort' ? `<button class="check-btn" type="button" onclick="checkSort(${p.idx})">확인</button>` : ''}
+            <button class="reset-btn" type="button" onclick="skipQuestion(${p.idx})">다른 문제</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function quizBody(p) {
+      const q = p.question;
+      return `
+        <div class="cell-body">
+          <div class="q-prompt">
+            <span>${q.prompt}</span>
+            <button class="spk" type="button" onclick="speakQuestion(${p.idx})" aria-label="문제 읽어 주기">🔊</button>
+          </div>
+          <div class="fig-stage">${questionFigure(q)}</div>
+          <div class="fig-tag">${q.tag}</div>
+          <div class="choice-row">
+            ${q.choices.map((c, i) => {
+              const cls = p.picked.includes(c) ? (c === q.answer ? ' right' : ' wrong') : '';
+              return `
+                <button class="choice-btn${cls}" type="button" ${p.locked || p.picked.includes(c) ? 'disabled' : ''} onclick="choose(${p.idx}, ${i})">
+                  <span class="label">${c}</span>
+                  <span class="spk mini" role="button" onclick="event.stopPropagation(); speak('${choiceSay(c)}')" aria-label="${c} 읽어 주기">🔊</span>
+                </button>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function sortBody(p) {
+      const q = p.question;
+      return `
+        <div class="cell-body">
+          <div class="q-prompt">
+            <span>${q.prompt}</span>
+            <button class="spk" type="button" onclick="speakQuestion(${p.idx})" aria-label="문제 읽어 주기">🔊</button>
+          </div>
+          <div class="fig-stage">${shapeFigureSvg(q)}</div>
+          <div class="fig-tag">${q.tag}</div>
+          <div class="choice-row">
+            ${q.choices.map((c, i) => {
+              const on = p.sel.includes(c);
+              const right = p.locked && q.answers.includes(c);
+              const cls = p.locked ? (right ? ' right' : on ? ' wrong' : '') : (on ? ' selected' : '');
+              return `
+                <button class="choice-btn${cls}" type="button" ${p.locked ? 'disabled' : ''} onclick="toggleSort(${p.idx}, ${i})">
+                  <span class="label">${c}</span>
+                  <span class="spk mini" role="button" onclick="event.stopPropagation(); speak('${c}')" aria-label="${c} 읽어 주기">🔊</span>
+                </button>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function toggleSort(idx, i) {
+      const p = players[idx];
+      if (!gameActive || !p || p.locked) return;
+      const value = p.question.choices[i];
+      p.sel = p.sel.includes(value) ? p.sel.filter((x) => x !== value) : [...p.sel, value];
+      p.state = 'idle';
+      p.message = p.sel.length ? `고른 이름: ${p.sel.join(', ')} — 확인을 눌러요.` : START_MESSAGE.sort;
+      renderCell(idx);
+    }
+
+    function checkSort(idx) {
+      const p = players[idx];
+      if (!gameActive || !p || p.locked) return;
+      const q = p.question;
+      if (!p.sel.length) {
+        p.message = '이름을 하나 이상 골라 주세요.';
+        p.state = 'no';
+        renderCell(idx);
+        return;
+      }
+      const mine = [...p.sel].sort().join('|');
+      const want = [...q.answers].sort().join('|');
+      if (mine !== want) {
+        p.tries += 1;
+        p.state = 'no';
+        p.message = '아쉬워요. 빠뜨렸거나 더 고른 이름이 있어요.';
+        renderCell(idx);
+        blip('no');
+        return;
+      }
+      const gain = p.tries === 0 ? 2 : 1;
+      scores[idx] += gain;
+      q.reveal = true;
+      p.locked = true;
+      p.state = 'ok';
+      p.message = `정답! <b>${q.answers.join(', ')}</b>이에요. (+${gain}점)`;
+      renderCell(idx);
+      showAnswerOverlay(idx, true);
+      blip('ok');
+      speak(`${q.answers.join(', ')}입니다.`);
+      setTimeout(() => {
+        if (!gameActive || players[idx] !== p) return;
+        players[idx] = createPlayer(idx);
+        renderCell(idx);
+      }, 2400);
+    }
+
+    function buildBody(p) {
+      const q = p.question;
+      return `
+        <div class="cell-body">
+          <div class="q-prompt">
+            <span>${q.prompt}</span>
+            <button class="spk" type="button" onclick="speakQuestion(${p.idx})" aria-label="문제 읽어 주기">🔊</button>
+          </div>
+          <div class="fig-stage">${buildFigureSvg(q, p)}</div>
+          <div class="fig-tag">${q.tag}</div>
+        </div>
+      `;
+    }
+
+    // 모눈 위의 점을 눌러 남은 꼭짓점을 찍는다
+    function buildTap(evt, idx) {
+      const p = players[idx];
+      if (!gameActive || !p || p.locked || p.question.kind !== 'build') return;
+      const svg = evt.currentTarget;
+      const rect = svg.getBoundingClientRect();
+      const vb = svg.viewBox.baseVal;
+      const x = vb.x + ((evt.clientX - rect.left) / rect.width) * vb.width;
+      const y = vb.y + ((evt.clientY - rect.top) / rect.height) * vb.height;
+      const gx = Math.round(x / TRAP_CELL);
+      const gy = Math.round(y / TRAP_CELL);
+      if (gx < 0 || gx > TRAP_N || gy < 0 || gy > TRAP_N) return;
+      p.tapped = [gx, gy];
+      const quad = [...p.question.given, p.tapped];
+      const verdict = completionResult(quad, p.question.target);
+      if (verdict !== 'ok') {
+        p.tries += 1;
+        p.state = 'no';
+        p.message = BUILD_MESSAGE[verdict];
+        renderCell(idx);
+        blip('no');
+        return;
+      }
+      const gain = p.tries === 0 ? 2 : 1;
+      scores[idx] += gain;
+      p.locked = true;
+      p.state = 'ok';
+      const target = p.question.target || '사다리꼴';
+      p.message = `정답! <b>${target}</b>이 되었어요. (+${gain}점)`;
+      renderCell(idx);
+      showAnswerOverlay(idx, true);
+      blip('ok');
+      speak(`${p.question.target || '사다리꼴'}이 되었습니다.`);
+      setTimeout(() => {
+        if (!gameActive || players[idx] !== p) return;
+        players[idx] = createPlayer(idx);
+        renderCell(idx);
+      }, 2200);
+    }
+
+    function clearBuild(idx) {
+      const p = players[idx];
+      if (!gameActive || !p || p.locked) return;
+      p.tapped = null;
+      p.state = 'idle';
+      p.message = START_MESSAGE.build;
+      renderCell(idx);
+    }
+
+    function speakQuestion(idx) {
+      speak(players[idx].question.prompt);
+    }
+
+    // ① 이나 3 cm 처럼 그대로 읽으면 어색한 선택지를 말로 바꾼다
+    const SEG_SAY = { '①': '첫 번째 선분', '②': '두 번째 선분', '③': '세 번째 선분' };
+    function choiceSay(text) {
+      if (SEG_SAY[text]) return SEG_SAY[text];
+      const cm = text.match(/^(\d+) cm$/);
+      if (cm) return `${cm[1]} 센티미터`;
+      const deg = text.match(/^(\d+)°$/);
+      return deg ? `${deg[1]} 도` : text;
+    }
+
+    function choose(idx, choiceIdx) {
+      const p = players[idx];
+      if (!gameActive || p.locked) return;
+      const q = p.question;
+      const value = q.choices[choiceIdx];
+      if (p.picked.includes(value)) return;
+      p.picked.push(value);
+
+      // 둘 중 하나를 고르는 문제라 한 번에 채점하고, 그림으로 답을 보여 준다
+      if (q.kind === 'para' || q.kind === 'trap' || q.kind === 'shape') {
+        const correct = value === q.answer;
+        q.reveal = true;
+        p.locked = true;
+        p.state = correct ? 'ok' : 'no';
+        if (correct) scores[idx] += 2;
+        p.message = q.kind === 'trap' ? trapLine(q, correct)
+          : q.kind === 'shape' ? shapeLine(q, correct) : paraLine(q, correct);
+        renderCell(idx);
+        showAnswerOverlay(idx, correct);
+        blip(correct ? 'ok' : 'no');
+        speak(q.kind === 'trap' ? trapSay(q) : q.kind === 'shape' ? shapeSay(q) : paraSay(q));
+        setTimeout(() => {
+          if (!gameActive || players[idx] !== p) return;
+          players[idx] = createPlayer(idx);
+          renderCell(idx);
+        }, 2800);
+        return;
+      }
+
+      if (value === q.answer) {
+        const gain = p.tries === 0 ? 2 : 1;
+        scores[idx] += gain;
+        p.state = 'ok';
+        p.locked = true;
+        q.reveal = true;   // 정답 선분에 직각 표시를 보여 준다
+        p.message = `${correctLine(q)} (+${gain}점)`;
+        renderCell(idx);
+        showAnswerOverlay(idx, true);
+        blip('ok');
+        speak(answerSay(q));
+        setTimeout(() => {
+          if (!gameActive || players[idx] !== p) return;
+          players[idx] = createPlayer(idx);
+          renderCell(idx);
+        }, 2000);
+      } else {
+        p.tries += 1;
+        p.state = 'no';
+        p.message = q.wrong || WRONG_MESSAGE[q.kind] || '아쉬워요. 빨간색 표시를 다시 보고 골라 보세요.';
+        renderCell(idx);
+        showAnswerOverlay(idx, false);
+        blip('no');
+      }
+    }
+
+    function paraLine(q, correct) {
+      if (correct) {
+        return q.isPar
+          ? '정답! 늘여도 만나지 않아요. (+2점)'
+          : '정답! 늘이면 빨간 점에서 만나요. (+2점)';
+      }
+      return q.isPar
+        ? '아쉬워요. 늘여도 만나지 않으니 평행해요.'
+        : '아쉬워요. 늘이면 빨간 점에서 만나요.';
+    }
+
+    const SHAPE_WHY = {
+      평행사변형: ['마주 보는 두 쌍의 변이 서로 평행해요', '평행한 변이 두 쌍이 아니에요'],
+      마름모: ['네 변의 길이가 모두 같아요', '네 변의 길이가 모두 같지는 않아요'],
+      직사각형: ['네 각이 모두 직각이에요', '네 각이 모두 직각은 아니에요']
+    };
+
+    function shapeLine(q, correct) {
+      const yes = q.answer === '맞다';
+      const why = SHAPE_WHY[q.target][yes ? 0 : 1];
+      return correct ? `정답! ${why}. (+2점)` : `아쉬워요. ${why}.`;
+    }
+
+    function shapeSay(q) {
+      const yes = q.answer === '맞다';
+      return `${SHAPE_WHY[q.target][yes ? 0 : 1]}. 그래서 ${q.target}이 ${yes ? '맞습니다' : '아닙니다'}.`;
+    }
+
+    function trapLine(q, correct) {
+      const par = parallelPairs(q.pts);
+      const both = par[0] && par[1];
+      const head = correct ? '정답!' : '아쉬워요.';
+      const tail = correct ? ' (+2점)' : '';
+      if (!q.isTrap) return `${head} 평행한 변이 한 쌍도 없어요.${tail}`;
+      return both
+        ? `${head} 평행한 변이 <b>두 쌍</b>이라 사다리꼴이에요.${tail}`
+        : `${head} 색칠한 두 변이 서로 <b>평행</b>해요.${tail}`;
+    }
+
+    function trapSay(q) {
+      if (!q.isTrap) return '평행한 변이 한 쌍도 없으므로 사다리꼴이 아닙니다.';
+      const par = parallelPairs(q.pts);
+      return par[0] && par[1]
+        ? '평행한 변이 두 쌍 있으므로 사다리꼴입니다.'
+        : '평행한 변이 한 쌍 있으므로 사다리꼴입니다.';
+    }
+
+    function paraSay(q) {
+      return q.isPar
+        ? '아무리 길게 늘여도 만나지 않습니다. 두 직선은 서로 평행합니다.'
+        : '길게 늘이면 한 점에서 만납니다. 두 직선은 평행하지 않습니다.';
+    }
+
+    function correctLine(q) {
+      if (q.kind === 'gap') return `정답! <b>${q.answer} 선분</b>이 다른 직선에 수직이에요.`;
+      if (q.kind === 'cm') return `정답! 평행선 사이의 거리는 <b>${q.gap} cm</b>예요.`;
+      if (q.kind === 'len') return `정답! <b>${q.value}${q.unit || ' cm'}</b>예요.`;
+      if (q.answer === '수직') return '정답! 두 직선은 서로 <b>수직</b>이에요.';
+      if (q.answer === '수선') return `정답! 직선 ${q.other}에 대한 <b>수선</b>이에요.`;
+      return '정답! 작은 네모로 표시한 90°인 각, <b>직각</b>이에요.';
+    }
+
+    function answerSay(q) {
+      if (q.kind === 'gap') return `${choiceSay(q.answer)}이 다른 직선에 수직입니다. 이 선분의 길이가 평행선 사이의 거리입니다.`;
+      if (q.kind === 'cm') return `평행선 사이의 거리는 ${q.gap} 센티미터입니다.`;
+      if (q.kind === 'len') return `${q.value} ${q.unit === '°' ? '도' : '센티미터'}입니다.`;
+      return TERM_SAY[q.answer];
+    }
+
+    function skipQuestion(idx) {
+      if (!gameActive) return;
+      players[idx] = createPlayer(idx);
+      renderCell(idx);
+    }
+
+    /* =========================================================
+       공통 피드백
+       ========================================================= */
+    const overlayTimers = [];
+    function showAnswerOverlay(idx, correct) {
+      const overlay = document.getElementById(`answer-overlay-${idx}`);
+      if (!overlay) return;
+      overlay.className = `answer-overlay show ${correct ? 'correct' : 'wrong'}`;
+      overlay.innerHTML = `<div class="answer-mark">${correct ? '○' : '×'}</div>`;
+      clearTimeout(overlayTimers[idx]);
+      overlayTimers[idx] = setTimeout(() => {
+        const live = document.getElementById(`answer-overlay-${idx}`);
+        if (!live) return;
+        live.className = 'answer-overlay';
+        live.innerHTML = '';
+      }, correct ? 900 : 800);
+    }
+
+    window.addEventListener('resize', () => {
+      if (!players.length) return;
+      const grid = document.getElementById('players');
+      grid.style.gridTemplateColumns = `repeat(${columnCount()}, minmax(0, 1fr))`;
+      grid.style.setProperty('--scale', cellScale());
+    });
+
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+    }
+
+    renderPlayerButtons();
+  </script>
+</body>
+</html>

@@ -58,6 +58,35 @@
     ]
   },
   {
+    "id": "squareman",
+    "updatedAt": "2026-09-10",
+    "title": "사각맨",
+    "category": "web-game",
+    "badge": "웹게임",
+    "thumbnail": "assets/thumbnails/squareman.svg",
+    "description": "수직과 수선부터 평행, 사다리꼴, 평행사변형, 마름모, 직사각형과 정사각형까지 익히는 전자칠판용 도형 게임입니다.",
+    "actions": [
+      {
+        "type": "play",
+        "label": "바로 플레이",
+        "url": "games/squareman/index.html",
+        "downloadKey": ""
+      },
+      {
+        "type": "external",
+        "label": "새 창",
+        "url": "games/squareman/index.html",
+        "downloadKey": ""
+      },
+      {
+        "type": "info",
+        "label": "설명",
+        "url": "programs/squareman.html",
+        "downloadKey": ""
+      }
+    ]
+  },
+  {
     "id": "calcman",
     "updatedAt": "2026-06-09",
     "title": "연산맨",
