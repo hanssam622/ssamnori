@@ -464,6 +464,7 @@
     .fig .pulse { animation: figPulse 1.5s ease-in-out infinite; }
     .fig .pulse-fill { animation: figPulseFill 1.5s ease-in-out infinite; }
     .fig.tappable { cursor: pointer; touch-action: manipulation; }
+    .fig.wide-fig { max-width: min(100%, calc(var(--scale) * 460px)); }
     .fig-tag {
       flex: 0 0 auto;
       margin-top: calc(var(--scale) * -2px);
@@ -751,6 +752,60 @@
     </div>
 
     <div class="stage-block">
+      <h3 class="stage-heading"><span class="stage-no">0</span>이전학년 복습 - 직선, 반직선, 선분</h3>
+      <div class="game-cards">
+        <article class="game-card" style="--tint:#eaf1ff">
+          <div class="emoji">📖</div>
+          <h3>개념 알아보기</h3>
+          <p>선분 · 반직선 · 직선이 각각 어떤 곧은 선인지, 이름은 어떻게 읽는지 살펴봐요.</p>
+          <button class="primary-btn" type="button" onclick="showConcept('line')">펼쳐 보기</button>
+        </article>
+
+        <article class="game-card" style="--tint:#ffeef0">
+          <div class="emoji">📍</div>
+          <h3>직선 · 반직선 · 선분 찾기</h3>
+          <p>곧은 선이 점에서 끝나는지, 한쪽이나 양쪽으로 끝없이 늘어나는지 보고 이름을 골라요.</p>
+          <button class="primary-btn" type="button" onclick="startGame('line')">시작</button>
+        </article>
+      </div>
+    </div>
+
+    <div class="stage-block">
+      <h3 class="stage-heading"><span class="stage-no">0</span>이전학년 복습 - 직사각형과 정사각형</h3>
+      <div class="game-cards">
+        <article class="game-card" style="--tint:#eaf1ff">
+          <div class="emoji">📖</div>
+          <h3>개념 알아보기</h3>
+          <p>직사각형과 정사각형이 각각 어떤 사각형인지 그림으로 살펴봐요.</p>
+          <button class="primary-btn" type="button" onclick="showConcept('rect')">펼쳐 보기</button>
+        </article>
+
+        <article class="game-card" style="--tint:#fff0f3">
+          <div class="emoji">🟥</div>
+          <h3>직사각형 찾기</h3>
+          <p>네 각이 모두 직각인지 살펴보고 직사각형인지 맞혀요.</p>
+          <button class="primary-btn" type="button" onclick="startGame('isrect')">시작</button>
+        </article>
+
+        <article class="game-card" style="--tint:#fff8e3">
+          <div class="emoji">🧮</div>
+          <h3>변의 길이 · 각의 크기</h3>
+          <p>마주 보는 변의 길이가 같고 네 각이 모두 직각이라는 것을 이용해요.</p>
+          <div class="card-setting" id="opt-lenrect"></div>
+          <button class="primary-btn" type="button" onclick="startGame('lenrect')">시작</button>
+        </article>
+
+        <article class="game-card" style="--tint:#f0fbf3">
+          <span class="cap">최대 4명</span>
+          <div class="emoji">✏️</div>
+          <h3>완성하기</h3>
+          <p>모눈의 점을 눌러 네 각이 모두 직각이 되도록 꼭짓점을 찍어요.</p>
+          <button class="primary-btn" type="button" onclick="startGame('brect')">시작</button>
+        </article>
+      </div>
+    </div>
+
+    <div class="stage-block">
       <h3 class="stage-heading"><span class="stage-no">1</span>수직과 수선</h3>
       <div class="game-cards">
         <article class="game-card" style="--tint:#eaf1ff">
@@ -913,42 +968,7 @@
     </div>
 
     <div class="stage-block">
-      <h3 class="stage-heading"><span class="stage-no">7</span>직사각형과 정사각형</h3>
-      <div class="game-cards">
-        <article class="game-card" style="--tint:#eaf1ff">
-          <div class="emoji">📖</div>
-          <h3>개념 알아보기</h3>
-          <p>직사각형과 정사각형이 각각 어떤 사각형인지 그림으로 살펴봐요.</p>
-          <button class="primary-btn" type="button" onclick="showConcept('rect')">펼쳐 보기</button>
-        </article>
-
-        <article class="game-card" style="--tint:#fff0f3">
-          <div class="emoji">🟥</div>
-          <h3>직사각형 찾기</h3>
-          <p>네 각이 모두 직각인지 살펴보고 직사각형인지 맞혀요.</p>
-          <button class="primary-btn" type="button" onclick="startGame('isrect')">시작</button>
-        </article>
-
-        <article class="game-card" style="--tint:#fff8e3">
-          <div class="emoji">🧮</div>
-          <h3>변의 길이 · 각의 크기</h3>
-          <p>마주 보는 변의 길이가 같고 네 각이 모두 직각이라는 것을 이용해요.</p>
-          <div class="card-setting" id="opt-lenrect"></div>
-          <button class="primary-btn" type="button" onclick="startGame('lenrect')">시작</button>
-        </article>
-
-        <article class="game-card" style="--tint:#f0fbf3">
-          <span class="cap">최대 4명</span>
-          <div class="emoji">✏️</div>
-          <h3>완성하기</h3>
-          <p>모눈의 점을 눌러 네 각이 모두 직각이 되도록 꼭짓점을 찍어요.</p>
-          <button class="primary-btn" type="button" onclick="startGame('brect')">시작</button>
-        </article>
-      </div>
-    </div>
-
-    <div class="stage-block">
-      <h3 class="stage-heading"><span class="stage-no">8</span>전체 복습</h3>
+      <h3 class="stage-heading"><span class="stage-no">7</span>전체 복습</h3>
       <div class="game-cards">
         <article class="game-card wide" style="--tint:#eaf1ff">
           <div class="emoji">🧩</div>
@@ -1019,6 +1039,7 @@
     ];
 
     const MODES = {
+      line: { title: '📍 직선 · 반직선 · 선분', sub: '선의 양쪽 끝을 살펴보고 이름을 골라 보세요' },
       term: { title: '📏 수직 · 수선 · 직각', sub: '빨갛게 표시한 곳을 무엇이라고 하는지 골라 보세요' },
       para: { title: '🛤️ 평행 찾기', sub: '두 직선이 서로 평행한지 아닌지 골라 보세요' },
       gap:  { title: '📐 평행선 사이의 거리', sub: '다른 직선에 수직인 선분을 찾아 골라 보세요' },
@@ -1895,7 +1916,84 @@
       `;
     }
 
+    /* =========================================================
+       그림 그리기 (선분 · 반직선 · 직선)
+       ========================================================= */
+    const LINE_LETTERS = [['ㄱ', 'ㄴ'], ['ㄷ', 'ㄹ'], ['ㅁ', 'ㅂ'], ['ㅅ', 'ㅇ']];
+    const LETTER_SAY = { ㄱ: '기역', ㄴ: '니은', ㄷ: '디귿', ㄹ: '리을', ㅁ: '미음', ㅂ: '비읍', ㅅ: '시옷', ㅇ: '이응' };
+    const LINE_NAMES = { seg: '선분', ray: '반직선', line: '직선' };
+    let fadeSeq = 0;
+
+    // 가운데가 원점인 가로 2W, 세로 2H 틀에서 직선이 틀 끝에 닿는 곳까지의 거리
+    function clipBox(P, d, W, H) {
+      let tMin = -Infinity;
+      let tMax = Infinity;
+      [[0, W], [1, H]].forEach(([i, F]) => {
+        if (Math.abs(d[i]) < 1e-9) return;
+        let t1 = (-F - P[i]) / d[i];
+        let t2 = (F - P[i]) / d[i];
+        if (t1 > t2) [t1, t2] = [t2, t1];
+        tMin = Math.max(tMin, t1);
+        tMax = Math.min(tMax, t2);
+      });
+      return [tMin, tMax];
+    }
+
+    function lineFigureSvg(q) {
+      const W = q.compact ? 118 : 170;
+      const H = q.compact ? 44 : 96;
+      const stroke = q.compact ? 5 : 6.5;
+      const rad = (q.theta * Math.PI) / 180;
+      const u = [Math.cos(rad), Math.sin(rad)];
+      const C = [q.cx || 0, q.cy || 0];
+      const at = (t) => [C[0] + u[0] * t, C[1] + u[1] * t];
+      const A = at(-q.half);
+      const B = at(q.half);
+      const [tMin, tMax] = clipBox(C, u, W - 2, H - 2);
+      const n = (x) => Math.round(x * 100) / 100;
+
+      const solid = (p1, p2) => `<line x1="${n(p1[0])}" y1="${n(p1[1])}" x2="${n(p2[0])}" y2="${n(p2[1])}"
+        stroke="${INK}" stroke-width="${stroke}" stroke-linecap="round" />`;
+      // 끝없이 늘어난다는 뜻으로 틀 끝으로 갈수록 흐려지게 그린다
+      const endless = (from, to) => {
+        fadeSeq += 1;
+        const id = `lineFade${fadeSeq}`;
+        return `<defs><linearGradient id="${id}" gradientUnits="userSpaceOnUse"
+            x1="${n(from[0])}" y1="${n(from[1])}" x2="${n(to[0])}" y2="${n(to[1])}">
+            <stop offset="0" stop-color="${INK}" stop-opacity="1" />
+            <stop offset="0.7" stop-color="${INK}" stop-opacity="1" />
+            <stop offset="1" stop-color="${INK}" stop-opacity="0" />
+          </linearGradient></defs>
+          <line x1="${n(from[0])}" y1="${n(from[1])}" x2="${n(to[0])}" y2="${n(to[1])}"
+            stroke="url(#${id})" stroke-width="${stroke}" stroke-linecap="butt" />`;
+      };
+
+      let body = solid(A, B);
+      if (q.lineType === 'line' || (q.lineType === 'ray' && q.rayFrom === 0)) body += endless(B, at(tMax));
+      if (q.lineType === 'line' || (q.lineType === 'ray' && q.rayFrom === 1)) body += endless(A, at(tMin));
+
+      // 점 이름은 선의 위쪽에 붙인다
+      let nrm = [-u[1], u[0]];
+      if (nrm[1] > 1e-9) nrm = [-nrm[0], -nrm[1]];
+      const font = q.compact ? 30 : 28;
+      const off = q.compact ? 26 : 30;
+      const dotR = q.compact ? 7.5 : 8;
+      const label = (pt, text) => `
+        <circle cx="${n(pt[0])}" cy="${n(pt[1])}" r="${dotR}" fill="${INK}" />
+        <text x="${n(pt[0] + nrm[0] * off)}" y="${n(pt[1] + nrm[1] * off)}" text-anchor="middle" dominant-baseline="central"
+          font-size="${font}" font-weight="900" fill="#4b4f63" stroke="#fff" stroke-width="5" paint-order="stroke">${text}</text>`;
+
+      return `
+        <svg class="fig${q.compact ? '' : ' wide-fig'}" style="aspect-ratio:${W}/${H}" viewBox="${-W} ${-H} ${W * 2} ${H * 2}" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          ${body}
+          ${label(A, q.letters[0])}
+          ${label(B, q.letters[1])}
+        </svg>
+      `;
+    }
+
     function questionFigure(q) {
+      if (q.kind === 'line') return lineFigureSvg(q);
       if (q.kind === 'para') return paraFigureSvg(q);
       if (q.kind === 'gap') return gapFigureSvg(q);
       if (q.kind === 'cm') return cmFigureSvg(q);
@@ -1908,6 +2006,9 @@
        문제 만들기
        ========================================================= */
     const TERM_SAY = {
+      선분: '두 점을 곧게 이은 선을 선분이라고 합니다. 선분 기역 니은 또는 선분 니은 기역이라고 읽습니다.',
+      반직선: '한 점에서 시작하여 한쪽으로 끝없이 늘인 곧은 선을 반직선이라고 합니다. 점 기역에서 시작하여 점 니은을 지나면 반직선 기역 니은이라고 읽습니다.',
+      직선: '선분을 양쪽으로 끝없이 늘인 곧은 선을 직선이라고 합니다. 직선 기역 니은 또는 직선 니은 기역이라고 읽습니다.',
       수직: '두 직선이 만나서 이루는 각이 직각일 때, 두 직선은 서로 수직이라고 합니다.',
       수선: '두 직선이 서로 수직으로 만나면, 한 직선을 다른 직선에 대한 수선이라고 합니다.',
       직각: '반듯하게 벌어진 구십도인 각을 직각이라고 합니다.',
@@ -1925,6 +2026,9 @@
       정사각형: '네 각이 모두 직각이면서 네 변의 길이도 같은 사각형을 정사각형이라고 합니다.'
     };
     const TERM_DESC = {
+      선분: '두 점을 곧게 이은 선을 <b>선분</b>이라고 해요. 선분 ㄱㄴ 또는 선분 ㄴㄱ이라고 읽어요.',
+      반직선: '한 점에서 시작하여 한쪽으로 끝없이 늘인 곧은 선을 <b>반직선</b>이라고 해요. 점 ㄱ에서 시작해 점 ㄴ을 지나면 <b>반직선 ㄱㄴ</b>이라고 읽어요. 시작하는 점을 먼저 읽어요.',
+      직선: '선분을 양쪽으로 끝없이 늘인 곧은 선을 <b>직선</b>이라고 해요. 직선 ㄱㄴ 또는 직선 ㄴㄱ이라고 읽어요.',
       수직: '두 직선이 만나서 이루는 각이 직각일 때, 두 직선은 서로 <b>수직</b>이라고 해요.',
       수선: '두 직선이 서로 수직으로 만나면, 한 직선을 다른 직선에 대한 <b>수선</b>이라고 해요.',
       직각: '반듯하게 벌어진 90°인 각을 <b>직각</b>이라고 해요. 그림에서는 작은 네모로 표시해요.',
@@ -1941,6 +2045,29 @@
       직사각형: '네 각이 모두 <b>직각</b>인 사각형을 <b>직사각형</b>이라고 해요.',
       정사각형: '네 각이 직각이면서 네 변의 길이도 같은 사각형을 <b>정사각형</b>이라고 해요.'
     };
+
+    function makeLineQuestion() {
+      const lineType = pick(['seg', 'ray', 'line']);
+      const letters = pick(LINE_LETTERS);
+      const rayFrom = randInt(0, 1);
+      const answer = LINE_NAMES[lineType];
+      // 반직선은 시작하는 점을 먼저 읽는다
+      const pair = lineType === 'ray' && rayFrom === 1 ? [letters[1], letters[0]] : letters;
+      return {
+        kind: 'line',
+        lineType, letters, rayFrom,
+        theta: pick([0, 15, -15, 25, -25, 35, -35]),
+        half: randInt(48, 68),
+        cx: randInt(-25, 25),
+        cy: randInt(-8, 8),
+        answer,
+        name: `${answer} ${pair.join('')}`,
+        nameSay: `${answer} ${pair.map((x) => LETTER_SAY[x]).join(' ')}`,
+        prompt: '그림과 같은 곧은 선을 무엇이라고 할까요?',
+        tag: '선의 양쪽 끝이 어떻게 되어 있는지 살펴봐요',
+        choices: ['직선', '반직선', '선분']
+      };
+    }
 
     function makeTermQuestion() {
       const spot = pick(['both', 'one', 'angle']);
@@ -2551,6 +2678,7 @@
     }
 
     function makeQuestion(idx) {
+      if (mode === 'line') return makeLineQuestion();
       if (mode === 'mix') return MIX_PICKERS[pickDifferent(idx, MIX_PICKERS.length)](idx);
       if (mode === 'bmix') return makeBuildQuestion(BUILD_MIX[pickDifferent(idx, BUILD_MIX.length)]);
       if (mode === 'para') return makeParaQuestion();
@@ -2567,12 +2695,14 @@
     }
 
     const WRONG_MESSAGE = {
+      line: '아쉬워요. 선이 점에서 끝나는지, 끝없이 늘어나는지 살펴보세요.',
       gap: '아쉬워요. 다른 직선에 수직으로 그은 선분을 찾아보세요.',
       cm: '아쉬워요. 두 직선 사이의 모눈을 한 칸씩 세어 보세요.',
       len: '아쉬워요. 마주 보는 변의 길이가 같다는 것을 떠올려 보세요.'
     };
 
     const START_MESSAGE = {
+      line: '알맞은 이름을 골라 보세요.',
       term: '알맞은 답을 골라 보세요.',
       para: '평행한지 아닌지 골라 보세요.',
       gap: '수직인 선분을 찾아 보세요.',
@@ -2721,6 +2851,15 @@
        개념 알아보기
        ========================================================= */
     const CONCEPTS = {
+      line: {
+        title: '선분 · 반직선 · 직선',
+        mode: 'line',
+        rows: [
+          { word: '선분', q: { kind: 'line', lineType: 'seg', theta: 0, half: 44, cx: 0, letters: ['ㄱ', 'ㄴ'], rayFrom: 0, compact: true } },
+          { word: '반직선', q: { kind: 'line', lineType: 'ray', theta: 0, half: 34, cx: -46, letters: ['ㄱ', 'ㄴ'], rayFrom: 0, compact: true } },
+          { word: '직선', q: { kind: 'line', lineType: 'line', theta: 0, half: 34, cx: 0, letters: ['ㄱ', 'ㄴ'], rayFrom: 0, compact: true } }
+        ]
+      },
       perp: {
         title: '수직과 수선',
         mode: 'term',
@@ -3139,7 +3278,14 @@
         : '길게 늘이면 한 점에서 만납니다. 두 직선은 평행하지 않습니다.';
     }
 
+    const LINE_WHY = {
+      선분: '두 점을 곧게 이은 선',
+      반직선: '한 점에서 한쪽으로 끝없이 늘인 선',
+      직선: '양쪽으로 끝없이 늘인 선'
+    };
+
     function correctLine(q) {
+      if (q.kind === 'line') return `정답! ${LINE_WHY[q.answer]}, <b>${q.name}</b>이에요.`;
       if (q.kind === 'gap') return `정답! <b>${q.answer} 선분</b>이 다른 직선에 수직이에요.`;
       if (q.kind === 'cm') return `정답! 평행선 사이의 거리는 <b>${q.gap} cm</b>예요.`;
       if (q.kind === 'len') return `정답! <b>${q.value}${q.unit || ' cm'}</b>예요.`;
@@ -3149,6 +3295,7 @@
     }
 
     function answerSay(q) {
+      if (q.kind === 'line') return `${LINE_WHY[q.answer]}, ${q.nameSay}입니다.`;
       if (q.kind === 'gap') return `${choiceSay(q.answer)}이 다른 직선에 수직입니다. 이 선분의 길이가 평행선 사이의 거리입니다.`;
       if (q.kind === 'cm') return `평행선 사이의 거리는 ${q.gap} 센티미터입니다.`;
       if (q.kind === 'len') return `${q.value} ${q.unit === '°' ? '도' : '센티미터'}입니다.`;
