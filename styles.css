@@ -524,13 +524,17 @@ body {
 .card-stats {
   align-items: center;
   color: var(--text-muted);
-  display: flex;
+  display: none;
   flex-wrap: wrap;
   font-size: 0.78rem;
   font-weight: 600;
   gap: 0.85rem;
   min-height: 18px;
   padding-top: 0.85rem;
+}
+
+body.card-stats-visible .card-stats:not([hidden]) {
+  display: flex;
 }
 
 .card-stats[hidden] {
@@ -546,6 +550,55 @@ body {
 .card-stat svg {
   height: 15px;
   width: 15px;
+}
+
+.stats-toggle {
+  align-items: center;
+  backdrop-filter: blur(12px);
+  background: rgba(15, 18, 27, 0.9);
+  border: 1px solid var(--border-color-hover);
+  border-radius: 8px;
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
+  color: white;
+  cursor: pointer;
+  display: inline-flex;
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  font-weight: 700;
+  gap: 0.45rem;
+  left: max(1rem, env(safe-area-inset-left));
+  padding: 0.65rem 0.8rem;
+  position: fixed;
+  transition: var(--transition-smooth);
+  z-index: 50;
+}
+
+.stats-toggle:hover,
+.stats-toggle[aria-pressed="true"] {
+  background: var(--accent-purple);
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.stats-toggle:focus-visible {
+  outline: 3px solid rgba(255, 255, 255, 0.7);
+  outline-offset: 2px;
+}
+
+.stats-toggle svg {
+  height: 16px;
+  width: 16px;
+}
+
+:root[data-theme="light"] .stats-toggle {
+  background: rgba(255, 255, 255, 0.94);
+  color: #111827;
+}
+
+:root[data-theme="light"] .stats-toggle:hover,
+:root[data-theme="light"] .stats-toggle[aria-pressed="true"] {
+  background: #fff3bf;
+  border-color: #eab308;
 }
 
 .btn {

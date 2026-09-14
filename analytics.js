@@ -84,14 +84,29 @@
       const items = [];
 
       if (gameId) {
-        items.push(`${EYE_ICON}<span>이용 ${formatNumber(stats.games?.[gameId] || 0)}</span>`);
+        const value = formatNumber(stats.games?.[gameId] || 0);
+        items.push(`<span class="card-stat" title="이용 수 ${value}" aria-label="이용 수 ${value}">${EYE_ICON}<span aria-hidden="true">${value}</span></span>`);
       }
       if (downloadId) {
-        items.push(`${DOWNLOAD_ICON}<span>다운로드 ${formatNumber(stats.downloads?.[downloadId] || 0)}</span>`);
+        const value = formatNumber(stats.downloads?.[downloadId] || 0);
+        items.push(`<span class="card-stat" title="다운로드 수 ${value}" aria-label="다운로드 수 ${value}">${DOWNLOAD_ICON}<span aria-hidden="true">${value}</span></span>`);
       }
 
-      container.innerHTML = items.map((item) => `<span class="card-stat">${item}</span>`).join('');
+      container.innerHTML = items.join('');
       container.hidden = items.length === 0;
+    });
+  }
+
+  function setupStatsToggle() {
+    const button = document.getElementById('stats-toggle');
+    const label = button?.querySelector('.stats-toggle-label');
+    if (!button || !label) return;
+
+    button.addEventListener('click', () => {
+      const isVisible = document.body.classList.toggle('card-stats-visible');
+      button.setAttribute('aria-pressed', String(isVisible));
+      button.setAttribute('aria-label', isVisible ? '카드 통계 숨기기' : '카드 통계 보기');
+      label.textContent = isVisible ? '통계 숨기기' : '통계 보기';
     });
   }
 
@@ -134,6 +149,7 @@
   }
 
   window.addEventListener('ssamnori:projects-rendered', renderPublicStats);
+  setupStatsToggle();
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', loadPublicStats, { once: true });
   } else {
