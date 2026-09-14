@@ -66,7 +66,7 @@ const render = (game) => `<!DOCTYPE html>
   <script type="application/ld+json">
   {"@context":"https://schema.org","@type":"WebApplication","name":"${game.title}","applicationCategory":"EducationalApplication","operatingSystem":"Web Browser","url":"${baseUrl}/games/${game.game}/index.html","description":"${game.description}"}
   </script>
-  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="../styles.css?v=20260914">
 </head>
 <body>
   <header class="header">
@@ -107,9 +107,9 @@ const render = (game) => `<!DOCTYPE html>
       </section>
     </div>
   </main>
-  <script src="../stats-config.js"></script>
-  <script src="../analytics.js"></script>
-  <script src="../app.js"></script>
+  <script src="../stats-config.js?v=20260914"></script>
+  <script src="../analytics.js?v=20260914"></script>
+  <script src="../app.js?v=20260914"></script>
 </body>
 </html>
 `;
