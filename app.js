@@ -173,6 +173,15 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function renderProjectCard(project) {
+    const gameAction = (project.actions || []).find((action) => /^(?:\.\/)?games\/[^/]+\/index\.html(?:[?#].*)?$/.test(action.url || ''));
+    const gameId = gameAction?.url.match(/games\/([^/]+)\/index\.html/)?.[1] || '';
+    const hasDownload = (project.actions || []).some((action) => action.type === 'download' || action.type === 'portable' || action.downloadKey);
+    const statsAttributes = [
+      `data-stats-project="${escapeHtml(project.id)}"`,
+      gameId ? `data-stats-game="${escapeHtml(gameId)}"` : '',
+      hasDownload ? `data-stats-download="${escapeHtml(project.id)}"` : '',
+    ].filter(Boolean).join(' ');
+
     return `
       <article class="portfolio-card" data-category="${escapeHtml(project.category)}" id="card-${escapeHtml(project.id)}">
         <div class="card-thumb-container" data-project-edit="thumbnail" data-project-id="${escapeHtml(project.id)}">
@@ -185,6 +194,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="card-actions">
             ${(project.actions || []).map((action, index) => renderAction(action, project).replace('<a ', `<a data-project-edit="action" data-project-id="${escapeHtml(project.id)}" data-action-index="${index}" `)).join('')}
           </div>
+          <div class="card-stats" ${statsAttributes} hidden></div>
         </div>
       </article>
     `;

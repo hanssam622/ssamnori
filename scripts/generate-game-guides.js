@@ -107,6 +107,8 @@ const render = (game) => `<!DOCTYPE html>
       </section>
     </div>
   </main>
+  <script src="../stats-config.js"></script>
+  <script src="../analytics.js"></script>
   <script src="../app.js"></script>
 </body>
 </html>
