@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     tlog: 'https://drive.google.com/uc?export=download&id=1-iCxK7ACpS5DsHs9dfFEeJP4w0QA3LyM',
     mininori: 'https://drive.google.com/uc?export=download&id=1o1Q3qACY8eHEi5LjXC3Pn8iCInt1aSsS',
     batchnuki: 'https://drive.google.com/uc?export=download&id=14QG_bmMH1n4x7-Qes6l_7NIrDUtHF2JP',
-    ieon: 'https://drive.google.com/uc?export=download&id=1yFsUyxpCR-JcPZwb_qYj66QLYSARzOlZ',
+    ieon: 'https://drive.google.com/uc?export=download&id=17W3fU3Qi5Xg4CSls25aVS_kIwavPYuB_',
   };
 
   const tabButtons = document.querySelectorAll('.tab-btn');
@@ -234,7 +234,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!portfolioGrid) return;
 
     try {
-      const response = await fetch('data/projects.json');
+      const response = await fetch('data/projects.json?v=20260923');
       if (!response.ok) throw new Error(`Project data request failed: ${response.status}`);
       const projects = await response.json();
       renderProjects(projects);
