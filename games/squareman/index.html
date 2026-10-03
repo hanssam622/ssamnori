@@ -8,8 +8,9 @@
   <style>
     :root {
       --ink: #2f3240;
-      --muted: #747887;
-      --accent: #4a8bf0;
+      --muted: #6f7486;
+      --accent: #3d7fea;
+      --accent-deep: #2a5fc4;
       --accent-2: #45b7a5;
       --good: #2fb36d;
       --bad: #ef6b6b;
@@ -66,27 +67,86 @@
       justify-content: safe center;
       padding: 28px 24px;
       overflow-y: auto;
+      /* 모눈종이처럼 옅은 점을 깔아 도형 게임 분위기를 낸다 */
       background:
-        radial-gradient(circle at 14% 14%, rgba(74,139,240,.22), transparent 32%),
-        radial-gradient(circle at 86% 20%, rgba(69,183,165,.2), transparent 34%),
-        radial-gradient(circle at 78% 88%, rgba(255,176,32,.16), transparent 34%),
-        linear-gradient(180deg, #fff 0%, #eef4ff 100%);
+        radial-gradient(circle, rgba(61,127,234,.14) 1.4px, transparent 1.8px) 0 0 / 28px 28px,
+        radial-gradient(circle at 12% 10%, rgba(74,139,240,.2), transparent 34%),
+        radial-gradient(circle at 88% 16%, rgba(69,183,165,.18), transparent 34%),
+        radial-gradient(circle at 80% 92%, rgba(255,176,32,.15), transparent 36%),
+        linear-gradient(180deg, #fbfcff 0%, #edf3ff 100%);
     }
 
+    /* ---------- 시작 화면 ---------- */
+    .start-screen { overflow: hidden; }
+    .hero {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .mascot {
+      width: clamp(150px, 22vh, 210px);
+      height: auto;
+      margin-bottom: 4px;
+      overflow: visible;
+    }
+    .mascot-bob { animation: mascotBob 3.4s ease-in-out infinite; }
+    .mascot-wave { transform-origin: 174px 108px; animation: mascotWave 2.6s ease-in-out infinite; }
+    @keyframes mascotBob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+    @keyframes mascotWave { 0%, 60%, 100% { transform: rotate(0deg); } 70% { transform: rotate(-16deg); } 85% { transform: rotate(10deg); } }
     .hero-title {
-      margin: 0 0 10px;
-      font-size: clamp(48px, 8vw, 92px);
+      margin: 0 0 8px;
+      font-size: clamp(52px, 8vw, 96px);
       font-weight: 1000;
+      letter-spacing: -0.02em;
+      line-height: 1.05;
       color: var(--ink);
     }
     .hero-sub {
-      margin: 0 0 34px;
+      margin: 0 0 28px;
       color: var(--muted);
-      font-size: clamp(16px, 2.2vw, 22px);
+      font-size: clamp(16px, 2.1vw, 21px);
       font-weight: 800;
       text-align: center;
-      line-height: 1.5;
+      line-height: 1.55;
+      word-break: keep-all;
     }
+    .start-btn { min-width: 230px; min-height: 60px; font-size: 24px; border-radius: 20px; }
+    .hero-chips {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      max-width: 560px;
+      margin-top: 26px;
+    }
+    .hero-chips span {
+      padding: 6px 13px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.85);
+      border: 1.5px solid #dfe6f6;
+      color: #5a6180;
+      font-size: 14px;
+      font-weight: 900;
+    }
+    /* 배경에 떠다니는 사각형들 */
+    .float-shapes { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+    .fs {
+      position: absolute;
+      fill: var(--fill);
+      stroke: var(--stroke);
+      stroke-width: 5;
+      stroke-linejoin: round;
+      animation: drift 10s ease-in-out infinite;
+    }
+    .fs-para  { --stroke: #f17ea2; --fill: rgba(241,126,162,.12); width: clamp(90px, 12vw, 160px); left: 7%;  top: 13%; rotate: -10deg; }
+    .fs-rhom  { --stroke: #36b09d; --fill: rgba(54,176,157,.12);  width: clamp(60px, 7vw, 100px);  right: 10%; top: 12%; rotate: 8deg;  animation-delay: -3s; }
+    .fs-trap  { --stroke: #f2a516; --fill: rgba(242,165,22,.13);  width: clamp(90px, 12vw, 160px); right: 7%;  bottom: 14%; rotate: 6deg; animation-delay: -6s; }
+    .fs-rect  { --stroke: #9b7cf0; --fill: rgba(155,124,240,.12); width: clamp(80px, 10vw, 130px); left: 9%;  bottom: 16%; rotate: 10deg; animation-delay: -2s; }
+    .fs-sq    { --stroke: #4a8bf0; --fill: rgba(74,139,240,.1);   width: clamp(44px, 5vw, 70px);   left: 24%; top: 58%; rotate: 22deg; animation-delay: -5s; opacity: .8; }
+    .fs-para2 { --stroke: #f17ea2; --fill: rgba(241,126,162,.08); width: clamp(60px, 7vw, 100px);  right: 24%; top: 64%; rotate: -14deg; animation-delay: -8s; opacity: .75; }
+    @keyframes drift { 0%, 100% { translate: 0 0; } 50% { translate: 0 -16px; } }
     .primary-btn, .back-btn, .fullscreen-btn {
       min-height: 52px;
       padding: 0 24px;
@@ -99,18 +159,35 @@
     }
     .primary-btn {
       min-width: 200px;
-      background: linear-gradient(180deg, #5a9bf7, #3a76e0);
+      background: linear-gradient(180deg, #5d9cf8, #3a74e0);
       color: #fff;
       border-color: transparent;
       font-size: 22px;
+      box-shadow: 0 5px 0 var(--accent-deep), 0 12px 24px rgba(58,116,224,.28);
+      transition: transform .1s ease, box-shadow .1s ease, filter .15s ease;
     }
     .primary-btn:hover { filter: brightness(1.06); }
+    .primary-btn:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--accent-deep), 0 6px 14px rgba(58,116,224,.22); }
+    .back-btn, .fullscreen-btn { transition: background .15s ease, border-color .15s ease; }
+    .back-btn:hover, .fullscreen-btn:hover { background: #f5f8ff; border-color: #c9d6f2; }
 
     .section-title {
-      margin: 0 0 22px;
-      font-size: clamp(28px, 5vw, 42px);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 0 0 20px;
+      font-size: clamp(28px, 5vw, 40px);
       font-weight: 1000;
       text-align: center;
+      letter-spacing: -0.01em;
+    }
+    .title-mark {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #72b2ff, #3a70de);
+      box-shadow: inset 0 0 0 3px rgba(255,255,255,.35), 0 6px 14px rgba(58,112,222,.28);
+      rotate: -8deg;
     }
     .settings-bar {
       display: flex;
@@ -118,12 +195,12 @@
       align-items: center;
       justify-content: center;
       gap: 12px 22px;
-      margin-bottom: 26px;
+      margin-bottom: 18px;
       padding: 14px 22px;
-      border-radius: 20px;
-      background: rgba(255,255,255,.8);
-      border: 2px solid rgba(216,219,229,.9);
-      box-shadow: 0 10px 26px rgba(66,70,100,.08);
+      border-radius: 22px;
+      background: rgba(255,255,255,.88);
+      border: 1.5px solid #e1e6f2;
+      box-shadow: 0 10px 28px rgba(66,70,100,.08);
     }
     .setting-row { display: flex; align-items: center; gap: 10px; }
     .setting-label {
@@ -175,68 +252,80 @@
     /* ---------- 게임 카드 ---------- */
     .game-cards {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(236px, 1fr));
-      gap: 22px 18px;
-      width: min(1040px, calc(100vw - 44px));
+      grid-template-columns: repeat(auto-fill, minmax(226px, 1fr));
+      gap: 18px 16px;
+      width: 100%;
     }
     .game-card {
       position: relative;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 26px 18px 20px;
+      padding: 22px 16px 16px;
       border-radius: 24px;
       background: #fff;
-      border: 3px solid var(--line);
+      border: 1.5px solid #e2e7f2;
       text-align: center;
-      box-shadow: 0 16px 34px rgba(66, 70, 100, .12);
+      box-shadow: 0 2px 0 #e7ebf5, 0 14px 30px rgba(66, 70, 100, .09);
       transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
     }
     .game-card:hover {
-      transform: translateY(-5px);
-      border-color: var(--accent);
-      box-shadow: 0 22px 44px rgba(58, 118, 224, .2);
+      transform: translateY(-4px);
+      border-color: #a9c5f5;
+      box-shadow: 0 2px 0 #dbe5f8, 0 20px 40px rgba(58, 118, 224, .16);
     }
     .game-card .emoji {
-      width: 74px;
-      height: 74px;
-      border-radius: 24px;
+      width: 64px;
+      height: 64px;
+      border-radius: 20px;
       display: grid;
       place-items: center;
-      font-size: 40px;
+      font-size: 34px;
       line-height: 1;
-      margin: 8px 0 12px;
+      margin: 4px 0 12px;
       background: var(--tint, #eaf1ff);
+      box-shadow: inset 0 -3px 0 rgba(0,0,0,.04);
     }
-    .game-card h3 { margin: 0 0 8px; font-size: 23px; font-weight: 1000; }
+    .game-card h3 {
+      margin: 0 0 6px;
+      font-size: 21px;
+      font-weight: 1000;
+      line-height: 1.25;
+      word-break: keep-all;
+    }
     .game-card p {
-      margin: 0 0 16px;
+      margin: 0 0 14px;
       color: var(--muted);
-      font-size: 15px;
+      font-size: 14.5px;
       font-weight: 750;
-      line-height: 1.45;
+      line-height: 1.5;
+      word-break: keep-all;
       flex: 1 1 auto;
     }
-    .game-card .primary-btn { min-width: 0; width: 100%; font-size: 19px; min-height: 48px; }
+    .game-card .primary-btn { min-width: 0; width: 100%; font-size: 19px; min-height: 48px; border-radius: 15px; }
     .card-setting {
       display: flex;
+      flex-wrap: wrap;
       gap: 6px;
       width: 100%;
       margin-bottom: 12px;
     }
     .opt-btn {
-      flex: 1 1 0;
-      min-height: 38px;
-      padding: 0 6px;
+      flex: 1 1 auto;
+      min-height: 36px;
+      padding: 0 8px;
       border-radius: 11px;
-      border: 2px solid var(--line);
-      background: #fff;
-      font-size: 14px;
+      border: 1.5px solid #dfe3ee;
+      background: #f7f8fc;
+      font-size: 13.5px;
       font-weight: 900;
-      color: #8b90a3;
+      color: #9298ab;
       white-space: nowrap;
+      transition: background .12s ease, border-color .12s ease, color .12s ease;
     }
+    .opt-btn::before { content: "○ "; }
     .opt-btn.on { background: #e8f1ff; border-color: var(--accent); color: #1f4f9c; }
+    .opt-btn.on::before { content: "✓ "; }
     .game-card .cap {
       position: absolute;
       top: 10px;
@@ -251,35 +340,103 @@
     }
     .game-card.wide { grid-column: span 2; }
 
-    .stage-block { width: min(1080px, calc(100vw - 44px)); margin-bottom: 26px; }
+    .stage-block {
+      width: min(1060px, calc(100vw - 44px));
+      margin-bottom: 30px;
+      scroll-margin-top: 78px;
+      --stage: #3d7fea;
+      --stage-2: #5d9cf8;
+    }
+    .stage-block.review { --stage: #2fa08d; --stage-2: #4cc3ae; }
+    .stage-block.final { --stage: #e08a00; --stage-2: #ffb020; }
     .stage-heading {
       display: flex;
       align-items: center;
       gap: 10px;
       margin: 0 0 14px;
-      font-size: 20px;
+      font-size: 21px;
       font-weight: 1000;
-      color: #4b4f63;
+      color: #3f4459;
     }
     .stage-heading::after {
       content: "";
       flex: 1 1 auto;
       height: 2px;
       border-radius: 2px;
-      background: linear-gradient(90deg, rgba(74,139,240,.35), rgba(74,139,240,0));
+      background: linear-gradient(90deg, color-mix(in srgb, var(--stage) 40%, transparent), transparent);
     }
     .stage-no {
       flex: 0 0 auto;
-      width: 28px;
-      height: 28px;
+      width: 32px;
+      height: 32px;
       border-radius: 10px;
       display: grid;
       place-items: center;
-      background: linear-gradient(180deg, #5a9bf7, #3a76e0);
+      background: linear-gradient(180deg, var(--stage-2), var(--stage));
+      box-shadow: 0 3px 0 color-mix(in srgb, var(--stage) 70%, #000 30%);
       color: #fff;
-      font-size: 15px;
+      font-size: 16px;
       font-weight: 1000;
     }
+    .stage-tag {
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--stage) 13%, #fff);
+      color: var(--stage);
+      font-size: 13px;
+      font-weight: 1000;
+      white-space: nowrap;
+    }
+
+    /* 단계 바로 가기: 목록을 내려도 위에 붙어 있다 */
+    .stage-nav {
+      position: sticky;
+      top: 10px;
+      z-index: 6;
+      flex: 0 0 auto;
+      display: flex;
+      gap: 6px;
+      width: min(1060px, calc(100vw - 44px));
+      margin: 0 0 22px;
+      padding: 9px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      border-radius: 18px;
+      background: rgba(255,255,255,.9);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1.5px solid #e1e6f2;
+      box-shadow: 0 8px 22px rgba(66,70,100,.08);
+    }
+    .stage-nav::-webkit-scrollbar { display: none; }
+    .nav-chip {
+      flex: 0 0 auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      height: 36px;
+      padding: 0 12px 0 6px;
+      border-radius: 12px;
+      background: transparent;
+      color: #5a6078;
+      font-size: 14px;
+      font-weight: 900;
+      white-space: nowrap;
+      transition: background .15s ease, color .15s ease;
+    }
+    .nav-chip .nav-no {
+      width: 24px;
+      height: 24px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      background: color-mix(in srgb, var(--chip) 14%, #fff);
+      color: var(--chip);
+      font-size: 13px;
+    }
+    .nav-chip:hover { background: #f1f5fd; }
+    .nav-chip.active { background: color-mix(in srgb, var(--chip) 12%, #fff); color: var(--chip); }
+    .nav-chip.active .nav-no { background: var(--chip); color: #fff; }
 
     /* ---------- 게임 화면 ---------- */
     .game-screen {
@@ -290,13 +447,16 @@
       background: #fff;
     }
     .topbar {
-      flex: 0 0 92px;
+      flex: 0 0 auto;
+      min-height: 84px;
       display: grid;
-      grid-template-columns: 190px 1fr auto 276px;
+      grid-template-columns: auto minmax(0, 1fr) auto auto;
       align-items: center;
-      padding: 12px 22px 10px;
-      border-bottom: 2px solid #edf0f6;
-      background: rgba(255,255,255,.96);
+      gap: 14px;
+      padding: 10px 18px;
+      border-bottom: 1px solid #e6eaf3;
+      background: rgba(255,255,255,.97);
+      box-shadow: 0 4px 18px rgba(60,70,110,.06);
       z-index: 5;
     }
     .top-title { min-width: 0; overflow: hidden; text-align: center; }
@@ -318,15 +478,18 @@
       text-overflow: ellipsis;
     }
     .timer-display {
-      color: #ff6b6b;
-      font-size: 44px;
-      font-weight: 900;
+      min-width: 2.3em;
+      padding: 2px 14px;
+      border-radius: 16px;
+      background: #fff2f2;
+      color: #ef5454;
+      font-size: 38px;
+      font-weight: 1000;
       text-align: center;
-      padding: 0 14px;
       line-height: 1.2;
       font-variant-numeric: tabular-nums;
     }
-    .timer-display.infinite { color: var(--accent); }
+    .timer-display.infinite { background: #eef4ff; color: var(--accent); }
     .top-actions { display: flex; justify-content: flex-end; gap: 8px; }
     .fullscreen-btn { min-height: 44px; padding: 0 14px; font-size: 14px; white-space: nowrap; }
     .back-btn { white-space: nowrap; }
@@ -344,10 +507,11 @@
       min-height: 0;
       display: grid;
       grid-template-rows: auto 1fr auto;
-      border-right: 2px solid rgba(60, 64, 82, .16);
-      border-bottom: 2px solid rgba(60, 64, 82, .16);
+      border-right: 1.5px solid rgba(60, 64, 82, .12);
+      border-bottom: 1.5px solid rgba(60, 64, 82, .12);
       background: var(--cell-bg, #f8fbff);
       overflow: hidden;
+      container-type: inline-size;
     }
     .theme-0 { --cell-bg: #fff0f3; --theme: #f46b8a; }
     .theme-1 { --cell-bg: #eef8ff; --theme: #46a7e8; }
@@ -373,26 +537,30 @@
       text-overflow: ellipsis;
     }
     .score-line {
-      padding: 3px 11px;
+      padding: 2px 12px;
       border-radius: 999px;
       background: #fff;
-      border: 2px solid rgba(255,149,0,.35);
+      border: 1.5px solid rgba(255,149,0,.32);
+      box-shadow: 0 2px 0 rgba(255,149,0,.18);
       color: #e07800;
       font-size: calc(var(--scale) * 19px);
       font-weight: 1000;
       white-space: nowrap;
+      font-variant-numeric: tabular-nums;
     }
 
     .cell-body {
       min-height: 0;
       display: flex;
       flex-direction: column;
-      justify-content: center;
       gap: calc(var(--scale) * 10px);
       padding: calc(var(--scale) * 6px) calc(var(--scale) * 12px);
       overflow-y: auto;
       overflow-x: hidden;
     }
+    /* 남는 자리가 있으면 가운데, 넘치면 위에서부터 보이게 한다 */
+    .cell-body > :first-child { margin-top: auto; }
+    .cell-body > :last-child { margin-bottom: auto; }
 
     .q-prompt {
       display: flex;
@@ -400,10 +568,10 @@
       justify-content: center;
       gap: 8px;
       padding: calc(var(--scale) * 9px) calc(var(--scale) * 12px);
-      border-radius: 14px;
-      background: rgba(255,255,255,.92);
-      border: 2px solid rgba(255,255,255,.8);
-      box-shadow: 0 6px 16px rgba(65, 70, 98, .08);
+      border-radius: 16px;
+      background: rgba(255,255,255,.95);
+      border: 1px solid rgba(255,255,255,.9);
+      box-shadow: 0 1px 0 rgba(60,70,110,.05), 0 6px 16px rgba(65, 70, 98, .07);
       font-size: calc(var(--scale) * 19px);
       font-weight: 1000;
       line-height: 1.35;
@@ -437,10 +605,10 @@
       align-items: center;
       justify-content: center;
       padding: calc(var(--scale) * 8px);
-      border-radius: 18px;
+      border-radius: 20px;
       background: #fff;
-      border: 3px solid rgba(255,255,255,.9);
-      box-shadow: inset 0 0 0 1px rgba(120,126,150,.08), 0 8px 20px rgba(65,70,98,.08);
+      border: 1px solid rgba(220,226,240,.9);
+      box-shadow: 0 1px 0 rgba(60,70,110,.04), 0 8px 22px rgba(65,70,98,.07);
       overflow: hidden;
     }
     /* 칸 높이에 맞춰 정사각형으로 줄어들게 한다 */
@@ -484,26 +652,49 @@
     }
     .choice-btn {
       position: relative;
-      min-height: calc(var(--scale) * 60px);
+      min-height: calc(var(--scale) * 56px);
       padding: 0 calc(var(--scale) * 10px);
       border-radius: 16px;
       background: #fff;
-      border: 3px solid var(--line);
-      font-size: calc(var(--scale) * 25px);
+      border: 2px solid #dfe3ee;
+      font-size: calc(var(--scale) * 24px);
       font-weight: 1000;
       display: grid;
       grid-template-columns: 1fr auto;
       align-items: center;
       gap: calc(var(--scale) * 6px);
-      box-shadow: 0 8px 18px rgba(66, 70, 100, .1);
-      transition: transform .12s ease, border-color .12s ease, background .12s ease;
+      box-shadow: 0 4px 0 #d6dce9, 0 10px 18px rgba(66, 70, 100, .06);
+      transition: transform .1s ease, box-shadow .1s ease, border-color .12s ease, background .12s ease;
     }
-    .choice-btn:hover { border-color: var(--theme); transform: translateY(-2px); }
+    .choice-btn:hover:not(:disabled) { border-color: var(--theme); transform: translateY(-1px); }
+    .choice-btn:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 1px 0 #d6dce9; }
     .choice-btn .label { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .choice-btn.selected { background: #e8f1ff; border-color: var(--accent); color: #1f4f9c; }
-    .choice-btn.wrong { background: #ffeded; border-color: #f0a3a3; color: #b34141; opacity: .6; transform: none; }
-    .choice-btn.right { background: #e6fff1; border-color: #4fc98c; color: #12693f; }
+    .choice-btn.selected { background: #eaf2ff; border-color: var(--accent); color: #1f4f9c; box-shadow: 0 4px 0 #a8c4f4; }
+    .choice-btn.wrong { background: #fff0f0; border-color: #f2b0b0; color: #b34141; opacity: .7; transform: none; box-shadow: 0 2px 0 #f3cfcf; }
+    .choice-btn.right { background: #e9fbf1; border-color: #57c98f; color: #12693f; box-shadow: 0 4px 0 #9fdcbc; }
     .choice-btn:disabled { cursor: default; }
+    /* 여러 개를 고르는 분류 문제는 칸이 넓으면 두 줄로 늘어놓는다 */
+    @container (min-width: 380px) {
+      .choice-row.multi { grid-template-columns: 1fr 1fr; }
+      .choice-row.multi .choice-btn:last-child:nth-child(odd) { grid-column: 1 / -1; }
+    }
+    /* 칸이 넉넉히 넓으면 그림을 왼쪽에 크게, 고르는 단추를 오른쪽에 둔다 */
+    @container (min-width: 600px) {
+      .cell-body.quiz {
+        display: grid;
+        grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+        grid-template-rows: auto minmax(0, 1fr) auto;
+        grid-template-areas: "prompt prompt" "fig choices" "tag choices";
+        column-gap: calc(var(--scale) * 14px);
+        row-gap: calc(var(--scale) * 8px);
+      }
+      .cell-body.quiz > * { margin: 0; }
+      .cell-body.quiz > .q-prompt { grid-area: prompt; }
+      .cell-body.quiz > .fig-stage { grid-area: fig; min-height: 0; }
+      .cell-body.quiz > .fig-tag { grid-area: tag; }
+      .cell-body.quiz > .choice-row { grid-area: choices; align-self: center; }
+      .cell-body.quiz > .choice-row.multi { grid-template-columns: 1fr; }
+    }
 
     /* ---------- 아래 컨트롤 ---------- */
     .controls {
@@ -518,14 +709,15 @@
       display: flex;
       align-items: center;
       padding: calc(var(--scale) * 6px) calc(var(--scale) * 10px);
-      border-radius: 10px;
-      background: rgba(255,255,255,.78);
+      border-radius: 12px;
+      background: rgba(255,255,255,.82);
       color: var(--muted);
       font-size: calc(var(--scale) * 14px);
       font-weight: 900;
       line-height: 1.35;
       word-break: keep-all;
     }
+    .message > span { display: block; }
     .message.ok { color: #116a3b; background: #e8fff2; }
     .message.no { color: #9e2929; background: #fff0f0; }
     /* 정답 낱말이 한눈에 들어오게 표시한다 */
@@ -535,17 +727,30 @@
       background: linear-gradient(transparent 58%, rgba(47,179,109,.38) 58%);
     }
     .btn-col { display: flex; gap: 6px; }
-    .reset-btn {
+    .reset-btn, .check-btn {
       height: calc(var(--scale) * 46px);
       min-width: calc(var(--scale) * 54px);
-      padding: 0 calc(var(--scale) * 10px);
+      padding: 0 calc(var(--scale) * 12px);
       border-radius: 14px;
-      background: #fff;
-      border: 2px solid var(--line);
       font-weight: 1000;
+      white-space: nowrap;
+      transition: transform .1s ease, box-shadow .1s ease;
+    }
+    .reset-btn {
+      background: #fff;
+      border: 1.5px solid #dfe3ee;
+      box-shadow: 0 3px 0 #d6dce9;
       font-size: calc(var(--scale) * 15px);
       color: #6a7086;
     }
+    .check-btn {
+      min-width: calc(var(--scale) * 76px);
+      background: linear-gradient(180deg, #5d9cf8, #3a74e0);
+      color: #fff;
+      font-size: calc(var(--scale) * 17px);
+      box-shadow: 0 3px 0 var(--accent-deep), 0 8px 16px rgba(58,116,224,.24);
+    }
+    .reset-btn:active, .check-btn:active { transform: translateY(2px); box-shadow: none; }
 
     .answer-overlay {
       position: absolute;
@@ -589,72 +794,96 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: rgba(34,38,54,.62);
+      background: rgba(34,38,54,.55);
+      backdrop-filter: blur(3px);
+      -webkit-backdrop-filter: blur(3px);
       padding: 24px;
     }
     .result-card {
       width: min(620px, 92vw);
       max-height: 90vh;
       overflow-y: auto;
-      border-radius: 26px;
+      border-radius: 28px;
       background: #fff;
       padding: 28px;
       text-align: center;
-      box-shadow: 0 30px 80px rgba(0,0,0,.24);
+      box-shadow: 0 30px 80px rgba(0,0,0,.22);
+      animation: cardIn .22s ease both;
     }
-    .result-card h2 { margin: 0 0 16px; font-size: 40px; font-weight: 1000; }
+    @keyframes cardIn { from { opacity: 0; transform: translateY(12px) scale(.98); } to { opacity: 1; transform: none; } }
+    .result-card h2 { margin: 0 0 16px; font-size: 38px; font-weight: 1000; letter-spacing: -0.01em; }
     .ranking-row {
       display: grid;
-      grid-template-columns: 44px 1fr auto;
+      grid-template-columns: 48px 1fr auto;
       gap: 10px;
       align-items: center;
       margin: 8px 0;
-      padding: 10px 12px;
-      border-radius: 14px;
+      padding: 10px 14px;
+      border-radius: 16px;
       background: var(--soft);
+      font-size: 19px;
       font-weight: 900;
       text-align: left;
     }
-    .ranking-row.top { background: #fff6d8; }
+    .ranking-row .rank { font-size: 26px; text-align: center; line-height: 1; }
+    .ranking-row .rank.num { font-size: 18px; color: #8b90a3; }
+    .ranking-row strong { font-size: 22px; font-variant-numeric: tabular-nums; }
+    .ranking-row.top { background: linear-gradient(90deg, #fff4cf, #fff9e8); box-shadow: inset 0 0 0 1.5px #ffd979; }
 
     /* ---------- 개념 카드 ---------- */
-    .concept-card { text-align: left; }
+    .concept-card { width: min(720px, 94vw); text-align: left; }
     .concept-card h2 { text-align: center; }
     .concept-row {
       display: grid;
-      grid-template-columns: 132px 1fr;
-      gap: 14px;
+      grid-template-columns: 176px 1fr;
+      gap: 18px;
       align-items: center;
       margin: 12px 0;
-      padding: 14px;
-      border-radius: 18px;
-      background: var(--soft);
+      padding: 16px 18px;
+      border-radius: 20px;
+      background: #f6f8fd;
+      border: 1px solid #e8ecf5;
     }
-    .concept-row .fig { width: 132px; height: auto; max-width: 132px; max-height: none; }
+    .concept-row > .fig {
+      justify-self: center;
+      width: 100%;
+      height: auto;
+      max-width: 176px;
+      max-height: 150px;
+      padding: 8px;
+      border-radius: 14px;
+      background: #fff;
+      box-shadow: 0 1px 0 rgba(60,70,110,.05), 0 4px 12px rgba(65,70,98,.06);
+    }
     .concept-word {
       display: flex;
       align-items: center;
       gap: 8px;
       margin: 0 0 6px;
-      font-size: 26px;
+      font-size: 23px;
       font-weight: 1000;
+      word-break: keep-all;
     }
     .concept-word .spk { width: 34px; height: 34px; font-size: 15px; }
     .concept-row p {
       margin: 0;
       font-size: 16px;
       font-weight: 800;
-      line-height: 1.5;
+      line-height: 1.55;
       color: #565b70;
       word-break: keep-all;
     }
     .concept-row b { color: #d64545; }
 
     @media (max-width: 1200px) {
-      .topbar { grid-template-columns: 110px 1fr auto 178px; }
       .fullscreen-btn { font-size: 12px; padding: 0 9px; }
       .back-btn { font-size: 13px; padding: 0 12px; }
-      .timer-display { font-size: 32px; padding: 0 8px; }
+      .timer-display { font-size: 30px; padding: 2px 10px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .mascot-bob, .mascot-wave, .fs { animation: none; }
+      .game-card, .choice-btn, .primary-btn { transition: none; }
     }
 
     /* 버튼 3개가 한 줄에 다 들어가지 못하는 폭부터 상단 바를 2줄로 쌓는다 */
@@ -710,27 +939,72 @@
       .game-card .emoji { width: 58px; height: 58px; border-radius: 18px; font-size: 30px; margin: 6px 0 10px; }
       .game-card h3 { font-size: 21px; }
       .game-card p { font-size: 14px; margin-bottom: 13px; }
-      .concept-row { grid-template-columns: 84px 1fr; gap: 10px; padding: 11px; }
-      .concept-row .fig { width: 84px; max-width: 84px; }
-      .concept-word { font-size: 22px; }
-      .concept-row p { font-size: 14px; }
+      .concept-row { grid-template-columns: 1fr; gap: 10px; padding: 12px; }
+      .concept-row > .fig { max-width: 220px; max-height: 160px; }
+      .concept-word { font-size: 21px; }
+      .concept-row p { font-size: 14.5px; }
+      .stage-nav { width: calc(100vw - 28px); }
+      .stage-heading { flex-wrap: wrap; font-size: 19px; }
+      .stage-heading::after { display: none; }
+      .fs-sq, .fs-para2 { display: none; }
       .top-title h1 { font-size: clamp(16px, 5vw, 22px); }
     }
   </style>
-  <script src="../../stats-config.js?v=20260914b"></script>
-  <script src="../../analytics.js?v=20260914b"></script>
+  <script src="../../stats-config.js?v=20261003"></script>
+  <script src="../../analytics.js?v=20261003"></script>
 </head>
 <body>
   <a class="samnori-home-float" href="https://hanssam622.github.io/ssamnori/" aria-label="쌤노리 홈화면으로 가기">쌤노리 홈</a>
 
-  <section id="start-screen" class="screen">
-    <h1 class="hero-title">🟦 사각맨</h1>
-    <p class="hero-sub">수직과 수선부터 여러 가지 사각형까지<br />그림을 보면서 차근차근 익혀요</p>
-    <button class="primary-btn" type="button" onclick="showScreen('game-select-screen')">시작하기 →</button>
+  <section id="start-screen" class="screen start-screen">
+    <div class="float-shapes" aria-hidden="true">
+      <svg class="fs fs-para" viewBox="0 0 132 82"><polygon points="36,6 126,6 96,76 6,76" /></svg>
+      <svg class="fs fs-rhom" viewBox="0 0 92 112"><polygon points="46,5 87,56 46,107 5,56" /></svg>
+      <svg class="fs fs-trap" viewBox="0 0 132 82"><polygon points="38,6 94,6 126,76 6,76" /></svg>
+      <svg class="fs fs-rect" viewBox="0 0 112 78"><rect x="6" y="6" width="100" height="66" rx="3" /></svg>
+      <svg class="fs fs-sq" viewBox="0 0 82 82"><rect x="6" y="6" width="70" height="70" rx="3" /></svg>
+      <svg class="fs fs-para2" viewBox="0 0 112 70"><polygon points="6,64 30,6 106,6 82,64" /></svg>
+    </div>
+
+    <div class="hero">
+      <svg class="mascot" viewBox="0 0 220 220" aria-hidden="true">
+        <defs>
+          <linearGradient id="mascotBody" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#72b2ff" />
+            <stop offset="1" stop-color="#3a70de" />
+          </linearGradient>
+        </defs>
+        <ellipse cx="110" cy="206" rx="58" ry="8" fill="rgba(40,62,130,.13)" />
+        <g class="mascot-bob">
+          <path d="M88 170 v22 h-13" fill="none" stroke="#2f3240" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M132 170 v22 h13" fill="none" stroke="#2f3240" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M46 116 l-22 16" stroke="#2f3240" stroke-width="8" stroke-linecap="round" />
+          <path class="mascot-wave" d="M174 108 l22 -26" stroke="#2f3240" stroke-width="8" stroke-linecap="round" />
+          <rect x="44" y="40" width="132" height="132" rx="16" fill="url(#mascotBody)" />
+          <rect x="44" y="40" width="132" height="132" rx="16" fill="none" stroke="rgba(20,40,110,.16)" stroke-width="3" />
+          <path d="M62 58 h46" stroke="rgba(255,255,255,.5)" stroke-width="9" stroke-linecap="round" />
+          <circle cx="86" cy="100" r="15" fill="#fff" />
+          <circle cx="90" cy="103" r="7.5" fill="#2f3240" />
+          <circle cx="92.5" cy="100" r="2.4" fill="#fff" />
+          <circle cx="134" cy="100" r="15" fill="#fff" />
+          <circle cx="138" cy="103" r="7.5" fill="#2f3240" />
+          <circle cx="140.5" cy="100" r="2.4" fill="#fff" />
+          <ellipse cx="69" cy="128" rx="9" ry="6" fill="rgba(255,140,175,.62)" />
+          <ellipse cx="151" cy="128" rx="9" ry="6" fill="rgba(255,140,175,.62)" />
+          <path d="M98 128 q12 13 24 0" fill="none" stroke="#2f3240" stroke-width="5.5" stroke-linecap="round" />
+        </g>
+      </svg>
+      <h1 class="hero-title">사각맨</h1>
+      <p class="hero-sub">선분과 수직부터 사다리꼴 · 평행사변형 · 마름모까지<br />그림을 보면서 차근차근 익혀요</p>
+      <button class="primary-btn start-btn" type="button" onclick="showScreen('game-select-screen')">시작하기 →</button>
+      <div class="hero-chips" aria-hidden="true">
+        <span>선분 · 직선</span><span>수직 · 수선</span><span>평행</span><span>사다리꼴</span><span>평행사변형</span><span>마름모</span>
+      </div>
+    </div>
   </section>
 
   <section id="game-select-screen" class="screen hidden">
-    <h2 class="section-title">게임을 선택하세요</h2>
+    <h2 class="section-title"><span class="title-mark" aria-hidden="true"></span>게임을 선택하세요</h2>
     <div class="settings-bar">
       <div class="setting-row">
         <span class="setting-label">참가 인원</span>
@@ -751,8 +1025,10 @@
       </div>
     </div>
 
-    <div class="stage-block">
-      <h3 class="stage-heading"><span class="stage-no">0</span>이전학년 복습 - 직선, 반직선, 선분</h3>
+    <nav class="stage-nav" id="stage-nav" aria-label="단계 바로 가기"></nav>
+
+    <div class="stage-block review" data-short="선분 · 직선">
+      <h3 class="stage-heading"><span class="stage-no">0</span><span class="stage-tag">이전학년 복습</span>직선, 반직선, 선분</h3>
       <div class="game-cards">
         <article class="game-card" style="--tint:#eaf1ff">
           <div class="emoji">📖</div>
@@ -770,8 +1046,8 @@
       </div>
     </div>
 
-    <div class="stage-block">
-      <h3 class="stage-heading"><span class="stage-no">0</span>이전학년 복습 - 직사각형과 정사각형</h3>
+    <div class="stage-block review" data-short="직사각형">
+      <h3 class="stage-heading"><span class="stage-no">0</span><span class="stage-tag">이전학년 복습</span>직사각형과 정사각형</h3>
       <div class="game-cards">
         <article class="game-card" style="--tint:#eaf1ff">
           <div class="emoji">📖</div>
@@ -805,7 +1081,7 @@
       </div>
     </div>
 
-    <div class="stage-block">
+    <div class="stage-block" data-short="수직 · 수선">
       <h3 class="stage-heading"><span class="stage-no">1</span>수직과 수선</h3>
       <div class="game-cards">
         <article class="game-card" style="--tint:#eaf1ff">
@@ -824,7 +1100,7 @@
       </div>
     </div>
 
-    <div class="stage-block">
+    <div class="stage-block" data-short="평행">
       <h3 class="stage-heading"><span class="stage-no">2</span>평행과 평행선</h3>
       <div class="game-cards">
         <article class="game-card" style="--tint:#eaf1ff">
@@ -843,7 +1119,7 @@
       </div>
     </div>
 
-    <div class="stage-block">
+    <div class="stage-block" data-short="평행선 거리">
       <h3 class="stage-heading"><span class="stage-no">3</span>평행선 사이의 거리</h3>
       <div class="game-cards">
         <article class="game-card" style="--tint:#eaf1ff">
@@ -869,7 +1145,7 @@
       </div>
     </div>
 
-    <div class="stage-block">
+    <div class="stage-block" data-short="사다리꼴">
       <h3 class="stage-heading"><span class="stage-no">4</span>사다리꼴</h3>
       <div class="game-cards">
         <article class="game-card" style="--tint:#eaf1ff">
@@ -897,13 +1173,13 @@
       </div>
     </div>
 
-    <div class="stage-block">
+    <div class="stage-block" data-short="평행사변형">
       <h3 class="stage-heading"><span class="stage-no">5</span>평행사변형</h3>
       <div class="game-cards">
         <article class="game-card" style="--tint:#eaf1ff">
           <div class="emoji">📖</div>
           <h3>개념 알아보기</h3>
-          <p>평행사변형이 무엇인지, 마주 보는 변의 길이가 왜 같은지 살펴봐요.</p>
+          <p>평행사변형이 무엇인지, 변의 길이와 각의 크기에 어떤 성질이 있는지 살펴봐요.</p>
           <button class="primary-btn" type="button" onclick="showConcept('para4')">펼쳐 보기</button>
         </article>
 
@@ -932,13 +1208,13 @@
       </div>
     </div>
 
-    <div class="stage-block">
+    <div class="stage-block" data-short="마름모">
       <h3 class="stage-heading"><span class="stage-no">6</span>마름모</h3>
       <div class="game-cards">
         <article class="game-card" style="--tint:#eaf1ff">
           <div class="emoji">📖</div>
           <h3>개념 알아보기</h3>
-          <p>마름모가 무엇인지, 마름모가 왜 평행사변형이기도 한지 살펴봐요.</p>
+          <p>마름모의 변과 각, 마주 보는 꼭짓점을 이은 두 선분의 성질을 살펴봐요.</p>
           <button class="primary-btn" type="button" onclick="showConcept('rhom')">펼쳐 보기</button>
         </article>
 
@@ -951,8 +1227,8 @@
 
         <article class="game-card" style="--tint:#fff8e3">
           <div class="emoji">🧮</div>
-          <h3>변의 길이 · 각의 크기</h3>
-          <p>네 변의 길이가 모두 같다는 것과 각의 성질을 이용해 구해요.</p>
+          <h3>변 · 각 · 대각선</h3>
+          <p>네 변의 길이, 각의 성질, 마주 보는 꼭짓점을 이은 선분이 서로를 똑같이 나눈다는 것을 이용해요.</p>
           <div class="card-setting" id="opt-lenrhom"></div>
           <button class="primary-btn" type="button" onclick="startGame('lenrhom')">시작</button>
         </article>
@@ -961,13 +1237,14 @@
           <span class="cap">최대 4명</span>
           <div class="emoji">✏️</div>
           <h3>완성하기</h3>
-          <p>모눈의 점을 눌러 네 변의 길이가 모두 같아지도록 꼭짓점을 찍어요.</p>
+          <p>두 변이나 마주 보는 꼭짓점을 이은 선분을 보고, 모눈의 점을 눌러 마름모를 완성해요.</p>
+          <div class="card-setting" id="opt-brhom"></div>
           <button class="primary-btn" type="button" onclick="startGame('brhom')">시작</button>
         </article>
       </div>
     </div>
 
-    <div class="stage-block">
+    <div class="stage-block final" data-short="전체 복습">
       <h3 class="stage-heading"><span class="stage-no">7</span>전체 복습</h3>
       <div class="game-cards">
         <article class="game-card wide" style="--tint:#eaf1ff">
@@ -980,7 +1257,7 @@
         <article class="game-card" style="--tint:#fff8e3">
           <div class="emoji">🧮</div>
           <h3>변과 각 섞어 풀기</h3>
-          <p>평행사변형 · 마름모 · 직사각형 · 정사각형이 번갈아 나와요. 변의 길이와 각의 크기를 구해요.</p>
+          <p>평행사변형 · 마름모 · 직사각형 · 정사각형이 번갈아 나와요. 변의 길이, 각의 크기, 마름모의 대각선을 구해요.</p>
           <div class="card-setting" id="opt-lenmix"></div>
           <button class="primary-btn" type="button" onclick="startGame('lenmix')">시작</button>
         </article>
@@ -1047,7 +1324,7 @@
       trap:  { title: '🪜 사다리꼴 찾기', sub: '평행한 변이 한 쌍이라도 있는지 살펴보세요' },
       build: { title: '✏️ 사다리꼴 완성하기', sub: '모눈의 점을 눌러 남은 꼭짓점을 찍어 보세요' },
       lenpara: { title: '🧮 평행사변형의 변과 각', sub: '마주 보는 변과 각의 성질을 이용해요' },
-      lenrhom: { title: '🧮 마름모의 변과 각', sub: '네 변의 길이가 같다는 것과 각의 성질을 이용해요' },
+      lenrhom: { title: '🧮 마름모의 변 · 각 · 대각선', sub: '네 변의 길이, 각의 성질, 마주 보는 꼭짓점을 이은 선분을 이용해요' },
       lenrect: { title: '🧮 직사각형의 변과 각', sub: '마주 보는 변의 길이가 같고 네 각이 직각이에요' },
       lenmix:  { title: '🧮 변과 각 섞어 풀기', sub: '여러 사각형의 변의 길이와 각의 크기를 구해 보세요' },
       ispara: { title: '🔷 평행사변형 찾기', sub: '마주 보는 두 쌍의 변이 평행한지 살펴보세요' },
@@ -1138,7 +1415,49 @@
       document.querySelectorAll('.screen, .game-screen').forEach((el) => el.classList.add('hidden'));
       document.getElementById(id).classList.remove('hidden');
       document.body.classList.remove('playing');
-      if (id === 'game-select-screen') { renderPlayerButtons(); renderMeasureOpts(); }
+      if (id === 'game-select-screen') {
+        renderPlayerButtons();
+        renderMeasureOpts();
+        buildStageNav();
+        markStageNav();
+      }
+    }
+
+    // 선택 화면 위쪽에 단계 바로 가기 단추를 만든다
+    function buildStageNav() {
+      const nav = document.getElementById('stage-nav');
+      if (!nav || nav.dataset.ready) return;
+      const blocks = [...document.querySelectorAll('#game-select-screen .stage-block')];
+      nav.innerHTML = blocks.map((b, i) => {
+        const no = b.querySelector('.stage-no').textContent;
+        const color = b.classList.contains('review') ? '#2fa08d' : b.classList.contains('final') ? '#e08a00' : '#3d7fea';
+        return `<button class="nav-chip" type="button" style="--chip:${color}" onclick="jumpStage(${i})">
+          <span class="nav-no">${no}</span>${b.dataset.short}</button>`;
+      }).join('');
+      nav.dataset.ready = '1';
+      document.getElementById('game-select-screen').addEventListener('scroll', markStageNav, { passive: true });
+    }
+
+    function jumpStage(i) {
+      const blocks = document.querySelectorAll('#game-select-screen .stage-block');
+      if (blocks[i]) blocks[i].scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // 지금 보고 있는 단계의 단추를 밝게 표시한다
+    function markStageNav() {
+      const screen = document.getElementById('game-select-screen');
+      const nav = document.getElementById('stage-nav');
+      const blocks = [...screen.querySelectorAll('.stage-block')];
+      const line = screen.getBoundingClientRect().top + Math.min(300, screen.clientHeight * 0.4);
+      let active = 0;
+      blocks.forEach((b, i) => { if (b.getBoundingClientRect().top <= line) active = i; });
+      if (screen.scrollTop + screen.clientHeight >= screen.scrollHeight - 4) active = blocks.length - 1;
+      const chips = [...nav.querySelectorAll('.nav-chip')];
+      chips.forEach((c, i) => c.classList.toggle('active', i === active));
+      const chip = chips[active];
+      if (chip && (chip.offsetLeft < nav.scrollLeft || chip.offsetLeft + chip.offsetWidth > nav.scrollLeft + nav.clientWidth)) {
+        nav.scrollLeft = chip.offsetLeft - (nav.clientWidth - chip.offsetWidth) / 2;
+      }
     }
 
     function renderPlayerButtons() {
@@ -1151,6 +1470,13 @@
         btn.onclick = () => { playerCount = i; renderPlayerButtons(); };
         grid.appendChild(btn);
       }
+    }
+
+    // 낱말 끝에 받침이 있으면 앞의 조사, 없으면 뒤의 조사를 붙인다 (마름모가 / 사다리꼴이)
+    function josa(word, withFinal, withoutFinal) {
+      const c = word.charCodeAt(word.length - 1);
+      const final = c >= 0xac00 && c <= 0xd7a3 && (c - 0xac00) % 28 !== 0;
+      return word + (final ? withFinal : withoutFinal);
     }
 
     function randInt(min, max) { return min + Math.floor(Math.random() * (max - min + 1)); }
@@ -1672,12 +1998,15 @@
         for (let b = 0; b <= TRAP_N; b += 1) dots += `<circle cx="${a * S}" cy="${b * S}" r="3" fill="#9dc4e6" />`;
       }
 
-      const seg = (a, b, color, w) => `<line x1="${n(a[0] * S)}" y1="${n(a[1] * S)}" x2="${n(b[0] * S)}" y2="${n(b[1] * S)}"
-        stroke="${color}" stroke-width="${w}" stroke-linecap="round" />`;
+      const seg = (a, b, color, w, extra = '') => `<line x1="${n(a[0] * S)}" y1="${n(a[1] * S)}" x2="${n(b[0] * S)}" y2="${n(b[1] * S)}"
+        stroke="${color}" stroke-width="${w}" stroke-linecap="round" ${extra} />`;
 
       const target = q.target || '사다리꼴';
       const markPar = done && (target === '사다리꼴' || target === '평행사변형');
       let shape = '';
+      if (q.variant === 'diag') {
+        return buildDiagSvg(q, p, { S, W, n, grid, dots, seg });
+      }
       if (full) {
         for (let i = 0; i < 4; i += 1) {
           let color = INK;
@@ -1737,6 +2066,72 @@
           ${dots}
           ${shape}
           ${verts}
+        </svg>
+      `;
+    }
+
+    // 마름모 완성하기 (대각선으로): 선분 하나와 다른 선분의 절반을 보고 남은 꼭짓점을 찍는다
+    function buildDiagSvg(q, p, { S, W, n, grid, dots, seg }) {
+      const [A, B, C] = q.given;
+      const D = p.tapped;
+      const done = p.locked;
+      const M = [(A[0] + C[0]) / 2, (A[1] + C[1]) / 2];
+      const px = (g) => [g[0] * S, g[1] * S];
+      const unit = (a, b) => {
+        const dx = b[0] - a[0];
+        const dy = b[1] - a[1];
+        const L = Math.hypot(dx, dy);
+        return [dx / L, dy / L];
+      };
+      const along = (g, u, t) => {
+        const c = px(g);
+        return [c[0] + u[0] * t, c[1] + u[1] * t];
+      };
+      let out = '';
+
+      // 찍은 점으로 만든 사각형 (맞히면 진하게, 아직이면 파란 선으로)
+      if (D) {
+        const quad = [A, B, C, D];
+        for (let i = 0; i < 4; i += 1) out += seg(quad[i], quad[(i + 1) % 4], done ? INK : NEW_SIDE, done ? 4.5 : 3.4);
+      }
+      out += seg(A, C, DIAG_COLOR, 3.6) + seg(B, M, DIAG_COLOR, 3.6);
+      if (D) out += seg(M, D, DIAG_COLOR, 3.6, done ? '' : 'stroke-dasharray="7 6"');
+
+      // 서로 수직으로 만난다는 표시
+      const uA = unit(M, A);
+      const uB = unit(M, B);
+      const m = 12;
+      const c1 = along(M, uA, m);
+      const c3 = along(M, uB, m);
+      const c2 = [c1[0] + uB[0] * m, c1[1] + uB[1] * m];
+      out += `<polyline points="${n(c1[0])},${n(c1[1])} ${n(c2[0])},${n(c2[1])} ${n(c3[0])},${n(c3[1])}"
+        fill="none" stroke="${PINK}" stroke-width="3" stroke-linejoin="miter" />`;
+
+      // 맞히면 똑같이 둘로 나뉜 것을 눈금으로 보여 준다
+      if (done) {
+        [[A, 1], [C, 1], [B, 2], [D, 2]].forEach(([end, count]) => {
+          const u = unit(M, end);
+          const nrm = [-u[1], u[0]];
+          const half = Math.hypot(end[0] - M[0], end[1] - M[1]) * S;
+          for (let t = 0; t < count; t += 1) {
+            const c = along(M, u, half * 0.5 + (t - (count - 1) / 2) * 7);
+            out += `<line x1="${n(c[0] - nrm[0] * 7)}" y1="${n(c[1] - nrm[1] * 7)}" x2="${n(c[0] + nrm[0] * 7)}" y2="${n(c[1] + nrm[1] * 7)}"
+              stroke="${PINK}" stroke-width="3" stroke-linecap="round" />`;
+          }
+        });
+      }
+
+      const dot = (g, r, fill) => `<circle cx="${n(g[0] * S)}" cy="${n(g[1] * S)}" r="${r}" fill="${fill}" />`;
+      out += dot(A, 5, INK) + dot(B, 5, INK) + dot(C, 5, INK) + dot(M, 4.5, DIAG_COLOR);
+      if (D) out += dot(D, 6.5, done ? RED : NEW_SIDE);
+
+      return `
+        <svg class="fig tappable" viewBox="-12 -12 ${W + 24} ${W + 24}" xmlns="http://www.w3.org/2000/svg"
+          onclick="buildTap(event, ${p.idx})">
+          <rect x="0" y="0" width="${W}" height="${W}" fill="#fff" stroke="#8fc6ec" stroke-width="2.4" rx="4" />
+          ${grid}
+          ${dots}
+          ${out}
         </svg>
       `;
     }
@@ -1866,7 +2261,8 @@
           }
           angles += `<polyline points="${arc.join(' ')}" fill="none" stroke="${PINK}" stroke-width="3.2" />`;
           const mid = a0 + da / 2;
-          const at = [V[0] + Math.cos(mid) * (r + 17), V[1] + Math.sin(mid) * (r + 17)];
+          const reach = Math.max(r + 17, 22 / Math.sin(Math.abs(da) / 2));
+          const at = [V[0] + Math.cos(mid) * reach, V[1] + Math.sin(mid) * reach];
           anglePad.push([at[0] - 24, at[1] - 15], [at[0] + 24, at[1] + 15]);
           if (text === '□') {
             angles += `<rect x="${n(at[0] - 14)}" y="${n(at[1] - 12)}" width="28" height="24" rx="6"
@@ -1912,6 +2308,127 @@
         <svg class="fig" style="aspect-ratio:${n(bw)}/${n(bh)}"
           viewBox="${n(bx)} ${n(by)} ${n(bw)} ${n(bh)}" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           ${sides}${ticks}${corners}${angles}${labels}
+        </svg>
+      `;
+    }
+
+    /* =========================================================
+       그림 그리기 (마름모의 마주 보는 꼭짓점을 이은 선분)
+       ========================================================= */
+    const DIAG_LETTERS = ['ㄱ', 'ㄴ', 'ㄷ', 'ㄹ'];
+    const DIAG_COLOR = '#2f7fe0';
+
+    // 두 선분의 절반 길이로 마름모를 만든다. a는 선분 ㄱㄷ의 절반, b는 선분 ㄴㄹ의 절반이고 가운데가 원점이다
+    function diagVerts(a, b) {
+      return [[0, -a], [b, 0], [0, a], [-b, 0]];
+    }
+
+    function diagFigureSvg(q) {
+      const d = q.diag;
+      const rad = (d.rot * Math.PI) / 180;
+      const cs = Math.cos(rad);
+      const sn = Math.sin(rad);
+      const R = diagVerts(d.a, d.b).map((v) => [v[0] * cs - v[1] * sn, v[0] * sn + v[1] * cs]);
+      const far = Math.max(...R.map((v) => Math.max(Math.abs(v[0]), Math.abs(v[1]))));
+      const P = R.map((v) => [(v[0] * 105) / far, (v[1] * 105) / far]);
+      const n = (x) => Math.round(x * 100) / 100;
+      const unit = (v) => {
+        const L = Math.hypot(v[0], v[1]);
+        return [v[0] / L, v[1] / L];
+      };
+      const U = P.map(unit);                          // 가운데에서 각 꼭짓점을 향하는 방향
+      const add = (a, u, t) => [a[0] + u[0] * t, a[1] + u[1] * t];
+      const seg = (a, b, color, w, extra = '') => `<line x1="${n(a[0])}" y1="${n(a[1])}" x2="${n(b[0])}" y2="${n(b[1])}"
+        stroke="${color}" stroke-width="${w}" stroke-linecap="round" ${extra} />`;
+      const box = [];
+      const showMarks = q.reveal || d.marks;
+      let out = '';
+
+      for (let i = 0; i < 4; i += 1) out += seg(P[i], P[(i + 1) % 4], INK, 4.5);
+      out += seg(P[0], P[2], DIAG_COLOR, 3.6) + seg(P[1], P[3], DIAG_COLOR, 3.6);
+
+      // 서로 수직으로 만난다는 표시
+      if (showMarks) {
+        const m = 13;
+        const c1 = add([0, 0], U[3], m);
+        const c3 = add([0, 0], U[0], m);
+        const c2 = add(c1, U[0], m);
+        out += `<polyline points="${n(c1[0])},${n(c1[1])} ${n(c2[0])},${n(c2[1])} ${n(c3[0])},${n(c3[1])}"
+          fill="none" stroke="${PINK}" stroke-width="3" stroke-linejoin="miter" />`;
+        // 똑같이 둘로 나뉜다는 표시: 선분 ㄱㄷ 쪽은 눈금 하나, 선분 ㄴㄹ 쪽은 눈금 둘
+        for (let i = 0; i < 4; i += 1) {
+          const count = i % 2 === 0 ? 1 : 2;
+          const nrm = [-U[i][1], U[i][0]];
+          const L = Math.hypot(P[i][0], P[i][1]);
+          for (let t = 0; t < count; t += 1) {
+            const c = add([0, 0], U[i], L * 0.5 + (t - (count - 1) / 2) * 7);
+            out += seg(add(c, nrm, -7), add(c, nrm, 7), PINK, 3);
+          }
+        }
+      }
+
+      // 두 선분이 만나서 이루는 각을 묻는 □
+      if (d.angleBox) {
+        const r = 20;
+        const a0 = Math.atan2(U[0][1], U[0][0]);
+        let da = Math.atan2(U[1][1], U[1][0]) - a0;
+        while (da > Math.PI) da -= 2 * Math.PI;
+        while (da < -Math.PI) da += 2 * Math.PI;
+        const arc = [];
+        for (let k = 0; k <= 12; k += 1) {
+          const t = a0 + (da * k) / 12;
+          arc.push(`${n(Math.cos(t) * r)},${n(Math.sin(t) * r)}`);
+        }
+        out += `<polyline points="${arc.join(' ')}" fill="none" stroke="${PINK}" stroke-width="3" />`;
+        const mid = a0 + da / 2;
+        const at = [Math.cos(mid) * 42, Math.sin(mid) * 42];
+        box.push([at[0] - 18, at[1] - 16], [at[0] + 18, at[1] + 16]);
+        out += `<rect x="${n(at[0] - 14)}" y="${n(at[1] - 12)}" width="28" height="24" rx="6"
+          fill="#fff" stroke="${PINK}" stroke-width="3.2" />`;
+      }
+
+      // 반으로 나뉜 선분의 길이 글자 (서로 겹치지 않도록 정해 둔 쪽에 붙인다)
+      const sideOf = [3, 2, 1, 2];
+      d.half.forEach((text, i) => {
+        if (!text) return;
+        let nrm = [-U[i][1], U[i][0]];
+        const toward = U[sideOf[i]];
+        if (nrm[0] * toward[0] + nrm[1] * toward[1] < 0) nrm = [-nrm[0], -nrm[1]];
+        const mid = [P[i][0] / 2, P[i][1] / 2];
+        const at = add(mid, nrm, 24);
+        box.push([at[0] - 30, at[1] - 17], [at[0] + 30, at[1] + 17]);
+        if (text === '□') {
+          out += `<rect x="${n(at[0] - 15)}" y="${n(at[1] - 13)}" width="30" height="26" rx="6"
+            fill="#fff" stroke="${PINK}" stroke-width="3.2" />`;
+          return;
+        }
+        out += `<text x="${n(at[0])}" y="${n(at[1])}" text-anchor="middle" dominant-baseline="central"
+          font-size="22" font-weight="900" fill="${INK}" stroke="#fff" stroke-width="5" paint-order="stroke">${text}</text>`;
+      });
+
+      // 꼭짓점과 가운데 점의 이름
+      const label = (pt, text) => {
+        box.push([pt[0] - 14, pt[1] - 14], [pt[0] + 14, pt[1] + 14]);
+        return `<text x="${n(pt[0])}" y="${n(pt[1])}" text-anchor="middle" dominant-baseline="central"
+          font-size="23" font-weight="900" fill="#565b70" stroke="#fff" stroke-width="5" paint-order="stroke">${text}</text>`;
+      };
+      for (let i = 0; i < 4; i += 1) out += label(add(P[i], U[i], 21), DIAG_LETTERS[i]);
+      const mq = d.angleBox ? [2, 3] : [0, 1];
+      const bis = unit([U[mq[0]][0] + U[mq[1]][0], U[mq[0]][1] + U[mq[1]][1]]);
+      out += `<circle cx="0" cy="0" r="4.5" fill="${INK}" />` + label(add([0, 0], bis, 21), 'ㅁ');
+
+      const pts = [...P, ...box];
+      const xs = pts.map((v) => v[0]);
+      const ys = pts.map((v) => v[1]);
+      const pad = 10;
+      const bx = Math.min(...xs) - pad;
+      const by = Math.min(...ys) - pad;
+      const bw = Math.max(...xs) - Math.min(...xs) + pad * 2;
+      const bh = Math.max(...ys) - Math.min(...ys) + pad * 2;
+      return `
+        <svg class="fig" style="aspect-ratio:${n(bw)}/${n(bh)}"
+          viewBox="${n(bx)} ${n(by)} ${n(bw)} ${n(bh)}" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          ${out}
         </svg>
       `;
     }
@@ -1993,6 +2510,7 @@
     }
 
     function questionFigure(q) {
+      if (q.diag) return diagFigureSvg(q);
       if (q.kind === 'line') return lineFigureSvg(q);
       if (q.kind === 'para') return paraFigureSvg(q);
       if (q.kind === 'gap') return gapFigureSvg(q);
@@ -2006,6 +2524,9 @@
        문제 만들기
        ========================================================= */
     const TERM_SAY = {
+      '평행사변형의 각': '평행사변형에서 마주 보는 두 각의 크기는 같습니다. 이웃한 두 각의 크기를 더하면 백팔십 도입니다.',
+      '마름모의 각': '마름모도 마주 보는 두 각의 크기가 같고, 이웃한 두 각의 크기를 더하면 백팔십 도입니다.',
+      '꼭짓점을 이은 선분': '마름모에서 마주 보는 꼭짓점끼리 이은 두 선분은 서로 수직으로 만나고, 서로를 똑같이 둘로 나눕니다.',
       선분: '두 점을 곧게 이은 선을 선분이라고 합니다. 선분 기역 니은 또는 선분 니은 기역이라고 읽습니다.',
       반직선: '한 점에서 시작하여 한쪽으로 끝없이 늘인 곧은 선을 반직선이라고 합니다. 점 기역에서 시작하여 점 니은을 지나면 반직선 기역 니은이라고 읽습니다.',
       직선: '선분을 양쪽으로 끝없이 늘인 곧은 선을 직선이라고 합니다. 직선 기역 니은 또는 직선 니은 기역이라고 읽습니다.',
@@ -2026,6 +2547,9 @@
       정사각형: '네 각이 모두 직각이면서 네 변의 길이도 같은 사각형을 정사각형이라고 합니다.'
     };
     const TERM_DESC = {
+      '평행사변형의 각': '<b>마주 보는 두 각</b>의 크기가 같아요. <b>이웃한 두 각</b>의 크기를 더하면 180°예요.',
+      '마름모의 각': '마름모도 <b>마주 보는 두 각</b>의 크기가 같고, <b>이웃한 두 각</b>의 크기를 더하면 180°예요.',
+      '꼭짓점을 이은 선분': '마주 보는 꼭짓점끼리 이은 두 선분은 서로 <b>수직</b>으로 만나요. 그리고 서로를 <b>똑같이 둘로</b> 나눠요. 선분 ㄱㅁ과 선분 ㅁㄷ의 길이가 같아요.',
       선분: '두 점을 곧게 이은 선을 <b>선분</b>이라고 해요. 선분 ㄱㄴ 또는 선분 ㄴㄱ이라고 읽어요.',
       반직선: '한 점에서 시작하여 한쪽으로 끝없이 늘인 곧은 선을 <b>반직선</b>이라고 해요. 점 ㄱ에서 시작해 점 ㄴ을 지나면 <b>반직선 ㄱㄴ</b>이라고 읽어요. 시작하는 점을 먼저 읽어요.',
       직선: '선분을 양쪽으로 끝없이 늘인 곧은 선을 <b>직선</b>이라고 해요. 직선 ㄱㄴ 또는 직선 ㄴㄱ이라고 읽어요.',
@@ -2483,6 +3007,80 @@
       };
     }
 
+    // 선분의 절반에서 나머지 절반, 절반에서 전체, 전체에서 절반, 만나는 각을 묻는다
+    const DIAG_TYPES = ['other', 'other', 'whole', 'whole', 'half', 'half', 'angle'];
+    const lastDiagType = [];
+    const sayLetters = (text) => text.replace(/[ㄱ-ㅎ]/g, (c) => LETTER_SAY[c] || c);
+
+    function makeDiagQuestion(idx) {
+      let a;
+      let b;
+      do {
+        a = randInt(3, 9);
+        b = randInt(3, 9);
+      } while (a === b || Math.max(a, b) / Math.min(a, b) > 1.8);
+      let type = pick(DIAG_TYPES);
+      if (idx !== undefined) {
+        for (let t = 0; t < 6 && type === lastDiagType[idx]; t += 1) type = pick(DIAG_TYPES);
+        lastDiagType[idx] = type;
+      }
+      const which = randInt(0, 1);                       // 0: 선분 ㄱㄷ, 1: 선분 ㄴㄹ
+      const h = which === 0 ? a : b;                     // 그 선분의 절반 길이
+      const ends = which === 0 ? [0, 2] : [1, 3];
+      const flip = randInt(0, 1);
+      const known = ends[flip];
+      const other = ends[1 - flip];
+      const L = DIAG_LETTERS;
+      const diagName = `선분 ${L[ends[0]]}${L[ends[1]]}`;
+      const halfName = `선분 ${L[known]}ㅁ`;
+      const half = [null, null, null, null];
+      const q = {
+        kind: 'len',
+        diag: { a, b, rot: pick([0, 12, -12, 24, -24]), half, angleBox: false },
+        showWhat: 'none', reveal: false,
+        tag: '두 선분이 만나는 점 ㅁ을 살펴봐요',
+        wrong: '아쉬워요. 마름모에서 마주 보는 꼭짓점을 이은 두 선분은 서로를 똑같이 둘로 나눠요.'
+      };
+      if (type === 'angle') {
+        q.diag.angleBox = true;
+        Object.assign(q, {
+          unit: '°', value: 90, answer: '90°',
+          why: '두 선분이 서로 수직으로 만나니까',
+          wrong: '아쉬워요. 마름모에서 마주 보는 꼭짓점을 이은 두 선분은 서로 수직으로 만나요.',
+          prompt: '□ 안에 알맞은 수는 몇 도일까요?',
+          choices: numberChoices(90, [45, 60, 80, 100, 120], '°')
+        });
+      } else if (type === 'other') {
+        half[known] = `${h} cm`;
+        half[other] = '□';
+        Object.assign(q, {
+          unit: ' cm', value: h, answer: `${h} cm`,
+          why: '서로를 똑같이 둘로 나누니까',
+          prompt: '□ 안에 알맞은 수는 몇 cm일까요?',
+          choices: numberChoices(h, [2 * h, h - 1, h + 1, h - 2, h + 2])
+        });
+      } else if (type === 'whole') {
+        half[known] = `${h} cm`;
+        Object.assign(q, {
+          unit: ' cm', value: 2 * h, answer: `${2 * h} cm`,
+          why: `${halfName}의 2배니까`,
+          prompt: `${diagName}의 길이는 몇 cm일까요?`,
+          choices: numberChoices(2 * h, [h, 2 * h - 2, 2 * h + 2, 2 * h - 1, 2 * h + 1, 3 * h])
+        });
+      } else {
+        half[known] = '□';
+        Object.assign(q, {
+          unit: ' cm', value: h, answer: `${h} cm`,
+          why: `${diagName}의 절반이니까`,
+          prompt: `${diagName}의 길이는 ${2 * h} cm예요. □ 안에 알맞은 수는 몇 cm일까요?`,
+          choices: numberChoices(h, [2 * h, h - 1, h + 1, h - 2, h + 2])
+        });
+      }
+      q.whySay = sayLetters(q.why);
+      q.promptSay = sayLetters(q.prompt);
+      return q;
+    }
+
     const LEN_KINDS = {
       lenpara: ['평행사변형'],
       lenrhom: ['마름모'],
@@ -2490,18 +3088,20 @@
     };
     const ALL_QUAD_KINDS = ['평행사변형', '마름모', '직사각형', '정사각형'];
 
-    // 게임마다 어떤 문제를 낼지 (변의 길이 / 각의 크기)
+    // 게임 카드에서 고를 수 있는 문제 종류 (변의 길이 / 각의 크기 / 대각선, 마름모 완성은 두 변 / 대각선)
     const measureOpt = {
       lenpara: { len: true, ang: true },
-      lenrhom: { len: true, ang: true },
+      lenrhom: { len: true, ang: true, diag: true },
       lenrect: { len: true, ang: true },
-      lenmix: { len: true, ang: true }
+      lenmix: { len: true, ang: true, diag: true },
+      brhom: { side: true, diag: true }
     };
+    const OPT_LABEL = { len: '변의 길이', ang: '각의 크기', diag: '대각선', side: '두 변' };
 
     function toggleMeasure(m, key) {
       const o = measureOpt[m];
-      const other = key === 'len' ? 'ang' : 'len';
-      if (o[key] && !o[other]) return;   // 둘 다 끌 수는 없다
+      const onCount = Object.values(o).filter(Boolean).length;
+      if (o[key] && onCount === 1) return;   // 모두 끌 수는 없다
       o[key] = !o[key];
       renderMeasureOpts();
     }
@@ -2511,25 +3111,28 @@
         const box = document.getElementById(`opt-${m}`);
         if (!box) return;
         const o = measureOpt[m];
-        box.innerHTML = `
-          <button class="opt-btn ${o.len ? 'on' : 'off'}" type="button" onclick="toggleMeasure('${m}','len')">변의 길이</button>
-          <button class="opt-btn ${o.ang ? 'on' : 'off'}" type="button" onclick="toggleMeasure('${m}','ang')">각의 크기</button>
-        `;
+        box.innerHTML = Object.keys(o).map((k) => `
+          <button class="opt-btn ${o[k] ? 'on' : 'off'}" type="button" aria-pressed="${o[k]}"
+            onclick="toggleMeasure('${m}','${k}')">${OPT_LABEL[k]}</button>`).join('');
       });
+    }
+
+    // 켜 둔 종류 가운데 하나를 고르되, 같은 종류가 세 번 이어지지 않게 한다
+    function pickOption(history, idx, opt) {
+      const keys = Object.keys(opt).filter((k) => opt[k]);
+      let key = pick(keys);
+      const h = history[idx] || [];
+      if (keys.length > 1 && h.length >= 2 && h[0] === h[1] && key === h[0]) key = pick(keys.filter((k) => k !== key));
+      history[idx] = [key, h[0]];
+      return key;
     }
 
     const lastMeasure = [];
     function makeMeasureQuestion(idx, kinds, opt) {
-      const both = opt.len && opt.ang;
-      let wantAng = opt.ang;
-      if (both) {
-        wantAng = Math.random() < 0.5;
-        // 같은 종류가 세 번 이어지지 않게 한다
-        const h = lastMeasure[idx] || [];
-        if (h.length >= 2 && h[0] === h[1] && wantAng === h[0]) wantAng = !wantAng;
-        lastMeasure[idx] = [wantAng, h[0]];
-      }
-      return wantAng ? makeAngleQuestion(kinds) : makeLenQuestion(idx, kinds);
+      const key = pickOption(lastMeasure, idx, opt);
+      if (key === 'diag') return makeDiagQuestion(idx);
+      if (key === 'ang') return makeAngleQuestion(kinds);
+      return makeLenQuestion(idx, kinds);
     }
 
     const lastLenType = [];
@@ -2586,23 +3189,34 @@
       직사각형: '네 각이 모두 직각이 되는 점을 찾아요'
     };
 
-    function makeBuildQuestion(target) {
+    // 만들기에 실패했을 때 쓰는, 답이 반드시 있는 문제
+    const BUILD_FALLBACK = {
+      사다리꼴: [[1, 6], [6, 6], [5, 2]],
+      평행사변형: [[1, 6], [6, 6], [5, 2]],
+      마름모: [[4, 1], [7, 4], [4, 7]],
+      직사각형: [[1, 6], [6, 6], [6, 2]]
+    };
+
+    // variant 'diag': 마름모의 한 선분과, 다른 선분의 절반을 보고 남은 꼭짓점을 찾는다
+    function makeBuildQuestion(target, variant = 'side') {
       let given = null;
-      for (let tries = 0; tries < 40 && !given; tries += 1) {
+      for (let tries = 0; tries < 60 && !given; tries += 1) {
         const pts = target === '사다리꼴' ? randomQuad(true) : buildTargetQuad(target);
         if (!pts) continue;
-        // 네 꼭짓점 중 하나를 가려 두고, 나머지 세 점을 이은 길을 보여 준다
+        // 네 꼭짓점 중 하나를 가려 두고, 나머지 세 점을 보여 준다
         const r = randInt(0, 3);
         const rot = [0, 1, 2, 3].map((i) => pts[(i + r) % 4]).slice(0, 3);
+        // 대각선으로 완성할 때는 두 선분이 만나는 점이 모눈 위에 오게 한다
+        if (variant === 'diag' && ((rot[0][0] + rot[2][0]) % 2 || (rot[0][1] + rot[2][1]) % 2)) continue;
         // 사다리꼴은 답이 여럿이라 너무 막막하지 않게 세 곳 이상인 문제만 낸다
         if (countSolutions(rot, target) >= (target === '사다리꼴' ? 3 : 1)) given = rot;
       }
-      if (!given) given = [[1, 6], [6, 6], [5, 2]];
+      if (!given) given = BUILD_FALLBACK[target];
       return {
         kind: 'build',
-        given, target,
-        prompt: `점을 눌러 ${target}을 완성해 보세요.`,
-        tag: BUILD_TAG[target],
+        given, target, variant,
+        prompt: `점을 눌러 ${josa(target, '을', '를')} 완성해 보세요.`,
+        tag: variant === 'diag' ? '두 선분이 서로를 똑같이 둘로 나누는 점을 찾아요' : BUILD_TAG[target],
         choices: []
       };
     }
@@ -2662,11 +3276,14 @@
       (i) => makeShapeQuestion('평행사변형'),
       (i) => makeShapeQuestion('마름모'),
       (i) => makeShapeQuestion('직사각형'),
-      (i) => makeMeasureQuestion(i, ALL_QUAD_KINDS, { len: true, ang: false }),
-      (i) => makeMeasureQuestion(i, ALL_QUAD_KINDS, { len: false, ang: true }),
+      (i) => makeMeasureQuestion(i, ALL_QUAD_KINDS, { len: true }),
+      (i) => makeMeasureQuestion(i, ALL_QUAD_KINDS, { ang: true }),
+      (i) => makeDiagQuestion(i),
       (i) => makeSortQuestion()
     ];
     const BUILD_MIX = ['사다리꼴', '평행사변형', '마름모', '직사각형'];
+
+    const lastBuildVariant = [];
 
     // 같은 사람에게 같은 유형이 연달아 나오지 않게 한다
     const lastPick = [];
@@ -2680,11 +3297,15 @@
     function makeQuestion(idx) {
       if (mode === 'line') return makeLineQuestion();
       if (mode === 'mix') return MIX_PICKERS[pickDifferent(idx, MIX_PICKERS.length)](idx);
-      if (mode === 'bmix') return makeBuildQuestion(BUILD_MIX[pickDifferent(idx, BUILD_MIX.length)]);
+      if (mode === 'bmix') {
+        const t = BUILD_MIX[pickDifferent(idx, BUILD_MIX.length)];
+        return makeBuildQuestion(t, t === '마름모' ? pick(['side', 'diag']) : 'side');
+      }
       if (mode === 'para') return makeParaQuestion();
       if (mode === 'gap') return makeGapQuestion();
       if (mode === 'cm') return makeCmQuestion();
       if (mode === 'trap') return makeTrapQuestion();
+      if (mode === 'brhom') return makeBuildQuestion('마름모', pickOption(lastBuildVariant, idx, measureOpt.brhom));
       if (BUILD_TARGET[mode]) return makeBuildQuestion(BUILD_TARGET[mode]);
       if (SHAPE_TARGET[mode]) return makeShapeQuestion(SHAPE_TARGET[mode]);
       if (mode === 'sort') return makeSortQuestion();
@@ -2805,10 +3426,12 @@
       });
       document.getElementById('result-overlay').innerHTML = `
         <div class="result-card">
-          <h2>결과</h2>
+          <h2>🏆 결과</h2>
           ${ranking.map((item) => `
             <div class="ranking-row${item.score === best && best > 0 ? ' top' : ''}">
-              <span>${item.rank}</span>
+              ${item.score > 0 && item.rank <= 3
+                ? `<span class="rank">${['🥇', '🥈', '🥉'][item.rank - 1]}</span>`
+                : `<span class="rank num">${item.rank}</span>`}
               <span>${item.animal.emoji} ${item.animal.name}</span>
               <strong>${item.score}점</strong>
             </div>
@@ -2897,16 +3520,19 @@
         title: '평행사변형',
         mode: 'ispara',
         rows: [
-          { word: '평행사변형', q: { kind: 'shape', verts: quadVerts(8, 5, 62), rot: 0, reveal: true, showWhat: 'para' } },
-          { word: '마주 보는 변의 길이', q: { kind: 'shape', verts: quadVerts(8, 5, 62), rot: 0, reveal: true, showWhat: 'len' } }
+          { word: '평행사변형', q: { kind: 'shape', verts: quadVerts(8, 5, 60), rot: 0, reveal: true, showWhat: 'para' } },
+          { word: '마주 보는 변의 길이', q: { kind: 'shape', verts: quadVerts(8, 5, 60), rot: 0, reveal: true, showWhat: 'len' } },
+          { word: '평행사변형의 각', q: { kind: 'shape', verts: quadVerts(8, 5, 60), rot: 0, showWhat: 'none', angleLabels: ['60°', '120°', '60°', '120°'] } }
         ]
       },
       rhom: {
         title: '마름모',
         mode: 'isrhom',
         rows: [
-          { word: '마름모', q: { kind: 'shape', verts: quadVerts(6, 6, 62), rot: 0, reveal: true, showWhat: 'len' } },
-          { word: '마름모도 평행사변형', q: { kind: 'shape', verts: quadVerts(6, 6, 62), rot: 0, reveal: true, showWhat: 'para' } }
+          { word: '마름모', q: { kind: 'shape', verts: quadVerts(6, 6, 60), rot: 0, reveal: true, showWhat: 'len' } },
+          { word: '마름모도 평행사변형', q: { kind: 'shape', verts: quadVerts(6, 6, 60), rot: 0, reveal: true, showWhat: 'para' } },
+          { word: '마름모의 각', q: { kind: 'shape', verts: quadVerts(6, 6, 60), rot: 0, showWhat: 'none', angleLabels: ['60°', '120°', '60°', '120°'] } },
+          { word: '꼭짓점을 이은 선분', q: { kind: 'shape', diag: { a: 4, b: 6, rot: 0, half: [null, null, null, null], marks: true } } }
         ]
       },
       rect: {
@@ -2984,7 +3610,7 @@
         </div>
         ${p.question.kind === 'build' ? buildBody(p) : p.question.kind === 'sort' ? sortBody(p) : quizBody(p)}
         <div class="controls">
-          <div class="message ${p.state === 'ok' ? 'ok' : p.state === 'no' ? 'no' : ''}">${p.message}</div>
+          <div class="message ${p.state === 'ok' ? 'ok' : p.state === 'no' ? 'no' : ''}"><span>${p.message}</span></div>
           <div class="btn-col">
             ${p.question.kind === 'build' ? `<button class="reset-btn" type="button" onclick="clearBuild(${p.idx})">지우기</button>` : ''}
             ${p.question.kind === 'sort' ? `<button class="check-btn" type="button" onclick="checkSort(${p.idx})">확인</button>` : ''}
@@ -2997,7 +3623,7 @@
     function quizBody(p) {
       const q = p.question;
       return `
-        <div class="cell-body">
+        <div class="cell-body quiz">
           <div class="q-prompt">
             <span>${q.prompt}</span>
             <button class="spk" type="button" onclick="speakQuestion(${p.idx})" aria-label="문제 읽어 주기">🔊</button>
@@ -3022,14 +3648,14 @@
     function sortBody(p) {
       const q = p.question;
       return `
-        <div class="cell-body">
+        <div class="cell-body quiz">
           <div class="q-prompt">
             <span>${q.prompt}</span>
             <button class="spk" type="button" onclick="speakQuestion(${p.idx})" aria-label="문제 읽어 주기">🔊</button>
           </div>
           <div class="fig-stage">${shapeFigureSvg(q)}</div>
           <div class="fig-tag">${q.tag}</div>
-          <div class="choice-row">
+          <div class="choice-row multi">
             ${q.choices.map((c, i) => {
               const on = p.sel.includes(c);
               const right = p.locked && q.answers.includes(c);
@@ -3125,7 +3751,9 @@
       if (verdict !== 'ok') {
         p.tries += 1;
         p.state = 'no';
-        p.message = BUILD_MESSAGE[verdict];
+        p.message = verdict === 'nomatch' && p.question.variant === 'diag'
+          ? '가운데 점에서 두 선분이 똑같이 둘로 나뉘는지 살펴보세요.'
+          : BUILD_MESSAGE[verdict];
         renderCell(idx);
         blip('no');
         return;
@@ -3135,11 +3763,11 @@
       p.locked = true;
       p.state = 'ok';
       const target = p.question.target || '사다리꼴';
-      p.message = `정답! <b>${target}</b>이 되었어요. (+${gain}점)`;
+      p.message = `정답! <b>${target}</b>${josa(target, '이', '가').slice(target.length)} 되었어요. (+${gain}점)`;
       renderCell(idx);
       showAnswerOverlay(idx, true);
       blip('ok');
-      speak(`${p.question.target || '사다리꼴'}이 되었습니다.`);
+      speak(`${josa(target, '이', '가')} 되었습니다.`);
       setTimeout(() => {
         if (!gameActive || players[idx] !== p) return;
         players[idx] = createPlayer(idx);
@@ -3157,7 +3785,8 @@
     }
 
     function speakQuestion(idx) {
-      speak(players[idx].question.prompt);
+      const q = players[idx].question;
+      speak(q.promptSay || q.prompt);
     }
 
     // ① 이나 3 cm 처럼 그대로 읽으면 어색한 선택지를 말로 바꾼다
@@ -3250,7 +3879,7 @@
 
     function shapeSay(q) {
       const yes = q.answer === '맞다';
-      return `${SHAPE_WHY[q.target][yes ? 0 : 1]}. 그래서 ${q.target}이 ${yes ? '맞습니다' : '아닙니다'}.`;
+      return `${SHAPE_WHY[q.target][yes ? 0 : 1]}. 그래서 ${josa(q.target, '이', '가')} ${yes ? '맞습니다' : '아닙니다'}.`;
     }
 
     function trapLine(q, correct) {
@@ -3288,7 +3917,7 @@
       if (q.kind === 'line') return `정답! ${LINE_WHY[q.answer]}, <b>${q.name}</b>이에요.`;
       if (q.kind === 'gap') return `정답! <b>${q.answer} 선분</b>이 다른 직선에 수직이에요.`;
       if (q.kind === 'cm') return `정답! 평행선 사이의 거리는 <b>${q.gap} cm</b>예요.`;
-      if (q.kind === 'len') return `정답! <b>${q.value}${q.unit || ' cm'}</b>예요.`;
+      if (q.kind === 'len') return `정답! ${q.why ? `${q.why}, ` : ''}<b>${q.value}${q.unit || ' cm'}</b>예요.`;
       if (q.answer === '수직') return '정답! 두 직선은 서로 <b>수직</b>이에요.';
       if (q.answer === '수선') return `정답! 직선 ${q.other}에 대한 <b>수선</b>이에요.`;
       return '정답! 작은 네모로 표시한 90°인 각, <b>직각</b>이에요.';
@@ -3298,7 +3927,7 @@
       if (q.kind === 'line') return `${LINE_WHY[q.answer]}, ${q.nameSay}입니다.`;
       if (q.kind === 'gap') return `${choiceSay(q.answer)}이 다른 직선에 수직입니다. 이 선분의 길이가 평행선 사이의 거리입니다.`;
       if (q.kind === 'cm') return `평행선 사이의 거리는 ${q.gap} 센티미터입니다.`;
-      if (q.kind === 'len') return `${q.value} ${q.unit === '°' ? '도' : '센티미터'}입니다.`;
+      if (q.kind === 'len') return `${q.whySay ? `${q.whySay}, ` : ''}${q.value} ${q.unit === '°' ? '도' : '센티미터'}입니다.`;
       return TERM_SAY[q.answer];
     }
 
