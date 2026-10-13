@@ -1141,6 +1141,14 @@ body.card-stats-visible .card-stats:not([hidden]) {
   list-style-position: inside;
 }
 
+.mininori-page .program-section h3 {
+  margin: 1.25rem 0 0.75rem;
+}
+
+.mininori-page .program-actions .btn-download-game {
+  color: #17191f;
+}
+
 .program-image-block {
   margin: 1.2rem 0 0;
 }
@@ -1164,5 +1172,13 @@ body.card-stats-visible .card-stats:not([hidden]) {
 @media (max-width: 768px) {
   .program-hero {
     grid-template-columns: 1fr;
+  }
+
+  .mininori-page .program-hero {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .mininori-page .program-preview {
+    min-height: 0;
   }
 }

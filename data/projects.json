@@ -336,17 +336,17 @@
   },
   {
     "id": "mininori",
-    "updatedAt": "2026-06-08",
+    "updatedAt": "2026-10-13",
     "title": "미니노리",
     "category": "other-program",
     "badge": "파일",
     "thumbnail": "assets/thumbnails/mininori.png",
-    "description": "다같이 하는 전자칠판 종합 게임입니다. 교실 전체가 함께 참여하는 짧고 빠른 미니게임 묶음입니다. 창체 시간에 간단히 활용해보세요!",
+    "description": "전자칠판에서 함께 즐기는 팀 대결·학습 퀴즈 게임입니다. 구구단, 기억력, 바구니 슛과 시나리오 모드를 지원합니다. v1.2.0에서 교과서 PDF 퀴즈 만들기와 퀴즈 편집·불러오기를 개선했습니다.",
     "actions": [
       {
         "type": "download",
-        "label": "다운로드",
-        "url": "",
+        "label": "Windows 다운로드",
+        "url": "https://drive.google.com/file/d/1r-SD5N3oTx_3sdP5aAww66oOwd1shA3I/view?usp=drivesdk",
         "downloadKey": "mininori"
       },
       {

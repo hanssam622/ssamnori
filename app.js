@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     thinkchain: 'https://drive.google.com/uc?export=download&id=1y62D_wWRUdfitge8bLOz6vujoUlgdrIC',
     thinkchainPortable: 'https://drive.google.com/uc?export=download&id=1fCBOVglnVkwzCNBoT6pegyI3fIFFQIyM',
     tlog: 'https://drive.google.com/uc?export=download&id=1-iCxK7ACpS5DsHs9dfFEeJP4w0QA3LyM',
-    mininori: 'https://drive.google.com/uc?export=download&id=1o1Q3qACY8eHEi5LjXC3Pn8iCInt1aSsS',
+    mininori: 'https://drive.google.com/file/d/1r-SD5N3oTx_3sdP5aAww66oOwd1shA3I/view?usp=drivesdk',
     batchnuki: 'https://drive.google.com/uc?export=download&id=14QG_bmMH1n4x7-Qes6l_7NIrDUtHF2JP',
     ieon: 'https://drive.google.com/uc?export=download&id=17954X0lxEivSbm0I0sp8ODYXJJj308oo',
   };
@@ -234,7 +234,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!portfolioGrid) return;
 
     try {
-      const response = await fetch('data/projects.json?v=20260923');
+      const response = await fetch('data/projects.json?v=20261013');
       if (!response.ok) throw new Error(`Project data request failed: ${response.status}`);
       const projects = await response.json();
       renderProjects(projects);
