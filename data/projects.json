@@ -382,17 +382,18 @@
   },
   {
     "id": "ieon",
-    "updatedAt": "2026-09-23",
+    "updatedAt": "2026-10-14",
+    "version": "3.12.2",
     "title": "이어온",
     "category": "other-program",
     "badge": "파일",
     "thumbnail": "assets/thumbnails/ieon.png",
-    "description": "다국어 수업자료 번역 프로그램입니다. 교과서와 PPT 등의 수업자료 파일을 받아 음성과 자막을 붙인 다국어 자료로 만들어줄 수 있습니다. (2025년 디지털 교육자료 연구대회 2등급 수상)",
+    "description": "교과서·PPT에 번역, 음성, 자막을 붙이는 다국어 수업자료 프로그램입니다. 새 기록 화면, 문장별 OCR, PPT HTML 가져오기와 반자동 진행을 지원합니다. 최신 3.12.2의 변화는 설명 페이지의 업데이트 내역에서 확인하세요. (2025년 디지털 교육자료 연구대회 2등급 수상)",
     "actions": [
       {
         "type": "download",
-        "label": "다운로드",
-        "url": "",
+        "label": "Windows 3.12.2 다운로드",
+        "url": "https://drive.google.com/file/d/15lcS-eYzibJ98-LSh5u8tl7wT2nYEYhu/view?usp=sharing",
         "downloadKey": "ieon"
       },
       {

@@ -4,10 +4,17 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 const sourceDir = path.join(root, 'programs', 'ieon-guides');
 const outputPath = path.join(root, 'programs', 'ieon.html');
+const projects = JSON.parse(fs.readFileSync(path.join(root, 'data', 'projects.json'), 'utf8'));
+const ieon = projects.find((project) => project.id === 'ieon');
+const download = ieon?.actions.find((action) => action.type === 'download');
+if (!download?.url || !ieon.version) throw new Error('이어온 버전과 다운로드 주소를 data/projects.json에 지정하세요.');
+const escapeHtml = (value) => String(value).replaceAll('&', '&amp;').replaceAll('<', '&lt;')
+  .replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#39;');
 const sources = [
   ['quick', '이어온-빠른-시작.html'],
   ['manual', '이어온-사용설명서.html'],
   ['classroom', '이어온-수업자료-안내.html'],
+  ['updates', '이어온-업데이트-내역.html'],
 ];
 
 const documents = Object.fromEntries(sources.map(([id, filename]) => {
@@ -40,7 +47,10 @@ const page = `<!doctype html>
     .back { font-size: .9rem; font-weight: 700; text-decoration: none; }
     .back:hover { text-decoration: underline; }
     .guide-header { align-items: center; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem; margin: auto; max-width: 1160px; padding: 2rem 1.5rem 1.25rem; }
-    .guide-header h1 { font-size: clamp(1.55rem, 4vw, 2.25rem); margin: 0; }
+    .guide-header h1 { font-size: 2rem; margin: 0; }
+    .release-meta { color: #a8b8cc; font-size: .9rem; margin: .5rem 0 0; }
+    .guide-note { color: #b8c5d7; font-size: .9rem; line-height: 1.7; margin: 0 auto 1rem; max-width: 1160px; padding: 0 1.5rem; }
+    .guide-note a { text-underline-offset: 3px; }
     .download { background: #ff861c; border-radius: 6px; color: #182036; display: inline-flex; font-size: .94rem; font-weight: 800; padding: .7rem 1rem; text-decoration: none; }
     .download:hover { background: #ffa046; }
     .guide-tabs { border-bottom: 1px solid #445067; display: flex; gap: .25rem; margin: auto; max-width: 1112px; overflow-x: auto; padding: 0 .25rem; }
@@ -56,6 +66,7 @@ const page = `<!doctype html>
       body { background: #f4f6fa; color: #172033; }
       .site-header { background: #fff; border-bottom-color: #dbe1ec; }
       .guide-tabs { border-bottom-color: #cbd5e1; }
+      .release-meta, .guide-note { color: #526079; }
       .guide-tab { color: #526079; }
       .guide-tab[aria-selected="true"], .guide-tab:hover { color: #164bb1; }
     }
@@ -63,6 +74,7 @@ const page = `<!doctype html>
       .site-header-inner { min-height: 62px; }
       .brand img { height: 34px; }
       .guide-header { padding-top: 1.4rem; }
+      .guide-header h1 { font-size: 1.65rem; }
       .guide-tab { font-size: .84rem; padding: .75rem .7rem; }
     }
   </style>
@@ -77,17 +89,23 @@ const page = `<!doctype html>
   </header>
   <main>
     <div class="guide-header">
-      <h1>이어온 설명서</h1>
-      <a class="download btn-download-game" href="https://drive.google.com/uc?export=download&amp;id=17W3fU3Qi5Xg4CSls25aVS_kIwavPYuB_">이어온 다운로드</a>
+      <div>
+        <h1>이어온 설명서</h1>
+        <p class="release-meta">현재 배포 버전 ${escapeHtml(ieon.version)} · Windows 64비트 · ${escapeHtml(ieon.updatedAt)} 업데이트</p>
+      </div>
+      <a class="download btn-download-game" data-download-key="ieon" href="${escapeHtml(download.url)}" target="_blank" rel="noopener">${escapeHtml(download.label)}</a>
     </div>
+    <p class="guide-note">기존 설명서는 그대로 볼 수 있습니다. 달라진 화면과 새 기능은 <a href="#updates">업데이트 내역</a>에서 확인하세요. 다운로드는 Google Drive 설치파일로 연결됩니다.</p>
     <nav class="guide-tabs" role="tablist" aria-label="이어온 설명서 목차">
       <button class="guide-tab" type="button" role="tab" id="tab-quick" aria-controls="panel-quick" aria-selected="true" tabindex="0" data-guide="quick">빠른 시작</button>
       <button class="guide-tab" type="button" role="tab" id="tab-manual" aria-controls="panel-manual" aria-selected="false" tabindex="-1" data-guide="manual">사용 설명서</button>
       <button class="guide-tab" type="button" role="tab" id="tab-classroom" aria-controls="panel-classroom" aria-selected="false" tabindex="-1" data-guide="classroom">수업자료 활용 안내</button>
+      <button class="guide-tab" type="button" role="tab" id="tab-updates" aria-controls="panel-updates" aria-selected="false" tabindex="-1" data-guide="updates">업데이트 내역</button>
     </nav>
     <section class="guide-panel" id="panel-quick" role="tabpanel" aria-labelledby="tab-quick"><iframe title="이어온 빠른 시작" data-guide="quick"></iframe></section>
     <section class="guide-panel" id="panel-manual" role="tabpanel" aria-labelledby="tab-manual" hidden><iframe title="이어온 사용 설명서" data-guide="manual"></iframe></section>
     <section class="guide-panel" id="panel-classroom" role="tabpanel" aria-labelledby="tab-classroom" hidden><iframe title="이어온 수업자료 활용 안내" data-guide="classroom"></iframe></section>
+    <section class="guide-panel" id="panel-updates" role="tabpanel" aria-labelledby="tab-updates" hidden><iframe title="이어온 업데이트 내역" data-guide="updates"></iframe></section>
   </main>
   <script>
     const guideDocuments = {

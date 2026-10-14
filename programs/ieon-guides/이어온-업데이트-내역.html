@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>이어온 업데이트 내역</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --paper: #f4f6fa;
+      --ink: #172033;
+      --muted: #526079;
+      --rule: #dbe1ec;
+      --accent: #225bc3;
+      --tint: #e8effc;
+      --notice: #f1f4f8;
+      font-family: "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--paper); color: var(--ink); font-size: 16px; line-height: 1.75; word-break: keep-all; overflow-wrap: anywhere; letter-spacing: 0; }
+    main { max-width: 880px; margin: auto; padding: 40px 24px 64px; }
+    h1 { margin: 0 0 12px; font-size: 28px; line-height: 1.4; }
+    h2 { margin: 0 0 18px; font-size: 23px; line-height: 1.5; }
+    h3 { margin: 0 0 8px; font-size: 18px; line-height: 1.6; }
+    p { margin: 0 0 12px; }
+    a { color: var(--accent); text-underline-offset: 3px; }
+    a:focus-visible, summary:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
+    .meta { color: var(--muted); font-size: 14px; }
+    .version { display: inline-block; padding: 2px 9px; margin: 0 0 14px; background: var(--tint); color: var(--accent); border-radius: 4px; font-weight: 700; font-size: 14px; }
+    section { margin-top: 36px; padding-top: 28px; border-top: 1px solid var(--rule); }
+    .changes { margin: 0; }
+    .changes > div { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: 20px; padding: 18px 0; border-bottom: 1px solid var(--rule); }
+    .changes dt { font-weight: 700; }
+    .changes dd { margin: 0; color: var(--muted); }
+    .changes b { color: var(--ink); }
+    .notice { background: var(--notice); border-left: 3px solid var(--accent); padding: 16px 18px; margin: 24px 0 0; }
+    .notice p:last-child { margin-bottom: 0; }
+    .release { padding: 22px 0; border-bottom: 1px solid var(--rule); }
+    .release:first-of-type { padding-top: 0; }
+    .release-meta { display: flex; gap: 8px 16px; flex-wrap: wrap; align-items: baseline; margin-bottom: 10px; }
+    .release-meta h3 { margin: 0; }
+    .release time { font-size: 14px; color: var(--muted); }
+    ul { margin: 0; padding-left: 22px; }
+    li + li { margin-top: 6px; }
+    .release a { display: inline-block; margin-top: 12px; font-size: 14px; }
+    details { margin-top: 22px; }
+    summary { cursor: pointer; font-weight: 700; }
+    details[open] summary { margin-bottom: 18px; }
+    code { font-size: .9em; overflow-wrap: anywhere; }
+    @media (prefers-color-scheme: dark) {
+      :root { --paper: #101722; --ink: #edf1f7; --muted: #b8c5d7; --rule: #303b4d; --accent: #a0bcff; --tint: #243454; --notice: #1a2433; }
+    }
+    @media (max-width: 600px) {
+      main { padding: 28px 20px 44px; }
+      h1 { font-size: 25px; }
+      h2 { font-size: 21px; }
+      .changes > div { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <span class="version">최신 배포 3.12.2</span>
+      <h1>이어온, 이렇게 달라졌어요</h1>
+      <p>기존의 번역·음성·HTML 수업자료 만들기는 그대로입니다. 기록을 관리하는 화면을 새로 정리하고, 교과서와 PPT를 가져오는 방법을 늘렸습니다.</p>
+      <p class="meta">Windows 설치파일 기준 · 2026년 10월 14일 정리 · 배포 날짜는 한국 시간 기준</p>
+    </header>
+
+    <section aria-labelledby="changes-title">
+      <h2 id="changes-title">예전 버전과 달라진 점</h2>
+      <dl class="changes">
+        <div>
+          <dt>새 메인 화면</dt>
+          <dd>왼쪽에서 기록을 고르고, 가운데에서 본문을 확인한 뒤 아래의 <b>전체 처리</b> 줄에서 필요한 작업만 선택합니다. 번역·단어사전·음성·HTML과 진행 상태가 한곳에 모였습니다. 웹 기반 화면이 기본이고, 실행이 어려운 환경에서는 클래식 화면을 이용할 수 있습니다.</dd>
+        </div>
+        <div>
+          <dt>작업마다 AI 선택</dt>
+          <dd>위쪽 <b>AI 연결</b>에서 전체 작업의 기본 공급자를 고르거나, OCR·문장 잇기·번역·단어사전만 따로 바꿀 수 있습니다. 제미나이 웹과 Gemini API를 구분하고, 준비된 GCP 연결도 사용할 수 있습니다. 음성과 NotebookLM은 별도 설정입니다.</dd>
+        </div>
+        <div>
+          <dt>교과서 OCR과 문장 위치</dt>
+          <dd>글자가 들어 있는 PDF는 <b>파일 속 글자 그대로</b> 가져오고, 스캔본은 OCR로 읽습니다. 한 문장이 여러 줄이나 페이지에 걸쳐 있어도 문장과 영역을 연결하도록 개선했습니다. Gemini OCR 외에 <b>Document AI·Cloud Vision</b>을 선택할 수 있고, 로컬 글줄 검출과 제미나이 웹을 조합하는 무료 OCR도 추가했습니다.</dd>
+        </div>
+        <div>
+          <dt>PPT HTML 가져오기</dt>
+          <dd>PPT의 내부 글자는 직접 가져오고, 그림에 들어 있는 글자만 OCR하는 선택지가 생겼습니다. 중복 그림 제외, 글꼴 확인·변경, 도형·표·말풍선 재현도 개선했습니다. 기존 슬라이드 이미지와 클릭 단계별 가져오기는 유지합니다. <b>새 HTML 가져오기와 무료 OCR은 테스트 기능</b>입니다.</dd>
+        </div>
+        <div>
+          <dt>자동·반자동·수동</dt>
+          <dd>자동 진행은 제미나이에 입력하고 결과를 받는 과정까지 이어집니다. <b>반자동</b>은 프롬프트와 그림을 이어온이 준비하고, 선생님이 전송과 답 복사를 맡습니다. 수동 외부 LLM 흐름도 남아 있어 자동 연결이 불안정할 때 선택할 수 있습니다.</dd>
+        </div>
+        <div>
+          <dt>진도표와 수업자료</dt>
+          <dd>진도표에서 만든 기록은 그룹으로 확인하고, 저장된 PDF·배정 페이지를 다시 불러오거나 필요한 차시를 다시 만들 수 있습니다. 단어사전에서 단어카드·연습장·워드캐쳐 전송을 찾고, <b>도구 → PPT 음성 넣기</b>에서 기존 음성 배치 기능을 이용합니다.</dd>
+        </div>
+      </dl>
+      <aside class="notice">
+        <p><b>업데이트 후에도 최종 결과는 확인해 주세요.</b> AI 번역과 OCR은 자료에 따라 오류가 날 수 있습니다. 특히 PPT의 복잡한 효과·글꼴·그림은 실제 PowerPoint 화면과 차이가 생길 수 있습니다.</p>
+        <p>무료 OCR은 글줄 위치를 로컬에서 찾고, 본문 인식은 제미나이 웹에 맡기는 방식입니다. 인터넷과 구글 로그인이 필요합니다. 유료 API 기능은 선택한 공급자의 계정·키 설정과 요금 조건을 확인하세요.</p>
+      </aside>
+    </section>
+
+    <section aria-labelledby="releases-title">
+      <h2 id="releases-title">최근 업데이트 내역</h2>
+      <article class="release">
+        <div class="release-meta"><h3>3.12.2 · 원문과 번역의 짝 유지</h3><time datetime="2026-10-14">2026.10.14</time></div>
+        <ul>
+          <li>번역문 안의 추가 줄바꿈 때문에 다음 원문과 번역이 한 줄씩 어긋나던 문제를 수정했습니다. API·GCP·웹 응답·수동 붙여넣기에 같은 줄 정리 규칙을 적용합니다.</li>
+          <li>서로 다른 문자 체계의 언어에서 원문과 번역의 자리가 뒤바뀐 것으로 감지되면, 단어사전·음성·HTML 생성 전에 해당 위치를 알려 주고 중단합니다.</li>
+          <li>한국어가 러시아어 음성으로 전달되는 것처럼, 잘못된 언어의 음성을 반복 생성하던 상황을 줄이기 위한 수정입니다.</li>
+        </ul>
+        <a href="https://github.com/hanssam622/earon------/releases/tag/v3.12.2" target="_blank" rel="noopener">GitHub 배포 기록</a>
+      </article>
+      <article class="release">
+        <div class="release-meta"><h3>3.12.1 · Edge TTS 연결 복구</h3><time datetime="2026-10-12">2026.10.12</time></div>
+        <ul><li>Microsoft 측의 403 응답으로 Edge TTS 음성 생성이 실패하던 문제에 대응했습니다.</li></ul>
+        <a href="https://github.com/hanssam622/earon------/releases/tag/v3.12.1" target="_blank" rel="noopener">GitHub 배포 기록</a>
+      </article>
+      <article class="release">
+        <div class="release-meta"><h3>3.12.0 · PPT 표현과 웹 처리 개선</h3><time datetime="2026-10-09">2026.10.09</time></div>
+        <ul>
+          <li>PowerPoint 도형·표·말풍선·글자 배치의 HTML 재현을 개선하고, Windows의 WMF/EMF 그림을 투명 PNG로 변환합니다.</li>
+          <li>OCR 선택을 전체 처리 줄에서 찾을 수 있도록 정리하고, 작업별로 실제 사용한 처리 수단을 표시합니다. Gemini API와 Cloud Vision 키 연결도 정리했습니다.</li>
+          <li>제미나이 웹 입력창의 목록 변환 때문에 이미지 첨부·전송이 중단되던 문제를 수정하고, 실제 전송 확인과 재시도를 보강했습니다.</li>
+          <li>글자가 없는 이미지의 불필요한 OCR 재요청을 줄였습니다. 번역 중 원문 음성을 미리 만들고, 기존 음성을 재사용합니다.</li>
+        </ul>
+        <a href="https://github.com/hanssam622/earon------/releases/tag/v3.12.0" target="_blank" rel="noopener">GitHub 배포 기록</a>
+      </article>
+      <article class="release">
+        <div class="release-meta"><h3>3.11.0 · HTML 가져오기와 반자동 진행</h3><time datetime="2026-10-08">2026.10.08</time></div>
+        <ul>
+          <li>PPT 내부 글자와 그림 OCR을 조합하는 HTML 가져오기, 그림 중복 제외와 글꼴 확인·일괄 변경을 추가했습니다.</li>
+          <li>로컬 ONNX 글줄 검출과 제미나이 웹을 연계하는 무료 OCR, 제미나이 반자동 진행을 추가했습니다.</li>
+          <li>로그인 상태 확인·음성 누락 재시도·가져오기 후 전체 처리 연결을 개선했습니다. 첫 화면에서도 처리 설정을 확인하고 기록별 총 소요 시간을 볼 수 있습니다.</li>
+        </ul>
+        <a href="https://github.com/hanssam622/earon------/releases/tag/v3.11.0" target="_blank" rel="noopener">GitHub 배포 기록</a>
+      </article>
+      <details>
+        <summary>이전 주요 업데이트 · 3.04~3.10</summary>
+        <article class="release">
+          <div class="release-meta"><h3>3.09~3.10 · 번역 누락 재요청</h3><time datetime="2026-10-06">2026.10.06</time></div>
+          <ul>
+            <li>웹 자동 진행과 GCP 번역에서 빠지거나 빈 문장을 다시 요청하고, 중단 이유를 표시하도록 개선했습니다.</li>
+            <li>API만 사용하는 진도표 작업은 최대 세 차시를 병렬로 처리하도록 바꾸었습니다.</li>
+          </ul>
+        </article>
+        <article class="release">
+          <div class="release-meta"><h3>3.08 · AI 연결과 진도표 관리</h3><time datetime="2026-10-06">2026.10.06</time></div>
+          <ul>
+            <li>AI 연결의 기본 선택과 단계별 공급자 선택을 통합하고, 진도표 기록을 별도 보기로 모았습니다.</li>
+            <li>진도표의 PDF·쪽수를 기억하고, 인쇄된 쪽수로 페이지를 찾거나 특정 차시를 다시 만들 수 있도록 개선했습니다.</li>
+            <li>문장의 빈칸과 번호 붙은 항목을 구분해, 관련 없는 문장이 이어지지 않도록 보완했습니다.</li>
+          </ul>
+        </article>
+        <article class="release">
+          <div class="release-meta"><h3>3.05~3.07 · 문장별 교과서 영역</h3><span class="meta">2026.10.04~10.05</span></div>
+          <ul>
+            <li>PDF 내부 글자와 OCR 결과를 문장별로 나누고, 줄·페이지를 넘어 이어지는 문장의 클릭 영역을 함께 유지하도록 개선했습니다.</li>
+            <li>Document AI OCR을 추가하고, 좌우에 나란한 카드의 문장이 섞이는 문제를 보완했습니다.</li>
+            <li>교과서 자막과 프레젠테이션 중 영역 수정·저장, API/GCP 단어사전 생성을 개선했습니다.</li>
+          </ul>
+        </article>
+        <article class="release">
+          <div class="release-meta"><h3>3.04 · 새 웹 기반 화면</h3><time datetime="2026-10-04">2026.10.04</time></div>
+          <ul><li>새 메인 화면을 기본으로 적용했습니다. 기록·대기열·전체 처리·로그인·PPT/PDF 가져오기·단어사전·도구 메뉴를 같은 화면에서 이용합니다.</li></ul>
+          <a href="https://github.com/hanssam622/earon------/releases/tag/v3.04.0" target="_blank" rel="noopener">GitHub 배포 기록</a>
+        </article>
+      </details>
+    </section>
+
+    <section aria-labelledby="install-title">
+      <h2 id="install-title">다운로드와 업데이트</h2>
+      <p>설명서 위쪽의 <b>Windows 3.12.2 다운로드</b>는 Google Drive에 저장한 GitHub 릴리스 설치파일입니다. <code>EaronSetup-3.12.2-windows-x64.exe</code>를 내려받아 실행하세요.</p>
+      <p>설치 전에는 진행 중인 작업을 마치고 이어온을 종료하세요. 중요한 기록과 결과 폴더는 별도로 백업하는 것을 권장합니다. 이 링크는 Windows용이며 Mac 설치파일이 아닙니다.</p>
+      <p class="meta">기능 요약은 배포 기록과 구현 내역을 기준으로 작성했습니다. 웹 자동 진행은 외부 서비스 상태에 따라 실패할 수 있으며, 자동·반자동·수동 중 상황에 맞는 방법을 선택하세요.</p>
+    </section>
+  </main>
+</body>
+</html>
