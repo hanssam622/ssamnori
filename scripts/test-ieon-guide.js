@@ -10,7 +10,7 @@ const page = read('programs/ieon.html');
 const app = read('app.js');
 const index = read('index.html');
 const sources = {
-  quick: '이어온-빠른-시작.html',
+  quick: '이어온-제미나이-웹으로-수업자료-만들기.html',
   manual: '이어온-사용설명서.html',
   classroom: '이어온-수업자료-안내.html',
   updates: '이어온-업데이트-내역.html',
@@ -38,5 +38,6 @@ for (const [id, filename] of Object.entries(sources)) {
   assert.ok(page.includes(`id="panel-${id}" role="tabpanel" aria-labelledby="tab-${id}"`));
 }
 assert.ok(read('programs/ieon-guides/이어온-업데이트-내역.html').includes(`최신 배포 ${project.version}`));
+assert.ok(read(`programs/ieon-guides/${sources.quick}`).includes('<title>제미나이 웹으로 수업 자료 만들기</title>'));
 assert.ok(!page.includes('17W3fU3Qi5Xg4CSls25aVS_kIwavPYuB_'), 'generator restored an obsolete download');
 console.log('이어온: 4개 탭, 설명서 원문 보존, 버전, 다운로드 주소 일치 확인');

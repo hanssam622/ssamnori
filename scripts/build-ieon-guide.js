@@ -11,7 +11,7 @@ if (!download?.url || !ieon.version) throw new Error('이어온 버전과 다운
 const escapeHtml = (value) => String(value).replaceAll('&', '&amp;').replaceAll('<', '&lt;')
   .replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#39;');
 const sources = [
-  ['quick', '이어온-빠른-시작.html'],
+  ['quick', '이어온-제미나이-웹으로-수업자료-만들기.html'],
   ['manual', '이어온-사용설명서.html'],
   ['classroom', '이어온-수업자료-안내.html'],
   ['updates', '이어온-업데이트-내역.html'],
