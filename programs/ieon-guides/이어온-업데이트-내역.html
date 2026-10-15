@@ -61,10 +61,10 @@
 <body>
   <main>
     <header>
-      <span class="version">최신 배포 3.12.2</span>
+      <span class="version">최신 배포 3.12.3</span>
       <h1>이어온, 이렇게 달라졌어요</h1>
       <p>기존의 번역·음성·HTML 수업자료 만들기는 그대로입니다. 기록을 관리하는 화면을 새로 정리하고, 교과서와 PPT를 가져오는 방법을 늘렸습니다.</p>
-      <p class="meta">Windows 설치파일 기준 · 2026년 10월 14일 정리 · 배포 날짜는 한국 시간 기준</p>
+      <p class="meta">Windows 설치파일 기준 · 2026년 10월 15일 정리 · 배포 날짜는 한국 시간 기준</p>
     </header>
 
     <section aria-labelledby="changes-title">
@@ -103,6 +103,14 @@
 
     <section aria-labelledby="releases-title">
       <h2 id="releases-title">최근 업데이트 내역</h2>
+      <article class="release">
+        <div class="release-meta"><h3>3.12.3 · 웹 번역의 다음 배치 전송 복구</h3><time datetime="2026-10-15">2026.10.15</time></div>
+        <ul>
+          <li>번호가 붙은 원문을 번역할 때 제미나이 입력창의 목록 서식을 본문 누락으로 오인해, 앞 배치의 답변을 복사한 뒤 다음 배치를 전송하지 못하던 문제를 수정했습니다.</li>
+          <li>중첩된 목록 번호의 서식 차이는 허용하되, 실제 본문 누락·변경이나 이전 배치 내용이 섞인 경우의 전송 차단은 유지합니다.</li>
+        </ul>
+        <a href="https://github.com/hanssam622/earon------/releases/tag/v3.12.3" target="_blank" rel="noopener">GitHub 배포 기록</a>
+      </article>
       <article class="release">
         <div class="release-meta"><h3>3.12.2 · 원문과 번역의 짝 유지</h3><time datetime="2026-10-14">2026.10.14</time></div>
         <ul>
@@ -171,7 +179,7 @@
 
     <section aria-labelledby="install-title">
       <h2 id="install-title">다운로드와 업데이트</h2>
-      <p>설명서 위쪽의 <b>Windows 3.12.2 다운로드</b>는 Google Drive에 저장한 GitHub 릴리스 설치파일입니다. <code>EaronSetup-3.12.2-windows-x64.exe</code>를 내려받아 실행하세요.</p>
+      <p>설명서 위쪽의 <b>Windows 3.12.3 다운로드</b>는 Google Drive에 저장한 GitHub 릴리스 설치파일입니다. <code>EaronSetup-3.12.3-windows-x64.exe</code>를 내려받아 실행하세요.</p>
       <p>설치 전에는 진행 중인 작업을 마치고 이어온을 종료하세요. 중요한 기록과 결과 폴더는 별도로 백업하는 것을 권장합니다. 이 링크는 Windows용이며 Mac 설치파일이 아닙니다.</p>
       <p class="meta">기능 요약은 배포 기록과 구현 내역을 기준으로 작성했습니다. 웹 자동 진행은 외부 서비스 상태에 따라 실패할 수 있으며, 자동·반자동·수동 중 상황에 맞는 방법을 선택하세요.</p>
     </section>
