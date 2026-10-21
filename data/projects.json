@@ -403,5 +403,34 @@
         "downloadKey": ""
       }
     ]
+  },
+  {
+    "id": "decimalman",
+    "updatedAt": "2026-10-21",
+    "title": "소수맨",
+    "category": "web-game",
+    "badge": "웹게임",
+    "thumbnail": "assets/thumbnails/decimalman.svg",
+    "description": "소수 두·세 자리 수부터 크기 비교, 10배·1/10 관계, 모눈종이와 세로셈을 활용한 덧셈·뺄셈까지 익히는 4학년 2학기 전자칠판 수학 게임입니다.",
+    "actions": [
+      {
+        "type": "play",
+        "label": "바로 플레이",
+        "url": "games/decimalman/index.html",
+        "downloadKey": ""
+      },
+      {
+        "type": "external",
+        "label": "새 창",
+        "url": "games/decimalman/index.html",
+        "downloadKey": ""
+      },
+      {
+        "type": "info",
+        "label": "설명",
+        "url": "programs/decimalman.html",
+        "downloadKey": ""
+      }
+    ]
   }
 ]

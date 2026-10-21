@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" role="img" aria-labelledby="title desc">
+  <title id="title">소수맨 썸네일</title>
+  <desc id="desc">소수 덧셈과 뺄셈을 모눈종이와 숫자 카드로 익히는 수학 게임</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#e4f8f5"/>
+      <stop offset="1" stop-color="#fff2e8"/>
+    </linearGradient>
+    <pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse">
+      <path d="M24 0H0v24" fill="none" stroke="#12b3a3" stroke-opacity=".11" stroke-width="1.5"/>
+    </pattern>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="12" stdDeviation="12" flood-color="#355166" flood-opacity=".16"/>
+    </filter>
+  </defs>
+  <rect width="800" height="500" rx="32" fill="url(#bg)"/>
+  <rect width="800" height="500" rx="32" fill="url(#grid)"/>
+  <circle cx="715" cy="88" r="68" fill="#ffd979" opacity=".42"/>
+  <circle cx="87" cy="416" r="82" fill="#81d8ca" opacity=".32"/>
+  <g filter="url(#shadow)">
+    <rect x="52" y="42" width="696" height="416" rx="30" fill="#fff" stroke="#d5e9e5" stroke-width="4"/>
+    <rect x="82" y="70" width="74" height="34" rx="17" fill="#12b3a3"/>
+    <text x="119" y="94" text-anchor="middle" fill="#fff" font-family="system-ui,sans-serif" font-size="18" font-weight="800">4-2</text>
+    <text x="176" y="96" fill="#536373" font-family="system-ui,sans-serif" font-size="20" font-weight="750">소수의 덧셈과 뺄셈</text>
+    <text x="84" y="170" fill="#1d2838" font-family="system-ui,sans-serif" font-size="58" font-weight="900">소수맨</text>
+    <circle cx="269" cy="151" r="7" fill="#ff5b4f"/>
+    <rect x="82" y="199" width="636" height="106" rx="22" fill="#f4fbfa" stroke="#e1efed" stroke-width="3"/>
+    <text x="120" y="270" fill="#1d2838" font-family="system-ui,sans-serif" font-size="53" font-weight="850">
+      <tspan fill="#22a565">1</tspan><tspan fill="#f08a24">.</tspan><tspan fill="#3a7ff2">25</tspan>
+      <tspan fill="#6b7687"> + </tspan><tspan fill="#8a6be0">0</tspan><tspan fill="#f08a24">.</tspan><tspan fill="#e64f95">37</tspan>
+      <tspan fill="#6b7687"> = </tspan><tspan fill="#12b3a3">1.62</tspan>
+    </text>
+    <g transform="translate(91 330)">
+      <rect width="172" height="84" rx="14" fill="#fff4dc" stroke="#f2dfb8" stroke-width="2"/>
+      <g fill="#ffb12b">
+        <rect x="12" y="12" width="14" height="14" rx="3"/><rect x="30" y="12" width="14" height="14" rx="3"/><rect x="48" y="12" width="14" height="14" rx="3"/><rect x="66" y="12" width="14" height="14" rx="3"/><rect x="84" y="12" width="14" height="14" rx="3"/>
+        <rect x="12" y="30" width="14" height="14" rx="3"/><rect x="30" y="30" width="14" height="14" rx="3"/><rect x="48" y="30" width="14" height="14" rx="3"/><rect x="66" y="30" width="14" height="14" rx="3"/><rect x="84" y="30" width="14" height="14" rx="3"/>
+        <rect x="12" y="48" width="14" height="14" rx="3"/><rect x="30" y="48" width="14" height="14" rx="3"/><rect x="48" y="48" width="14" height="14" rx="3"/><rect x="66" y="48" width="14" height="14" rx="3"/><rect x="84" y="48" width="14" height="14" rx="3"/>
+      </g>
+      <text x="126" y="51" fill="#8a5b00" font-family="system-ui,sans-serif" font-size="24" font-weight="850">0.15</text>
+    </g>
+    <g transform="translate(294 330)">
+      <rect width="172" height="84" rx="14" fill="#e2f7f4" stroke="#c8eae5" stroke-width="2"/>
+      <path d="M18 42h130" stroke="#12b3a3" stroke-width="6" stroke-linecap="round"/>
+      <path d="M38 30v24m35-30v36m35-24v24" stroke="#0b8f83" stroke-width="4" stroke-linecap="round"/>
+      <circle cx="92" cy="42" r="9" fill="#ff5b4f" stroke="#fff" stroke-width="4"/>
+      <text x="86" y="76" text-anchor="middle" fill="#275c59" font-family="system-ui,sans-serif" font-size="16" font-weight="800">수직선으로 비교</text>
+    </g>
+    <g transform="translate(497 330)">
+      <rect width="221" height="84" rx="14" fill="#f4efff" stroke="#e5ddfa" stroke-width="2"/>
+      <text x="110" y="38" text-anchor="middle" fill="#59469a" font-family="system-ui,sans-serif" font-size="18" font-weight="800">모눈종이 · 세로셈</text>
+      <text x="110" y="65" text-anchor="middle" fill="#7666ad" font-family="system-ui,sans-serif" font-size="16" font-weight="700">보고 · 조작하며 익혀요</text>
+    </g>
+  </g>
+</svg>
