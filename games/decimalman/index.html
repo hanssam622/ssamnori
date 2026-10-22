@@ -6,8 +6,8 @@
   <title>소수맨</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%2312b3a3'/%3E%3Ctext x='9' y='46' font-family='Arial' font-weight='900' font-size='34' fill='white'%3E0%3C/text%3E%3Ccircle cx='36' cy='42' r='5' fill='%23ff5b4f'/%3E%3Ctext x='40' y='46' font-family='Arial' font-weight='900' font-size='34' fill='white'%3E1%3C/text%3E%3C/svg%3E" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
-  <script src="../../stats-config.js?v=20261021"></script>
-  <script src="../../analytics.js?v=20261021"></script>
+  <script src="../../stats-config.js?v=20261022"></script>
+  <script src="../../analytics.js?v=20261022"></script>
   <style>
     :root {
       --ink: #1d2838;
@@ -528,6 +528,37 @@
     .card.concept .go { background: #fff; color: var(--teal-d); border: 1.5px solid #9edfd5; }
     .card.concept .go:hover { background: var(--teal-s); }
     .card.wide { grid-column: span 2; }
+    .card .cap.pc { display: inline-flex; align-items: center; gap: 4px; padding: 4px 9px 4px 7px; background: var(--teal-s); color: var(--teal-d); }
+    .card .cap.pc svg { width: 15px; height: 15px; flex: 0 0 auto; }
+    .card .cap.pc.lim { background: var(--amber-s); color: #a46a00; }
+    .card .cap.pc.over { background: #ffe9e6; color: var(--coral-d); box-shadow: inset 0 0 0 1.5px #ffbdb6; }
+    .cap-note {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin: 12px 0 0;
+      padding: 10px 14px;
+      border-radius: 14px;
+      background: #fff7e6;
+      border: 1px solid #ffe0a3;
+      color: #8a5b00;
+      font-size: 14.5px;
+      font-weight: 650;
+      line-height: 1.55;
+      word-break: keep-all;
+    }
+    .cap-note:empty { display: none; }
+    .cap-note b { font-weight: 850; }
+    .cap-note svg { width: 18px; height: 18px; flex: 0 0 auto; margin-top: 2px; color: #e09a0b; }
+    .mix-chip .mcap { margin-left: 2px; padding: 2px 7px; border-radius: 999px; background: var(--amber-s); color: #a46a00; font-size: 11.5px; font-weight: 800; white-space: nowrap; }
+    .notice-card { width: min(470px, 92vw); }
+    .notice-card h2 { font-size: 28px; }
+    .notice-ic { width: 66px; height: 66px; margin: 4px auto 4px; display: grid; place-items: center; border-radius: 22px; background: var(--amber-s); color: #e09a0b; }
+    .notice-ic svg { width: 38px; height: 38px; }
+    .notice-main { margin: 6px 0 8px; font-size: 19px; font-weight: 750; line-height: 1.55; word-break: keep-all; }
+    .notice-main b { color: var(--coral-d); font-weight: 900; }
+    .notice-why { margin: 0; color: var(--muted); font-size: 15px; font-weight: 600; line-height: 1.6; word-break: keep-all; }
+    .notice-now { margin: 14px 0 0; padding: 9px 12px; border-radius: 12px; background: var(--soft); color: var(--ink-2); font-size: 15px; font-weight: 750; }
 
     /* ---------- 게임 화면 ---------- */
     .game-screen {
@@ -772,9 +803,37 @@
       padding: calc(var(--s) * 7px) calc(var(--s) * 14px) calc(var(--s) * 12px);
     }
     .players.narrow .controls { grid-template-columns: minmax(0, 1fr); }
+    /* 좁은 칸(5~6명)에서는 폭이 고정된 부품을 따로 줄인다 */
+    .players.narrow .cell-body { padding-left: 10px; padding-right: 10px; }
+    .players.narrow .q-card { padding: calc(var(--s) * 10px) 8px; }
+    .players.narrow .vcalc { --W: calc(var(--s) * 44px); --D: calc(var(--s) * 13px); --H: calc(var(--s) * 54px); padding: 6px; font-size: calc(var(--s) * 33px); }
+    .players.narrow .vc-h { margin: 0 1px; font-size: max(9px, calc(var(--s) * 10.5px)); letter-spacing: -.03em; }
+    .players.narrow .vc-help { height: calc(var(--s) * 26px); }
+    .players.narrow .aboard { --W: calc(var(--s) * 44px); --D: calc(var(--s) * 13px); padding: 8px calc(var(--W) * .5); font-size: calc(var(--s) * 33px); }
+    .players.narrow .aboard .guide { right: calc(var(--W) * .5 + var(--W) * var(--fa) + var(--D) / 2); }
+    .players.narrow .sboard { --W: calc(var(--s) * 40px); --D: calc(var(--s) * 13px); --H: calc(var(--s) * 56px); }
+    .players.narrow .sboard .heads span { margin: 0 1px; font-size: max(9px, calc(var(--s) * 10.5px)); letter-spacing: -.04em; }
+    .players.narrow .stile, .players.narrow .szero { font-size: calc(var(--s) * 30px); }
+    .players.narrow .shift-btn { padding: 0 calc(var(--s) * 10px); font-size: calc(var(--s) * 14px); }
+    .players.narrow .hgrids { width: 100%; flex-wrap: nowrap; }
+    .players.narrow .hgrids .hgrid { width: min(100%, calc(var(--s) * 230px)); height: auto; aspect-ratio: 1; }
+    .players.narrow .hgrids.n2 .hgrid { width: calc(50% - 5px); }
+    .players.xnarrow .hgrids.n2 { flex-direction: column; align-items: center; }
+    .players.xnarrow .hgrids.n2 .hgrid { width: min(100%, calc(var(--s) * 170px)); }
+    .players.xnarrow .hgrids.n2.xl .hgrid { width: min(100%, calc(var(--s) * 230px)); }
+    .players.narrow .message { font-size: max(12px, calc(var(--s) * 15px)); }
+    .players.narrow .q-text { font-size: max(13px, calc(var(--s) * 18px)); }
+    .players.narrow .ans-line { font-size: calc(var(--s) * 25px); gap: calc(var(--s) * 5px); }
+    .players.narrow .ans-box { min-width: calc(var(--s) * 104px); height: calc(var(--s) * 54px); font-size: calc(var(--s) * 30px); }
+    .players.narrow .story { padding: 10px; gap: 8px; }
+    .players.narrow .story .em { width: calc(var(--s) * 40px); height: calc(var(--s) * 40px); font-size: calc(var(--s) * 24px); }
+    .players.narrow .story p { font-size: max(13px, calc(var(--s) * 16px)); line-height: 1.5; }
+    .players.narrow .vchar { --W: calc(var(--s) * 27px); --D: calc(var(--s) * 10px); padding: 8px 10px; font-size: calc(var(--s) * 24px); }
+    .players.narrow .oslot { min-width: calc(var(--s) * 50px); }
     .players.narrow .cmp { font-size: calc(var(--s) * 26px); gap: calc(var(--s) * 6px); }
     .players.narrow .cmp-slot { width: calc(var(--s) * 40px); height: calc(var(--s) * 40px); font-size: calc(var(--s) * 26px); }
-    .players.narrow .choices.c2,
+    /* 글자로 된 보기만 한 줄로 쌓고, 짧은 수 보기는 두 줄 그대로 둔다 */
+    .players.narrow .choices.c2.txtc,
     .players.narrow .choices.c4,
     .players.narrow .ocards { grid-template-columns: minmax(0, 1fr); }
     .players.narrow .btns { justify-content: flex-end; }
@@ -1602,6 +1661,7 @@
         </div>
       </div>
 
+      <p class="cap-note" id="cap-note"></p>
       <nav class="stage-nav" id="stage-nav" aria-label="단계 바로 가기"></nav>
       <div id="stages"></div>
     </div>
@@ -1633,6 +1693,7 @@
   <div id="result-overlay" class="overlay hidden"></div>
   <div id="concept-overlay" class="overlay hidden" onclick="if (event.target === this) hideConcept()"></div>
   <div id="mix-overlay" class="overlay hidden" onclick="if (event.target === this) hideMix()"></div>
+  <div id="notice-overlay" class="overlay hidden" onclick="if (event.target === this) hideNotice()"></div>
 
   <script>
     /* =========================================================
@@ -1679,23 +1740,23 @@
 
     const MODES = {
       grid:    { title: '모눈종이 읽기', icon: 'grid', tint: '#e2f7f4', sub: '전체 크기가 1인 모눈종이에서 색칠한 부분을 소수로 나타내 보세요', desc: '전체 크기가 1인 모눈종이에서 색칠한 부분이 얼마인지 골라요.' },
-      paint:   { title: '모눈종이에 색칠하기', icon: 'paint', tint: '#fff4dc', sub: '칸을 누르거나 문질러서 주어진 소수만큼 색칠해 보세요', desc: '세로 한 줄은 0.1, 한 칸은 0.01이에요. 주어진 소수만큼 칠해요.', cap: 4 },
+      paint:   { title: '모눈종이에 색칠하기', icon: 'paint', tint: '#fff4dc', sub: '칸을 누르거나 문질러서 주어진 소수만큼 색칠해 보세요', desc: '세로 한 줄은 0.1, 한 칸은 0.01이에요. 주어진 소수만큼 칠해요.' },
       place:   { title: '자릿값 탐정', icon: 'place', tint: '#eef4ff', sub: '숫자가 어느 자리에 있고 얼마를 나타내는지 찾아보세요', desc: '2.58에서 5는 어느 자리 숫자이고 얼마를 나타낼까요?' },
       read:    { title: '소수 읽고 쓰기', icon: 'read', tint: '#f4efff', sub: '소수를 바르게 읽고, 분수를 소수로 나타내 보세요', desc: '0.79는 "영 점 칠구"! 소수점 아래는 숫자를 하나씩 읽어요.' },
       line:    { title: '수직선 읽기', icon: 'line', tint: '#ffeeec', sub: '작은 눈금 한 칸의 크기를 먼저 알아보고 화살표가 가리키는 수를 찾아요', desc: '작은 눈금 한 칸이 얼마인지 먼저 알아보고 화살표가 가리키는 수를 읽어요.' },
       unit:    { title: '단위 바꾸기', icon: 'unit', tint: '#fff6dd', sub: '1 cm = 0.01 m, 1 m = 0.001 km를 떠올리며 단위를 바꿔 보세요', desc: '79 cm는 몇 m? 814 m는 몇 km? 키패드로 답을 써요.' },
-      shift:   { title: '10배 · 1/10 자리 이동', icon: 'shift', tint: '#fff1e2', sub: '소수점은 그대로! 숫자 카드를 왼쪽·오른쪽으로 옮겨 보세요', desc: '소수점은 그대로 두고 숫자 카드를 왼쪽·오른쪽으로 옮겨 10배, 1/10을 만들어요.', cap: 4 },
+      shift:   { title: '10배 · 1/10 자리 이동', icon: 'shift', tint: '#fff1e2', sub: '소수점은 그대로! 숫자 카드를 왼쪽·오른쪽으로 옮겨 보세요', desc: '소수점은 그대로 두고 숫자 카드를 왼쪽·오른쪽으로 옮겨 10배, 1/10을 만들어요.' },
       times:   { title: '몇 배일까?', icon: 'times', tint: '#fff1e2', sub: '소수점을 기준으로 수가 몇 자리 움직였는지 살펴보세요', desc: '1.72 → 17.2는 몇 배일까요? 수가 몇 자리 움직였는지 봐요.' },
       compare: { title: '크기 비교 >, =, <', icon: 'compare', tint: '#eaf2ff', sub: '높은 자리부터 차례대로 비교해 보세요', desc: '높은 자리부터 차례로 비교해요. 0.5와 0.50은 같은 수예요.' },
-      order:   { title: '크기 순서대로 줄 세우기', icon: 'order', tint: '#e2f7f4', sub: '네 소수를 크기 순서대로 눌러 보세요', desc: '네 개의 소수를 큰 수부터, 또는 작은 수부터 차례로 눌러요.', cap: 4 },
-      gadd:    { title: '모눈종이로 더하기', icon: 'gadd', tint: '#fff4dc', sub: '더하는 수만큼 이어서 색칠하고, 합을 소수로 써 보세요', desc: '0.1이나 0.01이 모두 몇 개인지 이어서 색칠해 세어 봐요.', cap: 3, opts: 'grid' },
-      vadd:    { title: '세로셈 덧셈', icon: 'vadd', tint: '#e2f7f4', sub: '소수점을 맞추고, 같은 자리끼리 오른쪽부터 더해요', desc: '소수점 맞추기 → 같은 자리끼리 더하기 → 받아올림 → 답에 소수점 콕!', cap: 3, opts: 'calc' },
-      gsub:    { title: '모눈종이로 빼기', icon: 'gsub', tint: '#ffeef5', sub: '빼는 수만큼 ✕표 하고, 남은 부분을 소수로 써 보세요', desc: '색칠한 부분에서 빼는 만큼 ✕표 하고 남은 칸을 세어요.', cap: 3, opts: 'grid' },
-      vsub:    { title: '세로셈 뺄셈', icon: 'vsub', tint: '#ffeef5', sub: '소수점을 맞추고, 모자라면 윗자리 숫자를 눌러 받아내림해요', desc: '윗자리 숫자를 누르면 받아내림! 빈 자리는 0이 있다고 생각해요.', cap: 3, opts: 'calc' },
-      fix:     { title: '틀린 계산 찾기', icon: 'fix', tint: '#ffeded', sub: '계산이 맞았는지 살펴보고, 틀렸다면 이유를 찾아보세요', desc: '소수점을 안 맞췄을까? 받아올림을 잊었을까? 계산 탐정이 되어요.', cap: 4 },
-      word:    { title: '생활 속 문제', icon: 'word', tint: '#fff4dc', sub: '문제에 알맞은 식을 고르고 답을 구해 보세요', desc: '동물과 함께 일하는 직업 이야기 속 소수 문제를 풀어요.', cap: 3 },
+      order:   { title: '크기 순서대로 줄 세우기', icon: 'order', tint: '#e2f7f4', sub: '네 소수를 크기 순서대로 눌러 보세요', desc: '네 개의 소수를 큰 수부터, 또는 작은 수부터 차례로 눌러요.' },
+      gadd:    { title: '모눈종이로 더하기', icon: 'gadd', tint: '#fff4dc', sub: '더하는 수만큼 이어서 색칠하고, 합을 소수로 써 보세요', desc: '0.1이나 0.01이 모두 몇 개인지 이어서 색칠해 세어 봐요.', opts: 'grid' },
+      vadd:    { title: '세로셈 덧셈', icon: 'vadd', tint: '#e2f7f4', sub: '소수점을 맞추고, 같은 자리끼리 오른쪽부터 더해요', desc: '소수점 맞추기 → 같은 자리끼리 더하기 → 받아올림 → 답에 소수점 콕!', cap: 4, capWhy: '세로셈은 칸마다 숫자·받아올림·소수점을 직접 눌러 써야 해서 한 사람의 칸이 넓어야 해요.', opts: 'calc' },
+      gsub:    { title: '모눈종이로 빼기', icon: 'gsub', tint: '#ffeef5', sub: '빼는 수만큼 ✕표 하고, 남은 부분을 소수로 써 보세요', desc: '색칠한 부분에서 빼는 만큼 ✕표 하고 남은 칸을 세어요.', opts: 'grid' },
+      vsub:    { title: '세로셈 뺄셈', icon: 'vsub', tint: '#ffeef5', sub: '소수점을 맞추고, 모자라면 윗자리 숫자를 눌러 받아내림해요', desc: '윗자리 숫자를 누르면 받아내림! 빈 자리는 0이 있다고 생각해요.', cap: 4, capWhy: '세로셈은 칸마다 숫자·받아올림·소수점을 직접 눌러 써야 해서 한 사람의 칸이 넓어야 해요.', opts: 'calc' },
+      fix:     { title: '틀린 계산 찾기', icon: 'fix', tint: '#ffeded', sub: '계산이 맞았는지 살펴보고, 틀렸다면 이유를 찾아보세요', desc: '소수점을 안 맞췄을까? 받아올림을 잊었을까? 계산 탐정이 되어요.' },
+      word:    { title: '생활 속 문제', icon: 'word', tint: '#fff4dc', sub: '문제에 알맞은 식을 고르고 답을 구해 보세요', desc: '동물과 함께 일하는 직업 이야기 속 소수 문제를 풀어요.' },
       speed:   { title: '빠른 계산', icon: 'speed', tint: '#fff6dd', sub: '식을 보고 빠르게 답을 써요. 연속으로 맞히면 보너스!', desc: '그림 없이 식만 보고 계산해요. 3번 연속 맞히면 보너스 점수!', opts: 'speed' },
-      exam:    { title: '단원 마무리 평가', icon: 'exam', tint: '#efeaff', sub: '20문제를 풀고 100점 만점으로 점수를 받아요', desc: '단원 전체에서 20문제가 나와요. 문제마다 한 번만 답할 수 있고, 시간 제한은 없어요.', cap: 3, wide: true }
+      exam:    { title: '단원 마무리 평가', icon: 'exam', tint: '#efeaff', sub: '20문제를 풀고 100점 만점으로 점수를 받아요', desc: '단원 전체에서 20문제가 나와요. 문제마다 한 번만 답할 수 있고, 시간 제한은 없어요.', cap: 4, capWhy: '세로셈 문제가 들어 있어서 한 사람의 칸이 넓어야 해요.', wide: true }
     };
 
     const STAGES = [
@@ -1907,7 +1968,7 @@
         }
         html += `<div class="hgrid${opts.tap ? ' tap' : ''}"${opts.tap ? ` data-p="${opts.idx}"` : ''}>${cells}</div>`;
       }
-      return `<div class="hgrids${opts.size ? ` ${opts.size}` : ''}"${opts.id ? ` id="${opts.id}"` : ''}>${html}</div>`;
+      return `<div class="hgrids n${count}${opts.size ? ` ${opts.size}` : ''}"${opts.id ? ` id="${opts.id}"` : ''}>${html}</div>`;
     }
 
     function lineSvg(start, step, k, mark) {
@@ -2724,7 +2785,7 @@
     // icon: 카드 그림, tall: 그림 조작이 있어 칸이 넓어야 하는 문제, cap: 함께 할 수 있는 최대 인원
     const MIX_ITEMS = {
       grid:    { label: '모눈종이 읽기', icon: 'grid', make: makeGrid },
-      paint:   { label: '모눈종이에 색칠하기', icon: 'paint', make: makePaint, tall: true, cap: 4 },
+      paint:   { label: '모눈종이에 색칠하기', icon: 'paint', make: makePaint, tall: true },
       place2:  { label: '자릿값 탐정', icon: 'place', make: () => withDigits('two', makePlace) },
       read2:   { label: '소수 읽고 쓰기', icon: 'read', make: () => withDigits('two', makeRead) },
       line2:   { label: '수직선 읽기', icon: 'line', make: () => withDigits('two', makeLine) },
@@ -2733,27 +2794,27 @@
       read3:   { label: '소수 읽고 쓰기', icon: 'read', make: () => withDigits('three', makeRead) },
       line3:   { label: '수직선 읽기', icon: 'line', make: () => withDigits('three', makeLine) },
       unit3:   { label: '단위 바꾸기 (m → km)', icon: 'unit', make: () => withDigits('three', makeUnit) },
-      shift:   { label: '10배 · 1/10 자리 이동', icon: 'shift', make: makeShift, tall: true, cap: 4 },
+      shift:   { label: '10배 · 1/10 자리 이동', icon: 'shift', make: makeShift, tall: true },
       times:   { label: '몇 배일까?', icon: 'times', make: makeTimes },
       compare: { label: '크기 비교 >, =, <', icon: 'compare', make: makeCompare },
-      order:   { label: '크기 순서대로 줄 세우기', icon: 'order', make: makeOrder, cap: 4 },
-      gadd1:   { label: '모눈종이로 더하기', icon: 'gadd', make: () => withOpt('1', makeGAdd), tall: true, cap: 3 },
-      vadd1:   { label: '세로셈 덧셈', icon: 'vadd', make: () => makeVcalc('+', '1'), tall: true, cap: 3 },
+      order:   { label: '크기 순서대로 줄 세우기', icon: 'order', make: makeOrder },
+      gadd1:   { label: '모눈종이로 더하기', icon: 'gadd', make: () => withOpt('1', makeGAdd), tall: true },
+      vadd1:   { label: '세로셈 덧셈', icon: 'vadd', make: () => makeVcalc('+', '1'), tall: true, cap: 4 },
       eadd1:   { label: '식 보고 계산하기', icon: 'speed', make: () => exprQ('+', '1') },
-      gadd2:   { label: '모눈종이로 더하기', icon: 'gadd', make: () => withOpt('2', makeGAdd), tall: true, cap: 3 },
-      vadd2:   { label: '세로셈 덧셈', icon: 'vadd', make: () => makeVcalc('+', '2'), tall: true, cap: 3 },
-      vaddm:   { label: '자릿수가 다른 세로셈 덧셈', icon: 'vadd', make: () => makeVcalc('+', 'm'), tall: true, cap: 3 },
+      gadd2:   { label: '모눈종이로 더하기', icon: 'gadd', make: () => withOpt('2', makeGAdd), tall: true },
+      vadd2:   { label: '세로셈 덧셈', icon: 'vadd', make: () => makeVcalc('+', '2'), tall: true, cap: 4 },
+      vaddm:   { label: '자릿수가 다른 세로셈 덧셈', icon: 'vadd', make: () => makeVcalc('+', 'm'), tall: true, cap: 4 },
       eadd2:   { label: '식 보고 계산하기', icon: 'speed', make: () => exprQ('+', pick(['2', 'm'])) },
-      fixadd:  { label: '틀린 계산 찾기', icon: 'fix', make: () => makeFix('+'), tall: true, cap: 4 },
-      gsub1:   { label: '모눈종이로 빼기', icon: 'gsub', make: () => withOpt('1', makeGSub), tall: true, cap: 3 },
-      vsub1:   { label: '세로셈 뺄셈', icon: 'vsub', make: () => makeVcalc('-', '1'), tall: true, cap: 3 },
+      fixadd:  { label: '틀린 계산 찾기', icon: 'fix', make: () => makeFix('+'), tall: true },
+      gsub1:   { label: '모눈종이로 빼기', icon: 'gsub', make: () => withOpt('1', makeGSub), tall: true },
+      vsub1:   { label: '세로셈 뺄셈', icon: 'vsub', make: () => makeVcalc('-', '1'), tall: true, cap: 4 },
       esub1:   { label: '식 보고 계산하기', icon: 'speed', make: () => exprQ('-', '1') },
-      gsub2:   { label: '모눈종이로 빼기', icon: 'gsub', make: () => withOpt('2', makeGSub), tall: true, cap: 3 },
-      vsub2:   { label: '세로셈 뺄셈', icon: 'vsub', make: () => makeVcalc('-', '2'), tall: true, cap: 3 },
-      vsubm:   { label: '자릿수가 다른 세로셈 뺄셈', icon: 'vsub', make: () => makeVcalc('-', 'm'), tall: true, cap: 3 },
+      gsub2:   { label: '모눈종이로 빼기', icon: 'gsub', make: () => withOpt('2', makeGSub), tall: true },
+      vsub2:   { label: '세로셈 뺄셈', icon: 'vsub', make: () => makeVcalc('-', '2'), tall: true, cap: 4 },
+      vsubm:   { label: '자릿수가 다른 세로셈 뺄셈', icon: 'vsub', make: () => makeVcalc('-', 'm'), tall: true, cap: 4 },
       esub2:   { label: '식 보고 계산하기', icon: 'speed', make: () => exprQ('-', pick(['2', 'm'])) },
-      fixsub:  { label: '틀린 계산 찾기', icon: 'fix', make: () => makeFix('-'), tall: true, cap: 4 },
-      word:    { label: '생활 속 문제', icon: 'word', make: makeWord, tall: true, cap: 3 },
+      fixsub:  { label: '틀린 계산 찾기', icon: 'fix', make: () => makeFix('-'), tall: true },
+      word:    { label: '생활 속 문제', icon: 'word', make: makeWord, tall: true },
       emix:    { label: '덧셈 · 뺄셈 식 섞기', icon: 'speed', make: () => exprQ(pick(['+', '-'])) }
     };
 
@@ -2951,7 +3012,7 @@
               </div>
             </div>`).join('')}
           <div class="result-btns">
-            <button class="btn-main" type="button" onclick="hideConcept(); startGame('${c.mode}')">문제 풀러 가기 →</button>
+            <button class="btn-main" type="button" onclick="hideConcept(); tryStart('${c.mode}')">문제 풀러 가기 →</button>
             <button class="ghost-btn" type="button" onclick="hideConcept()">닫기</button>
           </div>
         </div>`;
@@ -3011,9 +3072,10 @@
       const cap = mixCap(chosen);
       const st = mixScope === 'all' ? null : STAGES.find((x) => x.no === mixScope);
       const over = playerCount > cap;
+      const limiting = [...new Set(chosen.filter((id) => (MIX_ITEMS[id].cap || 6) === cap).map((id) => MIX_ITEMS[id].label))];
       const capNote = chosen.length && cap < 6
-        ? `<span class="mix-cap${over ? ' warn' : ''}">그림을 조작하는 문제가 있어 최대 ${cap}명까지 함께해요${over ? ` (지금 ${playerCount}명 → ${cap}명으로 시작)` : ''}</span>`
-        : '';
+        ? `<span class="mix-cap${over ? ' warn' : ''}">${limiting.join(', ')} 게임으로 인해 최대 ${cap}명까지만 가능합니다${over ? ` (지금 ${playerCount}명)` : ''}</span>`
+        : `<span class="mix-cap">1~6명이 함께할 수 있어요</span>`;
       const box = document.getElementById('mix-overlay');
       const prevScroll = box.firstElementChild ? box.firstElementChild.scrollTop : 0;
       box.innerHTML = `
@@ -3033,7 +3095,7 @@
                 </div>
                 <div class="mix-items">${l.items.map((id) => `
                   <button class="mix-chip${mixSel.has(id) ? ' on' : ''}" type="button" aria-pressed="${mixSel.has(id)}" onclick="toggleMixItem('${id}')">
-                    <span class="ck">${CHECK}</span><span class="mi">${ICONS[MIX_ITEMS[id].icon]}</span>${MIX_ITEMS[id].label}
+                    <span class="ck">${CHECK}</span><span class="mi">${ICONS[MIX_ITEMS[id].icon]}</span>${MIX_ITEMS[id].label}${MIX_ITEMS[id].cap ? `<span class="mcap">최대 ${MIX_ITEMS[id].cap}명</span>` : ''}
                   </button>`).join('')}
                 </div>
               </section>`;
@@ -3074,12 +3136,78 @@
         sub: `${lessons.length > 3 ? '단원 전체' : lessons.map((l) => l.title).join(' · ')}에서 고른 ${chosen.length}가지 유형을 섞어 풀어요`,
         cap: mixCap(chosen)
       };
-      hideMix();
-      startGame('mix');
+      const go = () => { hideMix(); startGame('mix'); };
+      if (playerCount > MODES.mix.cap) {
+        const names = [...new Set(chosen.filter((id) => (MIX_ITEMS[id].cap || 6) < playerCount).map((id) => MIX_ITEMS[id].label))];
+        showCapNotice(names, MODES.mix.cap, VCALC_WHY, go);
+        return;
+      }
+      go();
     }
     function mixTagHtml(q) {
       const it = MIX_ITEMS[q.mixId];
       return it ? `<div class="mix-tag"><span class="mi">${ICONS[it.icon]}</span>${it.label}</div>` : '';
+    }
+
+
+    /* =========================================================
+       인원 제한 안내
+       ========================================================= */
+    const PEOPLE = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="9" cy="8" r="3.4"/><path d="M2.5 19.5c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6z"/><circle cx="17" cy="9" r="2.7" opacity=".55"/><path d="M15.6 13.7c3.2-.4 6 1.6 6 5.8h-4.4c0-2.3-.6-4.3-1.6-5.8z" opacity=".55"/></svg>';
+    const VCALC_WHY = '세로셈은 칸마다 숫자·받아올림·소수점을 직접 눌러 써야 해서 한 사람의 칸이 넓어야 해요.';
+    function capOf(m) { return MODES[m].cap || 6; }
+    function capChip(cap, extra = '') {
+      return `<span class="cap pc${cap < 6 ? ' lim' : ''}${playerCount > cap ? ' over' : ''}" data-cap="${cap}">${PEOPLE}${cap < 6 ? `최대 ${cap}명` : '1~6명'}${extra}</span>`;
+    }
+    // 고른 인원이 게임 제한보다 많을 때 시작 전에 알려 준다
+    let noticeGo = null;
+    function showCapNotice(names, cap, why, go) {
+      noticeGo = go;
+      document.getElementById('notice-overlay').innerHTML = `
+        <div class="result-card notice-card">
+          <div class="notice-ic">${PEOPLE}</div>
+          <h2>인원 안내</h2>
+          <p class="notice-main"><b>${names.join(', ')}</b> 게임으로 인해 <b>최대 ${cap}명</b>까지만 가능합니다.</p>
+          <p class="notice-why">${why}</p>
+          <p class="notice-now">지금 고른 인원은 ${playerCount}명이에요. ${cap}명으로 줄여서 시작할까요?</p>
+          <div class="result-btns">
+            <button class="ghost-btn" type="button" onclick="hideNotice()">취소</button>
+            <button class="btn-main" type="button" onclick="acceptNotice()">${cap}명으로 시작 →</button>
+          </div>
+        </div>`;
+      document.getElementById('notice-overlay').classList.remove('hidden');
+      document.body.classList.add('modal');
+    }
+    function hideNotice() {
+      document.getElementById('notice-overlay').classList.add('hidden');
+      const others = ['concept-overlay', 'mix-overlay'].some((id) => !document.getElementById(id).classList.contains('hidden'));
+      if (!others) document.body.classList.remove('modal');
+    }
+    function acceptNotice() {
+      const go = noticeGo;
+      noticeGo = null;
+      hideNotice();
+      if (go) go();
+    }
+    function tryStart(m) {
+      const cap = capOf(m);
+      if (playerCount > cap) {
+        showCapNotice([MODES[m].title], cap, MODES[m].capWhy || '', () => startGame(m));
+        return;
+      }
+      startGame(m);
+    }
+    function renderCapNote() {
+      const note = document.getElementById('cap-note');
+      if (!note) return;
+      const byCap = {};
+      Object.entries(MODES).forEach(([k, M]) => {
+        if (k === 'mix' || !M.cap || M.cap >= playerCount) return;
+        (byCap[M.cap] = byCap[M.cap] || []).push(M.title);
+      });
+      const lines = Object.entries(byCap).map(([cap, titles]) => `<b>${titles.join(' · ')}</b> 게임은 최대 ${cap}명까지만 가능합니다.`);
+      note.innerHTML = lines.length ? `${PEOPLE}<span>${lines.join(' ')} 나머지 게임은 ${playerCount}명이 함께할 수 있어요.</span>` : '';
+      document.querySelectorAll('.cap.pc').forEach((el) => el.classList.toggle('over', playerCount > Number(el.dataset.cap)));
     }
 
     /* =========================================================
@@ -3107,7 +3235,7 @@
       document.querySelectorAll('.screen, .game-screen').forEach((el) => el.classList.add('hidden'));
       document.getElementById(id).classList.remove('hidden');
       document.body.classList.toggle('playing', id === 'game-screen');
-      if (id === 'game-select-screen') renderPlayerSeg();
+      if (id === 'game-select-screen') { renderPlayerSeg(); renderCapNote(); }
       if (id === 'start-screen') animateHero();
     }
 
@@ -3116,21 +3244,21 @@
         .map((i) => `<button type="button" class="${i === playerCount ? 'on' : ''}" onclick="setPlayers(${i})">${i}명</button>`)
         .join('');
     }
-    function setPlayers(n) { playerCount = n; renderPlayerSeg(); }
+    function setPlayers(n) { playerCount = n; renderPlayerSeg(); renderCapNote(); }
 
     function cardHtml(m) {
       const M = MODES[m];
-      const capTxt = M.cap ? `최대 ${M.cap}명${m === 'exam' ? ' · 시간 무제한' : ''}` : '1~6명';
+      const capTxt = capChip(capOf(m), m === 'exam' ? ' · 시간 무제한' : '');
       const sel = M.opts
         ? `<select class="card-select" id="opt-${m}" aria-label="문제 유형">${OPT_CHOICES[M.opts].map(([v, t]) => `<option value="${v}">${t}</option>`).join('')}</select>`
         : '';
       return `
         <article class="card${M.wide ? ' wide' : ''}" style="--tint:${M.tint}">
-          <div class="card-top"><span class="ic">${ICONS[M.icon]}</span><span class="cap">${capTxt}</span></div>
+          <div class="card-top"><span class="ic">${ICONS[M.icon]}</span>${capTxt}</div>
           <h4>${M.title}</h4>
           <p>${M.desc}</p>
           ${sel}
-          <button class="go" type="button" onclick="startGame('${m}')">${m === 'exam' ? '평가 시작' : '시작'}</button>
+          <button class="go" type="button" onclick="tryStart('${m}')">${m === 'exam' ? '평가 시작' : '시작'}</button>
         </article>`;
     }
     function renderStages() {
@@ -3327,7 +3455,10 @@
     let narrowCells = false;
     function isTall() { return mode === 'mix' ? mixTall : TALL.includes(mode); }
     function columnCount() {
-      if (window.innerWidth < 760) return isTall() ? 1 : Math.min(playerCount, 2);
+      const w = window.innerWidth;
+      if (w < 760) return isTall() ? 1 : Math.min(playerCount, 2);
+      // 태블릿처럼 화면이 좁은데 인원이 많으면 두 줄로 나눈다
+      if (playerCount > 3 && w / playerCount < 190) return Math.ceil(playerCount / 2);
       return playerCount;
     }
     function cellMetrics() {
@@ -3339,15 +3470,17 @@
     }
     function cellScale(m) {
       const tall = isTall();
-      // 좁은 칸은 보기를 한 줄로 쌓으므로 글씨를 조금 더 키울 수 있다
-      const wBase = tall ? 400 : (m.w < 330 ? 250 : 300);
+      // 좁은 칸은 보기를 한 줄로 쌓고 세로셈·자리판 같은 부품을 따로 줄이므로 글씨를 덜 줄인다
+      const narrow = m.w < 330;
+      const wBase = tall ? (narrow ? 300 : 400) : (narrow ? 250 : 300);
       const s = Math.min(m.w / wBase, m.h / (tall ? 690 : 600));
-      return clamp(Math.round(s * 1000) / 1000, 0.6, 1.3);
+      return clamp(Math.round(s * 1000) / 1000, 0.62, 1.3);
     }
     function renderPlayers() {
       const grid = document.getElementById('players');
       const m = cellMetrics();
       narrowCells = m.w < 330;
+      grid.classList.toggle('xnarrow', m.w < 240);
       grid.style.gridTemplateColumns = `repeat(${m.cols}, minmax(0, 1fr))`;
       grid.style.gridTemplateRows = `repeat(${m.rows}, minmax(0, 1fr))`;
       grid.style.setProperty('--s', cellScale(m));
@@ -3419,7 +3552,7 @@
       const q = p.q;
       const cols = q.cols || 2;
       return `${qCard(p, q.prompt, q.visual)}
-        <div class="choices c${cols}">${choiceBtns(p, q.choices, q.txt ? 'txt' : '', p.picked, q.ans)}</div>`;
+        <div class="choices c${cols}${q.txt ? ' txtc' : ''}">${choiceBtns(p, q.choices, q.txt ? 'txt' : '', p.picked, q.ans)}</div>`;
     }
 
     function compareBody(p) {
@@ -3465,7 +3598,7 @@
 
     function paintBody(p) {
       const q = p.q;
-      const grids = hgridHtml(q.grids, gridClassFn(p), { tap: true, idx: p.idx, size: q.grids === 1 ? 'xl' : '', id: `hg-${p.idx}` });
+      const grids = hgridHtml(q.grids, gridClassFn(p), { tap: true, idx: p.idx, size: 'xl', id: `hg-${p.idx}` });
       return qCard(p, `<b>${N(q.n)}</b>만큼 색칠해 보세요.`, `${grids}<div class="gcount" id="gc-${p.idx}">${paintCount(p)}</div>`);
     }
 
