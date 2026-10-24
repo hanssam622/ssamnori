@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     tlog: 'https://drive.google.com/uc?export=download&id=1-iCxK7ACpS5DsHs9dfFEeJP4w0QA3LyM',
     mininori: 'https://drive.google.com/file/d/1r-SD5N3oTx_3sdP5aAww66oOwd1shA3I/view?usp=drivesdk',
     batchnuki: 'https://drive.google.com/uc?export=download&id=14QG_bmMH1n4x7-Qes6l_7NIrDUtHF2JP',
-    ieon: 'https://drive.google.com/file/d/1uV1oI2Vf1rKO5sLTUciyaN0Z7Yq5dsw9/view?usp=drivesdk',
+    ieon: 'https://drive.google.com/file/d/1DaiEw00pLZb42-LUfj3pSmWcRwzrita8/view?usp=drivesdk',
   };
 
   const tabButtons = document.querySelectorAll('.tab-btn');
