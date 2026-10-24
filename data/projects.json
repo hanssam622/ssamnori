@@ -432,5 +432,34 @@
         "downloadKey": ""
       }
     ]
+  },
+  {
+    "id": "semman",
+    "updatedAt": "2026-10-24",
+    "title": "셈맨",
+    "category": "web-game",
+    "badge": "웹게임",
+    "thumbnail": "assets/thumbnails/semman.svg",
+    "description": "하나씩 세기와 모으기·가르기부터 두 자리 수, 덧셈·뺄셈, 곱셈구구까지 단계별로 연습하는 1~2학년 전자칠판 수학 게임입니다.",
+    "actions": [
+      {
+        "type": "play",
+        "label": "바로 플레이",
+        "url": "games/semman/index.html",
+        "downloadKey": ""
+      },
+      {
+        "type": "external",
+        "label": "새 창",
+        "url": "games/semman/index.html",
+        "downloadKey": ""
+      },
+      {
+        "type": "info",
+        "label": "설명",
+        "url": "programs/semman.html",
+        "downloadKey": ""
+      }
+    ]
   }
 ]
