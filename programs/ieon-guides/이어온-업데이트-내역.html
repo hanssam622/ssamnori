@@ -61,10 +61,10 @@
 <body>
   <main>
     <header>
-      <span class="version">최신 배포 3.12.3</span>
+      <span class="version">최신 배포 3.12.5</span>
       <h1>이어온, 이렇게 달라졌어요</h1>
       <p>기존의 번역·음성·HTML 수업자료 만들기는 그대로입니다. 기록을 관리하는 화면을 새로 정리하고, 교과서와 PPT를 가져오는 방법을 늘렸습니다.</p>
-      <p class="meta">Windows 설치파일 기준 · 2026년 10월 15일 정리 · 배포 날짜는 한국 시간 기준</p>
+      <p class="meta">Windows 설치파일 기준 · 2026년 10월 24일 정리 · 배포 날짜는 한국 시간 기준</p>
     </header>
 
     <section aria-labelledby="changes-title">
@@ -103,6 +103,23 @@
 
     <section aria-labelledby="releases-title">
       <h2 id="releases-title">최근 업데이트 내역</h2>
+      <article class="release">
+        <div class="release-meta"><h3>3.12.5 · 진도표 OCR 선택과 제미나이 첨부 개선</h3><time datetime="2026-10-24">2026.10.24</time></div>
+        <ul>
+          <li>진도표에서도 <b>AI 연결에 맞춰 (권장)</b>와 <b>글줄 찾기 + 제미나이</b>를 선택할 수 있습니다. 제미나이 웹 또는 API 중 글자를 읽을 곳을 고르고, 진도표를 불러오기 전에도 전체 선택지를 확인할 수 있습니다.</li>
+          <li>제미나이 웹으로 글자를 읽는 차시는 다른 API 작업과 겹치지 않게 처리합니다. 가져올 쪽수나 방법을 바꿔 다시 만들면 이전의 가져오기 결과를 재사용하지 않도록 보완했습니다.</li>
+          <li>제미나이 웹에서 파일 업로드가 실패했을 때 첨부 완료로 잘못 판단하던 문제를 수정했습니다.</li>
+        </ul>
+        <a href="https://github.com/hanssam622/earon------/releases/tag/v3.12.5" target="_blank" rel="noopener">GitHub 배포 기록</a>
+      </article>
+      <article class="release">
+        <div class="release-meta"><h3>3.12.4 · 중단한 작업 이어 하기와 진도표</h3><time datetime="2026-10-19">2026.10.19</time></div>
+        <ul>
+          <li>가져온 원문과 끝난 번역을 배치마다 보관해, 중단한 기록을 끊긴 곳부터 이어 처리할 수 있도록 개선했습니다.</li>
+          <li>번역이 끝난 부분은 전체 번역을 기다리지 않고 음성을 미리 만들며, 진도표에서 중단한 기록에 남은 작업을 확인할 수 있습니다.</li>
+        </ul>
+        <a href="https://github.com/hanssam622/earon------/releases/tag/v3.12.4" target="_blank" rel="noopener">GitHub 배포 기록</a>
+      </article>
       <article class="release">
         <div class="release-meta"><h3>3.12.3 · 웹 번역의 다음 배치 전송 복구</h3><time datetime="2026-10-15">2026.10.15</time></div>
         <ul>
@@ -179,7 +196,7 @@
 
     <section aria-labelledby="install-title">
       <h2 id="install-title">다운로드와 업데이트</h2>
-      <p>설명서 위쪽의 <b>Windows 3.12.3 다운로드</b>는 Google Drive에 저장한 GitHub 릴리스 설치파일입니다. <code>EaronSetup-3.12.3-windows-x64.exe</code>를 내려받아 실행하세요.</p>
+      <p>설명서 위쪽의 <b>Windows 3.12.5 다운로드</b>는 Google Drive에 저장한 GitHub 릴리스 설치파일입니다. <code>EaronSetup-3.12.5-windows-x64.exe</code>를 내려받아 실행하세요.</p>
       <p>설치 전에는 진행 중인 작업을 마치고 이어온을 종료하세요. 중요한 기록과 결과 폴더는 별도로 백업하는 것을 권장합니다. 이 링크는 Windows용이며 Mac 설치파일이 아닙니다.</p>
       <p class="meta">기능 요약은 배포 기록과 구현 내역을 기준으로 작성했습니다. 웹 자동 진행은 외부 서비스 상태에 따라 실패할 수 있으며, 자동·반자동·수동 중 상황에 맞는 방법을 선택하세요.</p>
     </section>
