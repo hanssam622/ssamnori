@@ -4,10 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>소수맨</title>
+  <meta name="description" content="소수의 크기 비교와 덧셈·뺄셈을 익히고, 19종의 새 문제 학습지를 만들어 정답지와 함께 인쇄할 수 있는 수학 게임입니다." />
+  <link rel="canonical" href="https://hanssam622.github.io/ssamnori/games/decimalman/index.html" />
+  <script src="../../stats-config.js?v=20261025"></script>
+  <script src="../../analytics.js?v=20261025"></script>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%2312b3a3'/%3E%3Ctext x='9' y='46' font-family='Arial' font-weight='900' font-size='34' fill='white'%3E0%3C/text%3E%3Ccircle cx='36' cy='42' r='5' fill='%23ff5b4f'/%3E%3Ctext x='40' y='46' font-family='Arial' font-weight='900' font-size='34' fill='white'%3E1%3C/text%3E%3C/svg%3E" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
-  <script src="../../stats-config.js?v=20261022"></script>
-  <script src="../../analytics.js?v=20261022"></script>
   <style>
     :root {
       --ink: #1d2838;
@@ -1553,6 +1555,117 @@
     .mix-tag .mi { width: calc(var(--s) * 22px); height: calc(var(--s) * 22px); flex: 0 0 auto; display: grid; place-items: center; }
     .mix-tag .mi svg { width: 100%; height: 100%; }
 
+    /* ---------- 학습지 ---------- */
+    .head-btns { display: flex; flex-wrap: wrap; gap: 8px; }
+    .ghost-btn.hl { border-color: #9edfd5; color: var(--teal-d); background: #f3fcfa; }
+    .stage-ws { margin-left: auto; height: 36px; padding: 0 12px; border-radius: 12px; background: #fff; border: 1.5px solid var(--line); color: var(--ink-2); font-size: 13.5px; font-weight: 800; white-space: nowrap; }
+    .stage-ws:hover { border-color: var(--sc, var(--teal)); color: var(--ink); }
+    .ws-card { width: min(1100px, 97vw); height: 94vh; max-height: none; display: grid; grid-template-columns: 320px minmax(0, 1fr); gap: 0; padding: 0; text-align: left; overflow: hidden; }
+    .ws-side { padding: 20px; overflow-y: auto; border-right: 1px solid var(--line); background: #f7fcfb; }
+    .ws-side h2 { margin: 0 0 4px; font-size: 26px; }
+    .ws-side > p { margin: 0 0 14px; color: var(--muted); font-size: 14px; font-weight: 650; line-height: 1.5; word-break: keep-all; }
+    .ws-field { margin-top: 14px; }
+    .ws-field > label, .ws-field > .lab { display: block; margin-bottom: 6px; font-size: 14px; font-weight: 850; color: var(--ink-2); }
+    .ws-field select { width: 100%; }
+    .ws-field .seg { flex-wrap: wrap; }
+    .ws-check { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 750; cursor: pointer; }
+    .ws-check input { width: 20px; height: 20px; accent-color: var(--teal); }
+    .ws-actions { display: grid; gap: 8px; margin-top: 18px; }
+    .ws-actions .btn-main, .ws-actions .ghost-btn { width: 100%; justify-content: center; }
+    .ws-main { position: relative; overflow: auto; background: #e3eaec; padding: 20px; }
+    .ws-pages { display: flex; flex-direction: column; align-items: center; gap: 18px; }
+
+    .ws-page {
+      position: relative;
+      width: 190mm;
+      height: 275mm;
+      padding: 8mm 9mm 7mm;
+      background: #fff;
+      color: #1d2838;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 6px 24px rgba(0,0,0,.12);
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    .ws-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 2mm 6mm; padding-bottom: 3mm; border-bottom: .6mm solid #1d2838; }
+    .ws-head .tt { display: flex; align-items: center; gap: 3mm; }
+    .ws-head .kid-art { width: 13mm; height: 15mm; }
+    .ws-head h1 { margin: 0; font-size: 7mm; font-weight: 900; letter-spacing: -.03em; white-space: nowrap; }
+    .ws-head .lv { display: block; color: #6b7687; font-size: 3.4mm; font-weight: 750; white-space: nowrap; }
+    .ws-head .who { display: flex; gap: 4mm; margin-left: auto; font-size: 3.8mm; font-weight: 750; white-space: nowrap; }
+    .ws-head .who span { display: inline-flex; align-items: flex-end; gap: 1.5mm; }
+    .ws-head .who u { display: inline-block; min-width: 22mm; border-bottom: .3mm solid #1d2838; text-decoration: none; }
+    .ws-head .who u.s { min-width: 12mm; }
+    .ws-guide { margin: 3mm 0 2mm; font-size: 4mm; font-weight: 750; color: #3b4759; word-break: keep-all; }
+    .ws-key { position: absolute; top: 8mm; right: 9mm; padding: 1mm 4mm; border-radius: 99px; background: #ff5b4f; color: #fff; font-size: 4mm; font-weight: 900; }
+    .ws-grid { flex: 1 1 auto; min-height: 0; display: grid; gap: 3mm; align-content: stretch; }
+    .ws-item { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2.4mm; padding: 3mm 2mm 2.4mm; border: .3mm solid #d3dde3; border-radius: 3mm; min-height: 0; overflow: hidden; }
+    .ws-item.flat { border: 0; padding: 0 0 0 1mm; flex-direction: row; justify-content: flex-start; }
+    .ws-item.left { align-items: stretch; padding: 3mm 4mm 2.4mm 10mm; }
+    .ws-no { position: absolute; top: 1.6mm; left: 2.2mm; font-size: 3.4mm; font-weight: 900; color: #7f8b99; }
+    .ws-item.flat .ws-no { position: static; min-width: 8mm; }
+    .ws-line { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 1.6mm; font-size: 5.6mm; font-weight: 850; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .ws-line .t { font-size: 4.2mm; font-weight: 750; }
+    .ws-line .op-sym { color: #3b4759; }
+    .ws-line .unit-txt { color: #3b4759; font-size: 4.4mm; font-weight: 800; }
+    .ws-line .fr { font-size: .82em; }
+    .ws-item.flat .ws-line { justify-content: flex-start; }
+    .wbox { display: inline-grid; place-items: center; min-width: 15mm; min-height: 9mm; padding: 0 1.5mm; border: .35mm solid #6b7687; border-radius: 1.6mm; color: #e2443a; font-size: 5.4mm; font-weight: 900; }
+    .wbox.w2 { min-width: 22mm; }
+    .wbox.w3 { min-width: 18mm; font-size: 4.6mm; }
+    .wbox.wide { min-width: 38mm; font-size: 4.4mm; }
+    .wbox.mid { min-width: 28mm; font-size: 4.4mm; }
+    .wbox .num, .wbox .fr { color: #e2443a; }
+    .wcir { display: inline-grid; place-items: center; width: 9mm; height: 9mm; border: .35mm solid #6b7687; border-radius: 50%; color: #e2443a; font-size: 6mm; font-weight: 900; line-height: 1; }
+    .ws-foot { display: flex; justify-content: space-between; padding-top: 2mm; color: #98a2b0; font-size: 3mm; font-weight: 700; }
+    .ws-sub { color: #6b7687; font-size: 3.6mm; font-weight: 750; }
+    .ws-why { color: #e2443a; font-size: 3.5mm; font-weight: 800; text-align: center; word-break: keep-all; }
+    .ws-page .hgrids { gap: 3mm; flex-wrap: nowrap; }
+    .ws-page .hgrid { --gs: 38mm; border-width: .45mm; border-radius: .6mm; }
+    .ws-page .hgrids.n2 .hgrid { --gs: 23mm; }
+    .ws-page .hgrids.big .hgrid { --gs: 44mm; }
+    .ws-page .hgrids.big.n2 .hgrid { --gs: 37mm; }
+    .ws-page .hgrid i { border-right: .2mm solid #a9cbd7; border-bottom: .2mm dashed #cfe2e9; }
+    .ws-page .hgrid i:nth-child(10n) { border-bottom: 0; }
+    .ws-page .hgrid i:nth-child(n+91) { border-right: 0; }
+    .ws-page .hgrid i.a { border-bottom-color: rgba(255,255,255,.35); border-right-color: rgba(255,255,255,.55); }
+    .ws-page .hgrid i.b { border-bottom-color: rgba(255,255,255,.4); border-right-color: rgba(255,255,255,.6); }
+    .ws-page .nline { width: 78mm; max-width: none; }
+    .ws-chips { display: flex; justify-content: center; gap: 1.6mm; }
+    .ws-chips > span { padding: .8mm 2mm; border-radius: 1.6mm; background: #eef4f6; font-size: 4.8mm; font-weight: 900; }
+    .ws-chain { display: flex; align-items: center; justify-content: center; gap: 1mm; font-size: 4.4mm; font-weight: 900; color: #3b4759; }
+    .ws-chain .wbox { min-width: 15mm; padding: 0 1mm; font-size: 4.6mm; }
+    /* 세로셈 칸: 답 칸은 비워 두고, 정답지에만 답과 받아올림을 적는다 */
+    .wv { --w: 7.4mm; --d: 2.6mm; --h: 8.2mm; --hp: 4.6mm; display: grid; justify-content: center; align-items: center; font-size: 5.8mm; font-weight: 850; font-variant-numeric: tabular-nums; }
+    .wv > span { height: var(--h); display: grid; place-items: center; }
+    .wv > span.hp { height: var(--hp); color: #e2443a; font-size: 3.4mm; font-weight: 900; }
+    .wv > span.dt { place-items: end center; padding-bottom: 1.6mm; }
+    .wv > span.dt i { width: 1.5mm; height: 1.5mm; border-radius: 50%; background: #ff5b4f; }
+    .wv > span.ln { grid-column: 1 / -1; height: .5mm; margin: .6mm 0 1.2mm; background: #1d2838; }
+    .wv .ab { width: 88%; height: 92%; display: grid; place-items: center; border: .3mm solid #9aa6b3; border-radius: 1.2mm; color: #e2443a; }
+    .wv .gh { color: #c3ccd5; }
+    .wv.sm { --w: 6.2mm; --d: 2.2mm; --h: 7mm; --hp: 3.4mm; font-size: 5mm; }
+    .ws-page .vchar { --W: 6.2mm; --D: 2.2mm; padding: 1.6mm 2.4mm; border-radius: 2mm; border-width: .3mm; font-size: 5mm; }
+    .ws-page .vchar .r { height: 7mm; }
+    .ws-page .vchar .r .dt { padding-bottom: 1.4mm; }
+    .ws-page .vchar .r .dt i { width: 1.4mm; height: 1.4mm; }
+    .ws-page .vchar .ln { height: .5mm; margin: .6mm 0; }
+    .ws-page .vchar .r.ans { color: #1d2838; }
+    .ws-fix { display: flex; align-items: center; justify-content: center; gap: 5mm; }
+    .ws-fix .ws-why { width: 40mm; text-align: left; line-height: 1.5; }
+    .ws-fix .to { display: flex; flex-direction: column; align-items: center; gap: 1mm; color: #6b7687; font-size: 3.3mm; font-weight: 800; }
+    .ws-story { display: flex; gap: 3mm; align-items: flex-start; font-size: 4.3mm; font-weight: 650; line-height: 1.55; word-break: keep-all; }
+    .ws-story .em { font-size: 7mm; line-height: 1; }
+    .ws-story .num { display: inline; font-size: 1.05em; }
+    .ws-story p { margin: 0; }
+    .ws-word { display: flex; justify-content: flex-end; gap: 8mm; }
+    .ws-word .ws-line { justify-content: flex-end; }
+    .ws-word .wbox.wide { min-width: 52mm; font-size: 4.8mm; }
+
+    #print-root { display: none; }
+
     /* ---------- 반응형 ---------- */
     @media (max-width: 900px) {
       .start-wrap { grid-template-columns: 1fr; padding: 26px 20px 40px; gap: 6px; text-align: center; }
@@ -1560,6 +1673,8 @@
       .hero-actions, .topic-list { justify-content: center; margin-left: auto; margin-right: auto; }
       .hero-title { margin-top: 14px; }
       .card.wide { grid-column: auto; }
+      .ws-card { grid-template-columns: 1fr; grid-template-rows: auto minmax(0, 1fr); }
+      .ws-side { max-height: 46vh; border-right: 0; border-bottom: 1px solid var(--line); }
     }
     @media (max-width: 760px) {
       .select-wrap { padding: 16px 16px 60px; }
@@ -1581,10 +1696,22 @@
       .mix-foot { margin: 14px -14px 0; padding: 12px 14px 14px; }
       .mix-chip { font-size: 14px; min-height: 44px; }
       .samnori-home-float { top: auto; bottom: 14px; transform: none; width: 70px; height: 46px; font-size: 13px; }
+      .ws-main { padding: 12px; }
+      .stage-ws { margin-left: 0; }
     }
     @media (max-width: 420px) {
       .seg button { min-width: 38px; padding: 0 6px; }
       .hero-sub br { display: none; }
+    }
+
+    /* ---------- 인쇄 ---------- */
+    @media print {
+      @page { size: A4 portrait; margin: 10mm; }
+      html, body { width: auto; height: auto; overflow: visible; background: #fff; }
+      body > *:not(#print-root) { display: none !important; }
+      #print-root { display: block !important; }
+      #print-root .ws-page { box-shadow: none; break-after: page; page-break-after: always; margin: 0; }
+      #print-root .ws-page:last-child { break-after: auto; page-break-after: auto; }
     }
   </style>
   <style id="kid-style">
@@ -1637,7 +1764,10 @@
             <p>4학년 2학기 · 3. 소수의 덧셈과 뺄셈</p>
           </div>
         </div>
-        <button class="ghost-btn" type="button" onclick="showScreen('start-screen')">← 처음으로</button>
+        <div class="head-btns">
+          <button class="ghost-btn hl" type="button" onclick="openWorksheet()">🖨 학습지 만들기</button>
+          <button class="ghost-btn" type="button" onclick="showScreen('start-screen')">← 처음으로</button>
+        </div>
       </div>
 
       <div class="settings-bar">
@@ -1694,6 +1824,8 @@
   <div id="concept-overlay" class="overlay hidden" onclick="if (event.target === this) hideConcept()"></div>
   <div id="mix-overlay" class="overlay hidden" onclick="if (event.target === this) hideMix()"></div>
   <div id="notice-overlay" class="overlay hidden" onclick="if (event.target === this) hideNotice()"></div>
+  <div id="ws-overlay" class="overlay hidden" onclick="if (event.target === this) hideWorksheet()"></div>
+  <div id="print-root"></div>
 
   <script>
     /* =========================================================
@@ -2343,7 +2475,7 @@
       if (step >= 10) ds.push(fmt(start + k * step * 10), fmt(start + (k * step) / 10));
       else ds.push(fmt(start + k * 10), fmt(v + 100));
       return {
-        kind: 'choice', key: `l${v}${step}`, ans,
+        kind: 'choice', key: `l${v}${step}`, ans, ln: [start, step, k],
         choices: mkChoices(ans, shuffle(ds)),
         prompt: '화살표가 가리키는 수는?',
         visual: `${lineSvg(start, step, k)}<div class="q-sub">작은 눈금 한 칸의 크기를 먼저 알아봐요</div>`,
@@ -2435,7 +2567,7 @@
         const opts = shuffle([k, opposite, ...others]);
         const label = TIMES_KO[k];
         return {
-          kind: 'choice', key: `x${base}${k}`, ans: String(k),
+          kind: 'choice', key: `x${base}${k}`, ans: String(k), base, k, result,
           choices: opts.map((v) => ({ v: String(v), html: timesHtml(v) })),
           prompt: `${N(base)}의 <b>□</b>${k > 0 ? '는' : '은'} ${N(result)}입니다.`,
           visual: `<div class="mid-num">${N(base)} <span class="op-sym">→</span> ${N(result)}</div>`,
@@ -3271,6 +3403,7 @@
             <span class="stage-no">${st.no}</span>
             <h3 class="stage-title">${st.title}</h3>
             <span class="stage-page">${st.page}</span>
+            <button class="stage-ws" type="button" onclick="openWorksheet(${st.no})">🖨 학습지</button>
           </div>
           <div class="cards">
             ${st.concept ? `
@@ -4267,6 +4400,321 @@
       const tip = q.op === '+' ? '받아올림한 1을 더했나요?' : '받아내림한 수를 생각했나요?';
       miss(idx, p.tries >= 2 ? `빨간 칸을 고쳐 보세요. 정답은 ${numHtml(q.r)}예요.` : `빨간 칸을 다시 계산해요. ${tip}`);
     }
+
+    /* =========================================================
+       학습지 만들기 (A4 인쇄) — 누를 때마다 새 문제
+       ========================================================= */
+    // per: 한 장의 문제 수, cols: 칸 수, flat: 테두리 없이 줄로 늘어놓기, left: 글이 긴 문제
+    const WS_TYPES = [
+      { id: 'grid', st: 1, title: '모눈종이 읽기', guide: '전체 크기가 1인 모눈종이예요. 색칠한 부분을 소수로 나타내세요.', per: 9, cols: 3 },
+      { id: 'paint', st: 1, title: '모눈종이에 색칠하기', guide: '주어진 소수만큼 색칠하세요. 세로 한 줄은 0.1, 한 칸은 0.01이에요.', per: 6, cols: 2 },
+      { id: 'place', st: 1, title: '자릿값 알아보기', guide: '□ 안에 알맞은 수나 말을 쓰세요.', per: 12, cols: 1, flat: true, opts: 'digits' },
+      { id: 'read', st: 1, title: '소수 읽고 쓰기', guide: '소수를 읽거나, 읽은 말과 분수를 소수로 쓰세요. 소수점 아래는 숫자를 하나씩 읽어요.', per: 16, cols: 2, flat: true, opts: 'digits' },
+      { id: 'line', st: 1, title: '수직선 읽기', guide: '작은 눈금 한 칸의 크기를 먼저 알아보고, 화살표가 가리키는 수를 쓰세요.', per: 8, cols: 2, opts: 'digits' },
+      { id: 'unit', st: 1, title: '단위 바꾸기', guide: '1 cm = 0.01 m, 1 m = 0.001 km예요. □ 안에 알맞은 수를 쓰세요.', per: 20, cols: 2, flat: true, opts: 'digits' },
+      { id: 'shift', st: 2, title: '10배 · 1/10 한 수 쓰기', guide: '소수점을 기준으로 수가 몇 자리 움직이는지 생각하며 □ 안에 알맞은 수를 쓰세요.', per: 20, cols: 2, flat: true },
+      { id: 'times', st: 2, title: '몇 배일까?', guide: '□ 안에 10배, 100배, 1000배, 1/10, 1/100, 1/1000 중 알맞은 것을 쓰세요.', per: 20, cols: 2, flat: true },
+      { id: 'compare', st: 3, title: '크기 비교 >, =, <', guide: '○ 안에 >, =, < 를 알맞게 쓰세요. 높은 자리부터 차례로 비교해요.', per: 24, cols: 2, flat: true },
+      { id: 'order', st: 3, title: '크기 순서대로 쓰기', guide: '네 소수를 크기 순서대로 □ 안에 쓰세요.', per: 10, cols: 2 },
+      { id: 'gadd', st: 4, title: '모눈종이로 더하기', guide: '더하는 수만큼 이어서 색칠하고, □ 안에 알맞은 수를 쓰세요.', per: 6, cols: 2, opts: 'grid' },
+      { id: 'vadd', st: 4, title: '세로셈 덧셈', guide: '같은 자리끼리 오른쪽부터 더하세요. 답에도 소수점을 꼭 찍어요.', per: 12, cols: 3, opts: 'calc' },
+      { id: 'eadd', st: 4, title: '덧셈 식 계산하기', guide: '소수점을 맞추어 계산하세요.', per: 24, cols: 2, flat: true, opts: 'calc' },
+      { id: 'gsub', st: 5, title: '모눈종이로 빼기', guide: '빼는 수만큼 뒤에서부터 ✕표 하고, □ 안에 알맞은 수를 쓰세요.', per: 6, cols: 2, opts: 'grid' },
+      { id: 'vsub', st: 5, title: '세로셈 뺄셈', guide: '같은 자리끼리 오른쪽부터 빼요. 모자라면 받아내림! 빈 자리는 0이 있다고 생각해요.', per: 12, cols: 3, opts: 'calc' },
+      { id: 'esub', st: 5, title: '뺄셈 식 계산하기', guide: '소수점을 맞추어 계산하세요.', per: 24, cols: 2, flat: true, opts: 'calc' },
+      { id: 'fix', st: 5, title: '틀린 계산 찾기', guide: '계산이 맞으면 ○, 틀리면 ✕ 하고, 오른쪽에 바르게 계산하세요.', per: 5, cols: 1 },
+      { id: 'word', st: 6, title: '생활 속 문제', guide: '문제에 알맞은 식을 쓰고 답을 구하세요.', per: 5, cols: 1, left: true },
+      { id: 'speed', st: 6, title: '덧셈 · 뺄셈 섞어 계산하기', guide: '+인지 −인지 잘 보고 계산하세요.', per: 24, cols: 2, flat: true, opts: 'speed' }
+    ];
+    const WS_OPTS = { ...OPT_CHOICES, digits: [['all', '두 자리 · 세 자리 섞기'], ['two', '소수 두 자리 수'], ['three', '소수 세 자리 수']] };
+    const ws = { type: 'grid', opt: {}, pages: 1, key: true, data: [] };
+    function wsType() { return WS_TYPES.find((t) => t.id === ws.type) || WS_TYPES[0]; }
+    function wsOpt(T) {
+      if (!T.opts) return 'all';
+      const v = ws.opt[T.id];
+      return WS_OPTS[T.opts].some(([k]) => k === v) ? v : 'all';
+    }
+    function wsDigits(o, fn) { return withDigits(o === 'all' ? 'any' : o, fn); }
+
+    function wsPlace() {
+      const t = pick(['value', 'value', 'compose', 'count', 'countOf', 'expand']);
+      const three = wantThree(0.5);
+      if (t === 'value' || t === 'expand') {
+        const places = three ? 3 : 2;
+        const ds = distinctDigits(places + 1);
+        const s = `${ds[0]}.${ds.slice(1).join('')}`;
+        const pos = randInt(0, places);
+        return { key: `${t}${s}${pos}`, t, s, ds, place: -pos, d: ds[pos] };
+      }
+      if (t === 'compose') {
+        const ds = [randInt(1, 9), randInt(1, 9), randInt(1, 9), three ? randInt(1, 9) : 0];
+        return { key: `c${ds.join('')}`, t, ds, n: ds[0] * 1000 + ds[1] * 100 + ds[2] * 10 + ds[3] };
+      }
+      let k;
+      if (three) do { k = randInt(1001, 9999); } while (k % 10 === 0);
+      else do { k = randInt(101, 999); } while (k % 10 === 0);
+      return { key: `${t}${k}${three}`, t, k, unit: three ? '0.001' : '0.01', n: three ? k : k * 10 };
+    }
+    function wsRead() {
+      const t = pick(['toKo', 'toKo', 'toNum', 'frac', 'frac']);
+      const three = wantThree(0.35);
+      const n = three ? rndThou(pick([0, 1, 4])) : rndHund(pick([0, 0, 1, 3, 7, 12]));
+      const den = three ? 1000 : 100;
+      return { key: `${t}${n}`, t, s: fmt(n), den, whole: Math.floor(n / 1000), num: three ? n % 1000 : (n % 1000) / 10 };
+    }
+    function wsExpr(op, type) {
+      const { a, b, r } = genPair(op, type);
+      return { key: `e${a}${op}${b}`, op, a, b, r };
+    }
+    function wsCalcType(o) { return o === 'all' ? pick(['1', '2', 'm', 'm']) : o; }
+    function wsItem(T) {
+      const o = wsOpt(T);
+      switch (T.id) {
+        case 'grid': { const q = makeGrid(); return { key: q.key, ans: q.ans, cells: parseNum(q.ans) / 10 }; }
+        case 'paint': return makePaint();
+        case 'place': return wsDigits(o, wsPlace);
+        case 'read': return wsDigits(o, wsRead);
+        case 'line': return wsDigits(o, makeLine);
+        case 'unit': return wsDigits(o, makeUnit);
+        case 'shift': return { ...makeTimes(), blankBase: Math.random() < 0.25 };
+        case 'times': return makeTimes();
+        case 'compare': return makeCompare();
+        case 'order': return makeOrder();
+        case 'gadd': return withOpt(o, makeGAdd);
+        case 'gsub': return withOpt(o, makeGSub);
+        case 'vadd': return makeVcalc('+', wsCalcType(o));
+        case 'vsub': return makeVcalc('-', wsCalcType(o));
+        case 'eadd': return wsExpr('+', wsCalcType(o));
+        case 'esub': return wsExpr('-', wsCalcType(o));
+        case 'fix': return makeFix();
+        case 'word': return makeWord();
+        case 'speed': {
+          const t = o === 'all' ? pick(['a1', 'a2', 's1', 's2', 'mx']) : o;
+          const map = { a1: ['+', '1'], a2: ['+', '2'], s1: ['-', '1'], s2: ['-', '2'], mx: [pick(['+', '-']), 'm'] };
+          return wsExpr(...map[t]);
+        }
+        default: return null;
+      }
+    }
+    function wsGen() {
+      const T = wsType();
+      const pages = [];
+      for (let pg = 0; pg < ws.pages; pg += 1) {
+        const items = [];
+        const seen = new Set();
+        let guard = 0;
+        while (items.length < T.per && guard < T.per * 20) {
+          const q = wsItem(T);
+          guard += 1;
+          if (seen.has(q.key) && guard < T.per * 12) continue;
+          seen.add(q.key);
+          items.push(q);
+        }
+        pages.push({ items });
+      }
+      ws.data = pages;
+    }
+
+    // 학습지용 세로셈 칸. 답 칸은 비워 두고, 정답지에만 답과 받아올림을 적는다
+    function wsVgridHtml(a, b, op, r, ans, cls = '') {
+      const L = vLayout(a, b, r);
+      const n = L.I + L.F;
+      const sub = op === '-';
+      const help = Array(n).fill('');
+      if (ans && !sub) {
+        let carry = 0;
+        for (let c = n - 1; c > 0; c -= 1) {
+          carry = (Number(L.A[c]) || 0) + (Number(L.B[c]) || 0) + carry >= 10 ? 1 : 0;
+          if (carry && (L.A[c - 1] !== '' || L.B[c - 1] !== '')) help[c - 1] = '1';
+        }
+      }
+      const row = (first, fn, dot) => {
+        let h = first;
+        for (let c = 0; c < n; c += 1) {
+          if (c === L.I) h += dot;
+          h += fn(c);
+        }
+        return h;
+      };
+      const dotCell = (on) => `<span class="dt">${on ? '<i></i>' : ''}</span>`;
+      const tmpl = `var(--w) repeat(${L.I}, var(--w)) var(--d) repeat(${L.F}, var(--w))`;
+      let h = `<div class="wv${cls ? ` ${cls}` : ''}" style="grid-template-columns:${tmpl}">`;
+      h += row('<span class="hp"></span>', (c) => `<span class="hp">${help[c]}</span>`, '<span class="hp"></span>');
+      h += row('<span></span>', (c) => `<span>${L.A[c] || (ans && sub && c >= L.I ? '<b class="gh">0</b>' : '')}</span>`, dotCell(L.decA > 0));
+      h += row(`<span>${OPS[op]}</span>`, (c) => `<span>${L.B[c]}</span>`, dotCell(L.decB > 0));
+      h += '<span class="ln"></span>';
+      h += row('<span></span>', (c) => `<span><b class="ab">${ans ? L.R[c] : ''}</b></span>`, dotCell(ans));
+      return `${h}</div>`;
+    }
+
+    function wsItemHtml(T, q, ans) {
+      const box = (html, cls = '') => `<span class="wbox${cls ? ` ${cls}` : ''}">${ans ? `<span>${html}</span>` : ''}</span>`;
+      const nbox = (s) => box(numHtml(s), s.length > 4 ? 'w2' : '');
+      // lead를 주면 수와 조사를 띄우지 않고 붙여 쓴다 (0.01이, 3.5의)
+      const t = (s, lead = '') => (lead ? `<span>${lead}<span class="t">${s}</span></span>` : `<span class="t">${s}</span>`);
+      const line = (html) => `<div class="ws-line">${html}</div>`;
+      const eq = (a, op, b, r) => line(`${N(a)} <span class="op-sym">${OPS[op]}</span> ${N(b)} <span class="op-sym">=</span> ${nbox(fmt(r))}`);
+      switch (T.id) {
+        case 'grid':
+          return `${hgridHtml(q.cells > 100 ? 2 : 1, (k) => (k < q.cells ? 'a' : ''))}${line(nbox(q.ans))}`;
+        case 'paint':
+          return `${line(`${N(q.n)}${t('만큼 색칠하기')}`)}${hgridHtml(q.grids, (k) => (ans && k < q.target ? 'a' : ''), { size: 'big' })}`;
+        case 'place': {
+          if (q.t === 'value') {
+            const dk = KD[q.d];
+            return line(`${t(`에서 숫자 ${q.d}${eunNeun(dk)}`, numHtml(q.s))}${box(PLACE_NAME[q.place].replace(/ 자리$/, ''), 'mid')}${t('자리 숫자이고, 나타내는 수는')}${nbox(fmt(q.d * Math.pow(10, q.place + 3)))}${t('입니다.')}`);
+          }
+          if (q.t === 'expand') {
+            const parts = q.ds.map((d, i) => (i === Math.abs(q.place) ? nbox(fmt(d * Math.pow(10, 3 - i))) : N(d * Math.pow(10, 3 - i))));
+            return line(`${numHtml(q.s)} <span class="op-sym">=</span> ${parts.join(' <span class="op-sym">+</span> ')}`);
+          }
+          if (q.t === 'compose') {
+            const parts = [`1이 ${q.ds[0]}개`, `${numHtml('0.1')}이 ${q.ds[1]}개`, `${numHtml('0.01')}이 ${q.ds[2]}개`];
+            if (q.ds[3]) parts.push(`${numHtml('0.001')}이 ${q.ds[3]}개`);
+            return line(`${t(`${parts.join(', ')}인 수는`)}${nbox(fmt(q.n))}${t('입니다.')}`);
+          }
+          if (q.t === 'count') return line(`${t(`이 ${q.k}개인 수는`, numHtml(q.unit))}${nbox(fmt(q.n))}${t('입니다.')}`);
+          return line(`${t(eunNeun(nKo(q.n)), N(q.n))}${t('이', numHtml(q.unit))}${box(String(q.k), 'w2')}${t('개인 수입니다.')}`);
+        }
+        case 'read':
+          if (q.t === 'toKo') return line(`${numHtml(q.s)}${t('읽기')}${box(decKo(q.s), 'wide')}`);
+          if (q.t === 'toNum') return line(`${t(`"${decKo(q.s)}"`)}${t('쓰기')}${nbox(q.s)}`);
+          return line(`${frHtml(q.num, q.den, q.whole || '')} <span class="op-sym">=</span> ${nbox(q.s)}`);
+        case 'line':
+          return `${lineSvg(...q.ln)}${line(`${t('화살표가 가리키는 수')}${nbox(q.ans)}`)}`;
+        case 'unit':
+          return line(`${q.lhs} ${nbox(fmt(q.ans))}<span class="unit-txt">${q.unit}</span>`);
+        case 'shift': {
+          const lab = t(q.k > 0 ? '는' : '은', timesHtml(q.k));
+          return q.blankBase
+            ? line(`${nbox(fmt(q.base))}${t('의')}${lab}${N(q.result)}`)
+            : line(`${t('의', N(q.base))}${lab}${nbox(fmt(q.result))}`);
+        }
+        case 'times':
+          return line(`${t('의', N(q.base))}${box(timesHtml(q.k), 'w3')}${t('은(는)')}${N(q.result)}`);
+        case 'compare':
+          return line(`${numHtml(q.a)}<span class="wcir">${ans ? q.ans : ''}</span>${numHtml(q.b)}`);
+        case 'order': {
+          const sorted = [...q.items].sort((x, y) => (q.desc ? y - x : x - y));
+          const chain = sorted.map((v) => `<span class="wbox">${ans ? N(v) : ''}</span>`).join(`<span>${q.desc ? '&gt;' : '&lt;'}</span>`);
+          return `<div class="ws-chips">${q.items.map((v) => `<span>${N(v)}</span>`).join('')}</div><div class="ws-sub">${q.desc ? '큰 수부터' : '작은 수부터'} 차례대로</div><div class="ws-chain">${chain}</div>`;
+        }
+        case 'gadd':
+          return `${hgridHtml(q.grids, (k) => (k < q.a ? 'a' : ans && k < q.a + q.b ? 'b' : ''), { size: 'big' })}${eq(q.a * 10, '+', q.b * 10, q.ans)}`;
+        case 'gsub':
+          return `${hgridHtml(q.grids, (k) => (k < q.a ? (ans && k >= q.a - q.b ? 'x' : 'a') : ''), { size: 'big' })}${eq(q.a * 10, '-', q.b * 10, q.ans)}`;
+        case 'vadd':
+        case 'vsub':
+          return wsVgridHtml(q.a, q.b, q.op, q.r, ans);
+        case 'eadd':
+        case 'esub':
+        case 'speed':
+          return eq(q.a, q.op, q.b, q.r);
+        case 'fix': {
+          const mark = q.err === 'ok' ? '○' : '✕';
+          return `<div class="ws-fix">
+            ${vCharHtml(q.a, q.b, q.op, q.shown, q.layout)}
+            <div class="to">맞으면 ○, 틀리면 ✕<span class="wcir">${ans ? mark : ''}</span></div>
+            <div class="to">바르게 계산하기${wsVgridHtml(q.a, q.b, q.op, q.correct, ans, 'sm')}</div>
+            <div class="ws-why">${ans ? (q.err === 'ok' ? '바르게 계산했어요.' : FIX_REASON[q.err]) : ''}</div>
+          </div>`;
+        }
+        case 'word':
+          return `<div class="ws-story"><span class="em">${q.em}</span><p>${q.text}</p></div>
+            <div class="ws-word">
+              ${line(`${t('식')}${box(`${N(q.a)} <span class="op-sym">${OPS[q.op]}</span> ${N(q.b)}`, 'wide')}`)}
+              ${line(`${t('답')}${nbox(fmt(q.r))}<span class="unit-txt">${q.unit}</span>`)}
+            </div>`;
+        default: return '';
+      }
+    }
+    function wsPageHtml(T, page, pi, total, ans) {
+      const count = page.items.length;
+      const rows = Math.ceil(count / T.cols);
+      const cls = `ws-item${T.flat ? ' flat' : ''}${T.left ? ' left' : ''}`;
+      const body = `<div class="ws-grid" style="grid-template-columns:repeat(${T.cols},minmax(0,1fr));grid-template-rows:repeat(${rows},minmax(0,1fr))">${page.items.map((q, i) => `<div class="${cls}"><span class="ws-no">${T.flat ? `(${i + 1})` : i + 1}</span>${wsItemHtml(T, q, ans)}</div>`).join('')}</div>`;
+      return `<div class="ws-page">
+        ${ans ? '<span class="ws-key">정답</span>' : ''}
+        <div class="ws-head">
+          <div class="tt"><div class="kid-art"></div><div><span class="lv">소수맨 학습지 · ${T.st}단계 ${STAGES[T.st - 1].title}</span><h1>${T.title}</h1></div></div>
+          <div class="who"><span>날짜 <u class="s"></u>월 <u class="s"></u>일</span><span>이름 <u></u></span><span>맞힌 수 <u class="s"></u>/ ${count}</span></div>
+        </div>
+        <p class="ws-guide">${T.guide}</p>
+        ${body}
+        <div class="ws-foot"><span>소수맨 · 쌤노리 · 문제는 만들 때마다 새로 바뀌어요</span><span>${pi + 1} / ${total}</span></div>
+      </div>`;
+    }
+    function wsAllPagesHtml() {
+      const T = wsType();
+      const total = ws.data.length * (ws.key ? 2 : 1);
+      const qs = ws.data.map((pg, i) => wsPageHtml(T, pg, i, total, false));
+      const ks = ws.key ? ws.data.map((pg, i) => wsPageHtml(T, pg, ws.data.length + i, total, true)) : [];
+      return [...qs, ...ks].join('');
+    }
+    function openWorksheet(stageNo) {
+      if (stageNo) ws.type = WS_TYPES.find((t) => t.st === stageNo).id;
+      wsGen();
+      document.getElementById('ws-overlay').innerHTML = '';
+      document.getElementById('ws-overlay').classList.remove('hidden');
+      document.body.classList.add('modal');
+      renderWs();
+    }
+    function hideWorksheet() {
+      document.getElementById('ws-overlay').classList.add('hidden');
+      document.body.classList.remove('modal');
+    }
+    function wsSet(k, v) {
+      if (k === 'type') ws.type = v;
+      if (k === 'opt') ws.opt[ws.type] = v;
+      if (k === 'pages') ws.pages = v;
+      if (k === 'key') ws.key = v;
+      if (k !== 'key') wsGen();
+      renderWs();
+    }
+    function renderWs() {
+      const T = wsType();
+      const opts = T.opts ? WS_OPTS[T.opts] : null;
+      const groups = STAGES.map((s) => `<optgroup label="${s.no}단계 · ${s.title}">${WS_TYPES.filter((t) => t.st === s.no).map((t) => `<option value="${t.id}"${t.id === T.id ? ' selected' : ''}>${t.title}</option>`).join('')}</optgroup>`).join('');
+      const box = document.getElementById('ws-overlay');
+      const again = !!box.firstElementChild;
+      const mainScroll = again ? box.querySelector('.ws-main').scrollTop : 0;
+      const sideScroll = again ? box.querySelector('.ws-side').scrollTop : 0;
+      box.innerHTML = `
+        <div class="result-card ws-card"${again ? ' style="animation:none"' : ''}>
+          <div class="ws-side">
+            <h2>🖨 학습지 만들기</h2>
+            <p>누를 때마다 새 문제로 만들어져요. 앱에서 익힌 것을 종이로 한 번 더 연습해요.</p>
+            <div class="ws-field"><label for="ws-type">학습지 종류</label><select id="ws-type" class="select" onchange="wsSet('type', this.value)">${groups}</select></div>
+            ${opts ? `<div class="ws-field"><label for="ws-opt">문제 범위</label><select id="ws-opt" class="select" onchange="wsSet('opt', this.value)">${opts.map(([v, t]) => `<option value="${v}"${v === wsOpt(T) ? ' selected' : ''}>${t}</option>`).join('')}</select></div>` : ''}
+            <div class="ws-field"><span class="lab">장 수</span><div class="seg">${[1, 2, 3, 5].map((n) => `<button type="button" class="${ws.pages === n ? 'on' : ''}" onclick="wsSet('pages', ${n})">${n}장</button>`).join('')}</div></div>
+            <div class="ws-field"><label class="ws-check"><input type="checkbox" ${ws.key ? 'checked' : ''} onchange="wsSet('key', this.checked)" /> 정답지도 함께 뽑기</label></div>
+            <div class="ws-actions">
+              <button class="btn-main" type="button" onclick="wsPrint()">🖨 인쇄하기</button>
+              <button class="ghost-btn" type="button" onclick="wsSet('regen')">🔄 새 문제로 바꾸기</button>
+              <button class="ghost-btn" type="button" onclick="hideWorksheet()">닫기</button>
+            </div>
+          </div>
+          <div class="ws-main">
+            <div class="ws-pages" id="ws-pages">${wsAllPagesHtml()}</div>
+          </div>
+        </div>`;
+      fitWs();
+      box.querySelector('.ws-main').scrollTop = mainScroll;
+      box.querySelector('.ws-side').scrollTop = sideScroll;
+    }
+    function fitWs() {
+      const main = document.querySelector('#ws-overlay .ws-main');
+      const pages = document.getElementById('ws-pages');
+      if (!main || !pages) return;
+      const k = Math.min(1, (main.clientWidth - 28) / 720);
+      pages.style.zoom = String(Math.max(0.3, k));
+    }
+    function wsPrint() {
+      document.getElementById('print-root').innerHTML = wsAllPagesHtml();
+      setTimeout(() => window.print(), 60);
+    }
+    window.addEventListener('afterprint', () => { document.getElementById('print-root').innerHTML = ''; });
+    window.addEventListener('resize', fitWs);
 
     /* =========================================================
        키보드 (혼자 할 때)
