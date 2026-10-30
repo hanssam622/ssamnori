@@ -406,12 +406,12 @@
   },
   {
     "id": "decimalman",
-    "updatedAt": "2026-10-25",
+    "updatedAt": "2026-10-30",
     "title": "소수맨",
     "category": "web-game",
     "badge": "웹게임",
     "thumbnail": "assets/thumbnails/decimalman.svg",
-    "description": "소수의 크기 비교와 덧셈·뺄셈을 익히고, 19종의 새 문제 학습지를 만들어 정답지와 함께 인쇄할 수 있는 4학년 2학기 수학 게임입니다.",
+    "description": "소수 계산과 19종의 A4 학습지를 익히고, 최대 40명이 QR로 참여하는 실시간 골든벨을 즐기는 4학년 2학기 수학 게임입니다.",
     "actions": [
       {
         "type": "play",

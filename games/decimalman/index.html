@@ -4,10 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>소수맨</title>
-  <meta name="description" content="소수의 크기 비교와 덧셈·뺄셈을 익히고, 19종의 새 문제 학습지를 만들어 정답지와 함께 인쇄할 수 있는 수학 게임입니다." />
+  <meta name="description" content="소수의 크기 비교와 덧셈·뺄셈, 단계별 A4 학습지 만들기, 최대 40명이 참여하는 실시간 골든벨을 즐기는 수학 게임입니다." />
   <link rel="canonical" href="https://hanssam622.github.io/ssamnori/games/decimalman/index.html" />
-  <script src="../../stats-config.js?v=20261025"></script>
-  <script src="../../analytics.js?v=20261025"></script>
+  <script src="../../stats-config.js?v=20261030"></script>
+  <script src="../../analytics.js?v=20261030"></script>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%2312b3a3'/%3E%3Ctext x='9' y='46' font-family='Arial' font-weight='900' font-size='34' fill='white'%3E0%3C/text%3E%3Ccircle cx='36' cy='42' r='5' fill='%23ff5b4f'/%3E%3Ctext x='40' y='46' font-family='Arial' font-weight='900' font-size='34' fill='white'%3E1%3C/text%3E%3C/svg%3E" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
   <style>
@@ -1704,6 +1704,155 @@
       .hero-sub br { display: none; }
     }
 
+    /* ---------- 골든벨 ---------- */
+    .ghost-btn.bell-hl { border-color: #ffd36b; color: #9a6400; background: #fff8e3; }
+    .bell-join-btn { height: 58px; padding: 0 22px; border-radius: 20px; border-color: #ffd36b; background: #fffaf0; color: #9a6400; font-size: 18px; font-weight: 850; }
+    .bell-card .bell-opts { display: flex; flex-wrap: wrap; gap: 10px 18px; margin-top: 14px; padding: 14px 16px; border-radius: 20px; background: #fff8e3; }
+    .bell-card .seg button { padding: 0 12px; }
+    .bell-err { color: var(--bad); font-size: 14px; font-weight: 800; }
+    .bell-err:empty { display: none; }
+
+    /* 칠판(선생님) */
+    .bell-screen { background: #f6fbfa; }
+    .bell-screen .topbar { grid-template-columns: auto minmax(0, 1fr) auto auto; }
+    .bell-room { display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 14px; border-radius: 14px; background: var(--amber-s); color: #8a5b00; font-size: 15px; font-weight: 850; white-space: nowrap; }
+    .bell-room b { color: var(--ink); font-size: 20px; letter-spacing: .08em; font-variant-numeric: tabular-nums; }
+    .bell-room .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--good); }
+    .bell-room.off .dot { background: var(--coral); animation: blink 1s infinite; }
+    .bell-body { flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: calc(var(--s) * 14px) 18px 18px; }
+    .bell-panel { padding: 18px; border-radius: 24px; background: #fff; box-shadow: 0 8px 24px rgba(29,40,56,.08); }
+    .bell-lobby { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 18px; max-width: 1280px; min-height: 100%; margin: 0 auto; }
+    .bell-joinbox { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; text-align: center; }
+    .bell-qr { width: min(48vh, 100%); max-width: 400px; aspect-ratio: 1; padding: 8px; border-radius: 18px; border: 2px solid var(--line); background: #fff; image-rendering: pixelated; }
+    .bell-code-label { margin-top: 4px; color: var(--muted); font-size: 16px; font-weight: 800; }
+    .bell-code { font-size: clamp(44px, 7vh, 76px); font-weight: 900; letter-spacing: .14em; line-height: 1; font-variant-numeric: tabular-nums; }
+    .bell-hint { margin: 6px 0 0; color: var(--ink-2); font-size: 16px; font-weight: 700; line-height: 1.6; word-break: keep-all; }
+    .bell-hint b { color: #9a6400; }
+    .bell-rosterbox { display: flex; flex-direction: column; gap: 12px; min-height: 0; }
+    .bell-rosterbox h3 { margin: 0; font-size: 24px; font-weight: 900; }
+    .bell-rosterbox h3 b { color: var(--teal-d); }
+    .bell-chips { flex: 1 1 auto; display: flex; flex-wrap: wrap; align-content: flex-start; gap: 8px; min-height: 160px; padding: 12px; border-radius: 18px; background: var(--soft); overflow-y: auto; }
+    .bell-chip { display: inline-flex; align-items: center; gap: 6px; height: 44px; padding: 0 6px 0 10px; border-radius: 999px; background: #fff; box-shadow: 0 2px 6px rgba(29,40,56,.08); font-size: 18px; font-weight: 850; animation: pop .35s ease both; }
+    .bell-chip .em { font-size: 26px; }
+    .bell-chip.off { opacity: .45; }
+    .bell-chip .x { width: 28px; height: 28px; border-radius: 50%; color: #a5afbc; font-size: 14px; }
+    .bell-chip .x:hover { background: #ffeded; color: var(--bad); }
+    .bell-empty { margin: auto; color: var(--muted); font-size: 16px; font-weight: 700; line-height: 1.6; text-align: center; }
+    .bell-sum { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; color: var(--ink-2); font-size: 16px; font-weight: 800; }
+    .bell-sum .ghost-btn { height: 40px; margin-left: auto; }
+    .bell-go { height: 66px; border-radius: 20px; font-size: 23px; }
+
+    .bell-play { display: grid; grid-template-columns: minmax(0, 1fr) minmax(220px, 300px); gap: 16px; max-width: 1440px; margin: 0 auto; }
+    .bell-main { min-width: 0; display: flex; flex-direction: column; gap: calc(var(--s) * 12px); }
+    .bell-main > * { width: 100%; max-width: calc(var(--s) * 820px); align-self: center; }
+    .bell-qhead { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px; }
+    .bell-tag { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 999px; background: #fff; color: var(--ink-2); font-size: calc(var(--s) * 14px); font-weight: 800; box-shadow: 0 2px 8px rgba(29,40,56,.07); }
+    .bell-tag svg { width: calc(var(--s) * 22px); height: calc(var(--s) * 22px); }
+    .bell-tag.no { background: var(--ink); color: #fff; }
+    .bell-show .choice { position: relative; cursor: default; }
+    .bell-show .choice:active { transform: none; box-shadow: 0 4px 0 #e2e9f0; }
+    .bell-show .choice .mk { position: absolute; left: 8px; top: 7px; width: calc(var(--s) * 22px); height: calc(var(--s) * 22px); display: grid; place-items: center; border-radius: 50%; background: var(--soft); color: var(--muted); font-size: calc(var(--s) * 12px); font-weight: 900; }
+    .bell-show .choice .ct { position: absolute; right: 8px; top: 7px; padding: 1px 8px; border-radius: 999px; background: rgba(255,255,255,.85); color: var(--ink-2); font-size: calc(var(--s) * 13px); font-weight: 900; }
+    .bell-show .choice.dim { opacity: .4; }
+    .bell-padnote { margin: 0; color: var(--teal-d); font-size: calc(var(--s) * 18px); font-weight: 850; text-align: center; }
+    .bell-faces { display: flex; flex-wrap: wrap; justify-content: center; gap: 2px 4px; min-height: calc(var(--s) * 30px); font-size: calc(var(--s) * 24px); }
+    .bell-faces span { animation: pop .3s ease both; }
+    .bell-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 12px; }
+    .bell-foot.end { justify-content: center; }
+    .bell-count { font-size: calc(var(--s) * 17px); font-weight: 850; white-space: nowrap; }
+    .bell-count b { color: var(--teal-d); font-size: 1.3em; }
+    .bell-bar { flex: 1 1 120px; height: 12px; border-radius: 999px; background: #e3ebf0; overflow: hidden; }
+    .bell-bar i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #1cc6b5, #0ea193); transition: width .3s; }
+    .bell-next { min-width: 220px; height: calc(var(--s) * 56px); font-size: calc(var(--s) * 19px); }
+    .bell-next small { margin-left: 6px; padding: 1px 8px; border-radius: 999px; background: rgba(255,255,255,.25); font-size: .8em; }
+    .bell-result-head { margin: 0; font-size: calc(var(--s) * 24px); font-weight: 900; text-align: center; }
+    .bell-result-head b { color: var(--good); }
+    .bell-ans { border-color: var(--good); box-shadow: 0 0 0 5px rgba(31,174,106,.15); color: #12804a; }
+    .bell-explain { margin: 0; padding: 12px 16px; border-radius: 16px; background: var(--teal-s); font-size: calc(var(--s) * 17px); font-weight: 750; line-height: 1.6; text-align: center; word-break: keep-all; }
+    .bell-side { position: sticky; top: 0; align-self: start; display: flex; flex-direction: column; gap: 10px; }
+    .bell-side h3 { margin: 0; font-size: 19px; font-weight: 900; }
+    .bell-leaders { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
+    .bell-leader { display: grid; grid-template-columns: 28px 30px minmax(0, 1fr) auto; align-items: center; gap: 6px; padding: 7px 10px; border-radius: 14px; background: var(--soft); font-size: 16px; font-weight: 850; }
+    .bell-leader.r1 { background: #fff5d6; }
+    .bell-leader .rk { color: var(--muted); font-weight: 900; text-align: center; }
+    .bell-leader .em { font-size: 22px; text-align: center; }
+    .bell-leader .nm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .bell-leader .pt { text-align: right; font-variant-numeric: tabular-nums; }
+    .bell-leader .pt small { display: block; color: var(--good); font-size: 12px; }
+    .bell-more { margin: 0; color: var(--muted); font-size: 14px; font-weight: 700; text-align: center; }
+
+    .bell-end { display: flex; flex-direction: column; align-items: center; gap: 14px; max-width: 980px; margin: 0 auto; text-align: center; }
+    .bell-end h2 { margin: 0; font-size: calc(var(--s) * 38px); font-weight: 900; letter-spacing: -.03em; }
+    .bell-end .sub { margin: -6px 0 0; color: var(--muted); font-weight: 700; }
+    .bell-podium { display: flex; align-items: flex-end; justify-content: center; gap: 14px; width: 100%; }
+    .bell-pod { flex: 0 1 220px; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .bell-pod .em { font-size: calc(var(--s) * 54px); line-height: 1.1; animation: rise .5s both; }
+    .bell-pod .nm { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: calc(var(--s) * 22px); font-weight: 900; }
+    .bell-pod .pt { color: var(--muted); font-weight: 800; }
+    .bell-pod .block { width: 100%; display: grid; place-items: start center; padding-top: 10px; border-radius: 18px 18px 6px 6px; color: #fff; font-size: calc(var(--s) * 32px); font-weight: 900; }
+    .bell-pod.p1 .block { height: calc(var(--s) * 160px); background: linear-gradient(180deg, #ffc531, #f0a500); }
+    .bell-pod.p2 .block { height: calc(var(--s) * 115px); background: linear-gradient(180deg, #c9d3dd, #9fadbb); }
+    .bell-pod.p3 .block { height: calc(var(--s) * 85px); background: linear-gradient(180deg, #eab385, #cf8a4f); }
+    .bell-rest { width: min(620px, 100%); }
+
+    /* 학생 태블릿 */
+    .bell-pad { display: flex; flex-direction: column; }
+    .bp-top { position: sticky; top: 0; z-index: 3; display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-bottom: 1px solid var(--line); background: rgba(255,255,255,.96); }
+    .bp-me { flex: 1 1 auto; min-width: 0; display: inline-flex; align-items: center; gap: 8px; overflow: hidden; font-size: 19px; font-weight: 900; white-space: nowrap; text-overflow: ellipsis; }
+    .bp-me .em { font-size: 28px; }
+    .bp-room { color: var(--muted); font-size: 14px; font-weight: 800; white-space: nowrap; }
+    .bp-dot { flex: 0 0 auto; width: 12px; height: 12px; border-radius: 50%; background: #c4ced9; }
+    .bp-dot.open { background: var(--good); }
+    .bp-dot.connecting { background: var(--amber); animation: blink 1s infinite; }
+    .bp-top .ghost-btn { height: 40px; padding: 0 12px; font-size: 14px; }
+    .bp-body { flex: 1 0 auto; display: flex; flex-direction: column; justify-content: safe center; gap: calc(var(--s) * 12px); width: 100%; max-width: 760px; margin: 0 auto; padding: 16px; }
+    .bp-form { display: flex; flex-direction: column; gap: 14px; padding: 22px; border-radius: 26px; background: #fff; box-shadow: 0 10px 30px rgba(29,40,56,.1); }
+    .bp-form .kid-art { width: 110px; height: 110px; margin: 0 auto -6px; }
+    .bp-form h2 { margin: 0; font-size: 28px; font-weight: 900; text-align: center; }
+    .bp-field { display: flex; flex-direction: column; gap: 6px; color: var(--ink-2); font-weight: 850; }
+    .bp-field input { height: 56px; padding: 0 16px; border-radius: 16px; border: 2px solid var(--line); color: var(--ink); font: inherit; font-size: 22px; font-weight: 850; user-select: text; -webkit-user-select: text; }
+    .bp-field input:focus { outline: none; border-color: var(--teal); }
+    .bp-field input.code { letter-spacing: .3em; font-variant-numeric: tabular-nums; }
+    .bp-animals { display: grid; grid-template-columns: repeat(auto-fill, minmax(54px, 1fr)); gap: 6px; }
+    .bp-animals button { height: 54px; border-radius: 14px; border: 2px solid transparent; background: var(--soft); font-size: 30px; }
+    .bp-animals button.on { border-color: var(--teal); background: var(--teal-s); }
+    .bp-err { min-height: 1.4em; margin: 0; color: var(--bad); font-weight: 800; text-align: center; }
+    .bp-form .btn-main, .bp-big .btn-main { height: 60px; font-size: 20px; }
+    .bp-big { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 28px 18px; border-radius: 26px; background: #fff; box-shadow: 0 10px 30px rgba(29,40,56,.1); text-align: center; }
+    .bp-big .emo { font-size: 76px; line-height: 1; animation: pop .45s ease both; }
+    .bp-big h2 { margin: 0; font-size: 32px; font-weight: 900; word-break: keep-all; }
+    .bp-big p { margin: 0; color: var(--ink-2); font-size: 19px; font-weight: 750; line-height: 1.55; word-break: keep-all; }
+    .bp-big.good h2 { color: #12804a; }
+    .bp-big.bad h2 { color: #c13b3b; }
+    .bp-big .ans { padding: 8px 16px; border-radius: 14px; background: var(--soft); font-size: 22px; font-weight: 850; }
+    .bp-big .bp-btns { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 6px; }
+    .bp-big .bp-btns .ghost-btn { height: 60px; }
+    .bp-qhead { display: flex; align-items: center; gap: 10px; font-size: calc(var(--s) * 17px); font-weight: 900; }
+    .bp-time { flex: 1 1 auto; height: 12px; border-radius: 999px; background: #e3ebf0; overflow: hidden; }
+    .bp-time i { display: block; width: 100%; height: 100%; border-radius: inherit; background: var(--teal); transform-origin: left; transition: transform .2s linear; }
+    .bp-time.warn i { background: var(--coral); }
+    .bp-left { min-width: 2.6em; text-align: right; font-variant-numeric: tabular-nums; }
+    .bp-q { display: flex; flex-direction: column; gap: calc(var(--s) * 12px); }
+    .bp-q .choice.picked { border-color: var(--teal); background: var(--teal-s); box-shadow: 0 4px 0 var(--teal); color: var(--teal-d); }
+    .bp-q.locked .choice:not(.picked) { opacity: .4; }
+    .bp-q.locked .keypad, .bp-q.locked .bp-submit { display: none; }
+    .bp-submit { width: 100%; height: calc(var(--s) * 60px); font-size: calc(var(--s) * 20px); }
+    .bp-msg:empty { display: none; }
+    .bp-msg { padding: 12px; border-radius: 16px; background: var(--amber-s); color: #8f5c08; font-size: calc(var(--s) * 18px); font-weight: 850; text-align: center; }
+    .bp-msg.hint { background: #ffeded; color: #b23535; }
+
+    @media (max-width: 860px) {
+      .bell-lobby, .bell-play { grid-template-columns: minmax(0, 1fr); }
+      .bell-side { position: static; }
+      .bell-room { height: 40px; padding: 0 10px; font-size: 13px; }
+      .bell-room b { font-size: 17px; }
+    }
+    @media (max-width: 560px) {
+      .bp-q .choices.c2.txtc, .bp-q .choices.c4 { grid-template-columns: minmax(0, 1fr); }
+      .bell-screen .topbar { grid-template-columns: auto minmax(0, 1fr) auto; }
+      .bell-screen .top-actions { grid-column: 1 / -1; justify-content: center; }
+    }
+
     /* ---------- 인쇄 ---------- */
     @media print {
       @page { size: A4 portrait; margin: 10mm; }
@@ -1729,6 +1878,7 @@
         <p class="hero-sub">0.01과 0.001부터 크기 비교, 덧셈과 뺄셈까지 <br /><strong>모눈종이 · 수직선 · 세로셈</strong>으로 차근차근 익혀요</p>
         <div class="hero-actions">
           <button class="start-btn" type="button" onclick="showScreen('game-select-screen')">시작하기 →</button>
+          <button class="ghost-btn bell-join-btn" type="button" onclick="openBellPad()">🔔 골든벨 참여</button>
           <span class="hero-note">1~6명이 한 화면에서 함께 겨뤄요</span>
         </div>
         <div class="topic-list" aria-hidden="true">
@@ -1765,6 +1915,7 @@
           </div>
         </div>
         <div class="head-btns">
+          <button class="ghost-btn bell-hl" type="button" onclick="openBellSetup()">🔔 골든벨</button>
           <button class="ghost-btn hl" type="button" onclick="openWorksheet()">🖨 학습지 만들기</button>
           <button class="ghost-btn" type="button" onclick="showScreen('start-screen')">← 처음으로</button>
         </div>
@@ -1820,11 +1971,46 @@
     <div class="players" id="players"></div>
   </section>
 
+  <section id="bell-screen" class="game-screen bell-screen hidden">
+    <div class="topbar">
+      <button class="ghost-btn" type="button" onclick="bellQuit()">← 끝내기</button>
+      <div class="top-title">
+        <h1>🔔 소수맨 골든벨</h1>
+        <p id="bell-sub"></p>
+      </div>
+      <div class="timer hidden" id="bell-timer">
+        <svg viewBox="0 0 60 60" aria-hidden="true">
+          <circle class="track" cx="30" cy="30" r="25" />
+          <circle class="bar" id="bell-timer-bar" cx="30" cy="30" r="25" stroke-dasharray="157.08" stroke-dashoffset="0" />
+        </svg>
+        <span id="bell-time-left"></span>
+      </div>
+      <div class="top-actions">
+        <span class="bell-room" id="bell-room"></span>
+        <button class="ghost-btn opt" id="voice-toggle-3" type="button" onclick="toggleVoice()">🔊 소리</button>
+        <button class="ghost-btn opt" type="button" onclick="toggleFullscreen()">⛶ 전체화면</button>
+        <button class="ghost-btn hidden" id="bell-finish" type="button" onclick="bellFinish()">🏁 결과</button>
+      </div>
+    </div>
+    <div class="bell-body" id="bell-body"></div>
+  </section>
+
+  <section id="bell-join-screen" class="screen bell-pad hidden">
+    <div class="bp-top">
+      <span class="bp-me" id="bp-me"></span>
+      <span class="bp-room" id="bp-room"></span>
+      <span class="bp-dot" id="bp-dot"></span>
+      <button class="ghost-btn" type="button" onclick="bellLeave()">나가기</button>
+    </div>
+    <div class="bp-body" id="bp-body"></div>
+  </section>
+
   <div id="result-overlay" class="overlay hidden"></div>
   <div id="concept-overlay" class="overlay hidden" onclick="if (event.target === this) hideConcept()"></div>
   <div id="mix-overlay" class="overlay hidden" onclick="if (event.target === this) hideMix()"></div>
   <div id="notice-overlay" class="overlay hidden" onclick="if (event.target === this) hideNotice()"></div>
   <div id="ws-overlay" class="overlay hidden" onclick="if (event.target === this) hideWorksheet()"></div>
+  <div id="bell-overlay" class="overlay hidden" onclick="if (event.target === this) hideBellSetup()"></div>
   <div id="print-root"></div>
 
   <script>
@@ -2084,6 +2270,7 @@
       a.textContent = voiceOn ? '🔊 켜짐' : '🔈 꺼짐';
       a.className = `toggle-btn ${voiceOn ? 'on' : 'off'}`;
       document.getElementById('voice-toggle-2').textContent = voiceOn ? '🔊 소리' : '🔈 소리';
+      document.getElementById('voice-toggle-3').textContent = voiceOn ? '🔊 소리' : '🔈 소리';
     }
 
     /* =========================================================
@@ -3366,7 +3553,7 @@
     function showScreen(id) {
       document.querySelectorAll('.screen, .game-screen').forEach((el) => el.classList.add('hidden'));
       document.getElementById(id).classList.remove('hidden');
-      document.body.classList.toggle('playing', id === 'game-screen');
+      document.body.classList.toggle('playing', ['game-screen', 'bell-screen', 'bell-join-screen'].includes(id));
       if (id === 'game-select-screen') { renderPlayerSeg(); renderCapNote(); }
       if (id === 'start-screen') animateHero();
     }
@@ -4717,6 +4904,1097 @@
     window.addEventListener('resize', fitWs);
 
     /* =========================================================
+       골든벨
+       칠판(선생님)이 문제를 내고, 반 친구들이 각자 태블릿으로 같은 문제를 한꺼번에 풀어요.
+       방 서버는 Cloudflare Workers(bell-server 폴더)예요. 칠판이 문제·채점·점수를 모두 쥐고,
+       서버는 학생 명단을 관리하고 말을 전해 주기만 해요. 학생 태블릿은 이 파일을 ?bell=방번호 로 열어요.
+       ========================================================= */
+    const BELL_SERVER_URL = 'https://ssamnori-bell.thinkchain-hansang.workers.dev';
+    // 선생님 컴퓨터의 파일(file://)로 열었을 때 학생 QR이 가리킬 소수맨 주소
+    const BELL_PAGE_URL = 'https://hanssam622.github.io/ssamnori/games/decimalman/index.html';
+    const PAGE_PARAMS = new URLSearchParams(location.search);
+    // 내 컴퓨터에서 서버를 시험할 때만 ?bellServer=http://localhost:8787 처럼 바꿀 수 있다
+    const BELL_LOCAL = /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(PAGE_PARAMS.get('bellServer') || '') ? PAGE_PARAMS.get('bellServer') : '';
+    const BELL_SERVER = BELL_LOCAL || BELL_SERVER_URL;
+    const BELL_CFG_KEY = 'sosuman-bell-v1';
+    const BELL_ME_KEY = 'sosuman-bell-me';
+    const BELL_MAX_POINTS = 1000;
+    const BELL_LEADERS = 5;
+    const BELL_EXTEND = 10;
+    // 태블릿에서 0초 직전에 누른 답이 칠판에 닿을 때까지 조금 더 기다린다
+    const BELL_GRACE_MS = 600;
+    const BELL_ANIMALS = [
+      ['dog', '🐶'], ['cat', '🐱'], ['rabbit', '🐰'], ['fox', '🦊'], ['bear', '🐻'], ['panda', '🐼'], ['koala', '🐨'],
+      ['tiger', '🐯'], ['lion', '🦁'], ['cow', '🐮'], ['pig', '🐷'], ['frog', '🐸'], ['monkey', '🐵'], ['chick', '🐤'],
+      ['penguin', '🐧'], ['owl', '🦉'], ['unicorn', '🦄'], ['octopus', '🐙'], ['whale', '🐳'], ['dino', '🦖']
+    ];
+    const bellEmoji = (id) => (BELL_ANIMALS.find(([k]) => k === id) || BELL_ANIMALS[0])[1];
+    const bellWs = () => BELL_SERVER.replace(/^http/, 'ws');
+    function bellEsc(s) {
+      return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    }
+
+    // 골든벨에서 낼 수 있는 유형: 태블릿에서 한 번 눌러 답하는 것만 낸다.
+    // 색칠하기와 세로셈 칸 쓰기는 빼고, 카드 옮기기·줄 세우기·모눈종이 계산·틀린 계산·생활 속 문제는 골든벨 모양으로 바꾼다.
+    const BELL_SKIP = new Set(['paint', 'vadd1', 'vadd2', 'vaddm', 'vsub1', 'vsub2', 'vsubm']);
+    const BELL_LABEL = { shift: '10배 · 1/10 하면?', order: '가장 큰 수 · 작은 수' };
+    const BELL_LESSONS = LESSONS.map((l) => ({ ...l, items: l.items.filter((id) => !BELL_SKIP.has(id)) })).filter((l) => l.items.length);
+    const BELL_IDS = BELL_LESSONS.flatMap((l) => l.items);
+    const BELL_COUNTS = [5, 10, 15, 20];
+    const BELL_SECONDS = [10, 20, 30, 60];
+    const BELL_AUTOS = [0, 5, 10];
+
+    let bellCfg = { sel: [...BELL_IDS], count: 10, seconds: 20, auto: 0 };
+    try {
+      const saved = JSON.parse(localStorage.getItem(BELL_CFG_KEY) || 'null');
+      if (saved && Array.isArray(saved.sel)) {
+        bellCfg = {
+          sel: saved.sel.filter((id) => BELL_IDS.includes(id)),
+          count: BELL_COUNTS.includes(saved.count) ? saved.count : 10,
+          seconds: BELL_SECONDS.includes(saved.seconds) ? saved.seconds : 20,
+          auto: BELL_AUTOS.includes(saved.auto) ? saved.auto : 0
+        };
+      }
+    } catch (err) { /* 저장소를 쓸 수 없으면 기본 설정으로 한다 */ }
+    function saveBellCfg() {
+      try { localStorage.setItem(BELL_CFG_KEY, JSON.stringify(bellCfg)); } catch (err) { /* 무시 */ }
+    }
+
+    /* ---------- 방 연결 (칠판과 태블릿이 함께 쓴다) ---------- */
+    // 학교 와이파이에서 조용히 끊기거나 태블릿이 잠들었다 깨어나도 저절로 다시 붙는다.
+    class BellSocket {
+      constructor(url, handlers) {
+        this.url = url;
+        this.h = handlers;
+        this.queue = [];
+        this.retry = 0;
+        this.stopped = false;
+        this.fatal = false;
+        this.lastHeard = 0;
+        this.probe = this.probe.bind(this);
+        document.addEventListener('visibilitychange', this.probe);
+        window.addEventListener('online', this.probe);
+        // 만든 쪽이 이 소켓을 변수에 담은 뒤에 연결을 시작한다
+        setTimeout(() => this.connect(), 0);
+      }
+      connect() {
+        if (this.stopped || this.fatal) return;
+        this.h.status('connecting');
+        let ws;
+        try { ws = new WebSocket(this.url()); } catch (err) { this.later(); return; }
+        this.ws = ws;
+        ws.onopen = () => {
+          if (this.ws !== ws) return;
+          this.lastHeard = Date.now();
+          clearTimeout(this.stable);
+          this.stable = setTimeout(() => { this.retry = 0; }, 30000);
+          while (this.queue.length) ws.send(this.queue.shift());
+          clearInterval(this.pinger);
+          this.pinger = setInterval(() => this.check(), 10000);
+          this.h.status('open');
+        };
+        ws.onmessage = (e) => {
+          if (this.ws !== ws) return;
+          this.lastHeard = Date.now();
+          let m;
+          try { m = JSON.parse(e.data); } catch (err) { return; }
+          if (m.t === 'pong') return;
+          if (m.t === 'closed' || (m.t === 'error' && ['kicked', 'closed', 'not-found', 'full'].includes(m.code))) this.fatal = true;
+          this.h.message(m);
+        };
+        ws.onclose = () => {
+          if (this.ws !== ws) return;
+          clearInterval(this.pinger);
+          if (this.stopped || this.fatal) { this.h.status('closed'); return; }
+          this.later();
+        };
+        ws.onerror = () => ws.close();
+      }
+      later() {
+        this.h.status('connecting');
+        clearTimeout(this.timer);
+        this.timer = setTimeout(() => this.connect(), Math.min(10000, 500 * 2 ** Math.min(this.retry++, 5)));
+      }
+      // 25초 동안 아무 말도 못 받았으면 끊긴 것으로 보고 다시 붙는다. 핑에는 Cloudflare가 대신 답한다.
+      check() {
+        if (document.visibilityState === 'hidden' || !this.ws || this.ws.readyState !== 1) return;
+        if (Date.now() - this.lastHeard > 25000) this.restart();
+        else this.ws.send('{"t":"ping"}');
+      }
+      // 화면이 다시 켜지거나 와이파이가 돌아오면 핑을 보내 보고, 5초 안에 답이 없으면 다시 붙는다.
+      probe() {
+        const ws = this.ws;
+        if (this.stopped || this.fatal || document.visibilityState === 'hidden' || !ws || ws.readyState !== 1) return;
+        const at = Date.now();
+        ws.send('{"t":"ping"}');
+        setTimeout(() => { if (this.ws === ws && this.lastHeard < at) this.restart(); }, 5000);
+      }
+      restart() {
+        const old = this.ws;
+        this.ws = null;
+        clearInterval(this.pinger);
+        try { old.close(); } catch (err) { /* 이미 닫힘 */ }
+        this.connect();
+      }
+      send(m) {
+        if (this.stopped || this.fatal) return;
+        const s = JSON.stringify(m);
+        if (this.ws && this.ws.readyState === 1) this.ws.send(s);
+        else this.queue.push(s);
+      }
+      close() {
+        this.stopped = true;
+        document.removeEventListener('visibilitychange', this.probe);
+        window.removeEventListener('online', this.probe);
+        clearTimeout(this.timer);
+        clearTimeout(this.stable);
+        clearInterval(this.pinger);
+        try { if (this.ws) this.ws.close(1000); } catch (err) { /* 이미 닫힘 */ }
+      }
+    }
+
+    /* ---------- 골든벨 문제: 소수맨 문제를 '한 번에 답하는' 모양으로 ---------- */
+    // input: 'choice'(보기 고르기, ans는 번호) 또는 'keypad'(수 쓰기, ans는 1000배 한 정수)
+    function toBell(q) {
+      const base = { speech: q.speech, explain: q.explain || '' };
+      switch (q.kind) {
+        case 'choice': {
+          const ans = q.choices.findIndex((c) => c.v === q.ans);
+          return { ...base, input: 'choice', prompt: q.prompt, visual: q.visual || '', choices: q.choices.map((c) => c.html), cols: q.cols || 2, txt: Boolean(q.txt), ans, ansHtml: ans >= 0 ? q.choices[ans].html : '' };
+        }
+        case 'compare': {
+          const ans = q.choices.findIndex((c) => c.v === q.ans);
+          return {
+            ...base, input: 'choice', prompt: '두 소수의 크기를 비교해 보세요.',
+            visual: `<div class="cmp">${numHtml(q.a)}<span class="cmp-slot">?</span>${numHtml(q.b)}</div>`,
+            ansVisual: `<div class="cmp">${numHtml(q.a)}<span class="cmp-slot f">${q.ans}</span>${numHtml(q.b)}</div>`,
+            choices: q.choices.map((c) => c.html), cols: 3, sign: true, ans, ansHtml: q.ansText
+          };
+        }
+        case 'keypad':
+          return { ...base, input: 'keypad', prompt: q.prompt || '계산해 보세요.', visual: '', lhs: q.lhs, unit: q.unit || '', big: Boolean(q.big), ans: q.ans, ansHtml: q.ansText || N(q.ans) };
+        case 'shift': {
+          const label = TIMES_KO[q.k];
+          const unit = q.unit ? ` <span class="unit-txt">${q.unit}</span>` : '';
+          return {
+            input: 'keypad', prompt: '알맞은 수를 써 보세요.', visual: '',
+            lhs: `${N(q.base)}${unit}의 ${timesHtml(q.k)} <span class="op-sym">=</span>`, unit: q.unit, ans: q.result, ansHtml: q.ansText,
+            explain: `소수점을 기준으로 수가 ${q.k > 0 ? '왼쪽' : '오른쪽'}으로 ${Math.abs(q.k)}자리 움직여요. ${N(q.base)} → ${N(q.result)}`,
+            speech: `${nKo(q.base)}${q.unit ? ` ${UNIT_KO[q.unit]}` : ''}의 ${label}${eunNeun(label)} 얼마일까요?`
+          };
+        }
+        case 'order': {
+          const target = q.desc ? Math.max(...q.items) : Math.min(...q.items);
+          const sorted = [...q.items].sort((x, y) => (q.desc ? y - x : x - y));
+          return {
+            input: 'choice', prompt: `가장 ${q.desc ? '큰' : '작은'} 수는 무엇일까요?`, visual: '',
+            choices: q.items.map((v) => N(v)), cols: 2, ans: q.items.indexOf(target), ansHtml: N(target),
+            explain: `높은 자리부터 차례로 비교해요. ${sorted.map((v) => N(v)).join(q.desc ? ' &gt; ' : ' &lt; ')}`,
+            speech: `네 소수 중에서 가장 ${q.desc ? '큰' : '작은'} 수를 골라 보세요.`
+          };
+        }
+        case 'gadd':
+        case 'gsub': {
+          const add = q.kind === 'gadd';
+          const cls = add ? (k) => (k < q.a ? 'a' : k < q.a + q.b ? 'b' : '') : (k) => (k < q.a - q.b ? 'a' : k < q.a ? 'x' : '');
+          const legend = add
+            ? `<div class="legend"><span><i class="sw"></i>${N(q.a * 10)}</span><span><i class="sw b"></i>${N(q.b * 10)}</span></div>`
+            : `<div class="legend"><span><i class="sw"></i>${N(q.a * 10)}</span><span><i class="sw x"></i>빼는 수 ${N(q.b * 10)}</span></div>`;
+          return {
+            ...base, input: 'keypad',
+            prompt: add ? '두 색으로 칠한 부분은 모두 얼마일까요?' : '✕표 한 부분을 빼면 얼마가 남을까요?',
+            visual: `${hgridHtml(q.grids, cls)}${legend}`,
+            lhs: `${N(q.a * 10)} <span class="op-sym">${OPS[add ? '+' : '-']}</span> ${N(q.b * 10)} <span class="op-sym">=</span>`,
+            unit: '', ans: q.ans, ansHtml: q.ansText, explain: gridExplain(q),
+            speech: `${nKo(q.a * 10)} ${add ? '더하기' : '빼기'} ${nKo(q.b * 10)}${eunNeun(nKo(q.b * 10))} 얼마일까요?`
+          };
+        }
+        case 'fix': {
+          const vals = ['ok', ...q.reasons];
+          return {
+            ...base, input: 'choice', prompt: '이 계산은 맞았을까요? 틀렸다면 무엇이 잘못되었을까요?',
+            visual: vCharHtml(q.a, q.b, q.op, q.shown, q.layout),
+            choices: ['⭕ 계산이 맞아요', ...q.reasons.map((r) => FIX_REASON[r])], cols: 1, txt: true, ans: vals.indexOf(q.err),
+            ansHtml: q.err === 'ok' ? '⭕ 계산이 맞아요' : FIX_REASON[q.err],
+            explain: q.err === 'ok' ? '소수점을 맞추어 바르게 계산했어요.' : `${FIX_REASON[q.err]} 바른 답: ${numHtml(q.correct)}`
+          };
+        }
+        case 'word': {
+          const expr = q.op === '+'
+            ? `${N(q.a)} + ${N(q.b)}`
+            : `${N(Math.max(q.a, q.b))} ${OPS['-']} ${N(Math.min(q.a, q.b))}`;
+          return {
+            ...base, input: 'keypad', prompt: '',
+            visual: `<div class="story"><span class="em">${q.em}</span><p>${q.text}</p></div>`,
+            lhs: '', unit: q.unit, ans: q.r, ansHtml: q.ansText, explain: `${expr} = ${N(q.r)}`
+          };
+        }
+        default:
+          return null;
+      }
+    }
+
+    // 고른 유형을 돌아가며 내고, 같은 문제는 다시 내지 않는다.
+    function bellMakeSet() {
+      const ids = shuffle(bellCfg.sel.filter((id) => BELL_IDS.includes(id)));
+      if (!ids.length) return [];
+      const out = [];
+      const keys = new Set();
+      for (let guard = 0; out.length < bellCfg.count && guard < bellCfg.count * 10; guard += 1) {
+        const id = ids[out.length % ids.length];
+        const raw = MIX_ITEMS[id].make();
+        if (raw.key && keys.has(raw.key)) continue;
+        const bq = toBell(raw);
+        if (!bq || (bq.input === 'choice' && bq.ans < 0) || (bq.input === 'keypad' && !Number.isInteger(bq.ans))) continue;
+        keys.add(raw.key);
+        out.push({ ...bq, id, label: BELL_LABEL[id] || MIX_ITEMS[id].label });
+      }
+      return out;
+    }
+
+    // 맞히면 바로 1000점, 시간이 다 될 즈음이면 500점. 틀리면 0점.
+    function bellPoints(ms, seconds) {
+      const ratio = Math.min(1, Math.max(0, ms) / Math.max(1000, seconds * 1000));
+      return Math.round(BELL_MAX_POINTS * (1 - ratio / 2));
+    }
+
+    /* ---------- 골든벨 준비 (유형·문제 수·시간 고르기) ---------- */
+    function openBellSetup() {
+      renderBellSetup();
+      document.getElementById('bell-overlay').classList.remove('hidden');
+      document.body.classList.add('modal');
+    }
+    function hideBellSetup() {
+      document.getElementById('bell-overlay').classList.add('hidden');
+      document.body.classList.remove('modal');
+    }
+    function renderBellSetup() {
+      const box = document.getElementById('bell-overlay');
+      const prevScroll = box.firstElementChild ? box.firstElementChild.scrollTop : 0;
+      const n = bellCfg.sel.length;
+      const seg = (key, list) => `<div class="seg">${list.map(([v, t]) => `<button type="button" class="${bellCfg[key] === v ? 'on' : ''}" onclick="bellSet('${key}', ${v})">${t}</button>`).join('')}</div>`;
+      box.innerHTML = `
+        <div class="result-card mix-card bell-card">
+          <div class="concept-head">
+            <div class="kid-art"></div>
+            <div><h2>🔔 소수맨 골든벨</h2><p>반 친구들이 각자 태블릿으로 같은 문제를 한꺼번에 풀어요. 맞히면 500~1000점, 빨리 맞힐수록 점수가 높아요.</p></div>
+          </div>
+          <div class="bell-opts">
+            <div class="setting-row"><span class="setting-label">문제 수</span>${seg('count', BELL_COUNTS.map((v) => [v, `${v}문제`]))}</div>
+            <div class="setting-row"><span class="setting-label">한 문제 시간</span>${seg('seconds', BELL_SECONDS.map((v) => [v, `${v}초`]))}</div>
+            <div class="setting-row"><span class="setting-label">정답 공개 뒤</span>${seg('auto', [[0, '선생님이 넘기기'], [5, '5초 뒤 다음'], [10, '10초 뒤 다음']])}</div>
+          </div>
+          ${BELL_LESSONS.map((l) => {
+            const full = l.items.every((id) => bellCfg.sel.includes(id));
+            return `
+              <section class="mix-lesson">
+                <div class="mix-lesson-head">
+                  <span class="mix-page">${l.page}</span>
+                  <h3>${l.title}</h3>
+                  <button class="mix-all${full ? ' on' : ''}" type="button" onclick="bellToggleLesson('${l.id}')">${full ? '모두 해제' : '모두 선택'}</button>
+                </div>
+                <div class="mix-items">${l.items.map((id) => {
+                  const on = bellCfg.sel.includes(id);
+                  return `
+                  <button class="mix-chip${on ? ' on' : ''}" type="button" aria-pressed="${on}" onclick="bellToggleItem('${id}')">
+                    <span class="ck">${CHECK}</span><span class="mi">${ICONS[MIX_ITEMS[id].icon]}</span>${BELL_LABEL[id] || MIX_ITEMS[id].label}
+                  </button>`;
+                }).join('')}
+                </div>
+              </section>`;
+          }).join('')}
+          <div class="mix-foot">
+            <div class="mix-sum">
+              <span><b>${n}</b>가지 유형을 골랐어요</span>
+              <span class="mix-cap">학생은 태블릿·스마트폰으로 QR을 찍어 들어와요 (최대 40명)</span>
+              <span class="bell-err" id="bell-setup-err"></span>
+            </div>
+            <div class="mix-btns">
+              <button class="ghost-btn" type="button" onclick="hideBellSetup()">닫기</button>
+              <button class="btn-main" id="bell-setup-go" type="button" onclick="bellSetupGo()"${n ? '' : ' disabled'}>${BH.code ? '바꾸기' : '방 만들기 →'}</button>
+            </div>
+          </div>
+        </div>`;
+      box.firstElementChild.scrollTop = prevScroll;
+    }
+    function bellSet(key, v) {
+      bellCfg[key] = v;
+      saveBellCfg();
+      renderBellSetup();
+    }
+    function bellToggleItem(id) {
+      bellCfg.sel = bellCfg.sel.includes(id) ? bellCfg.sel.filter((x) => x !== id) : [...bellCfg.sel, id];
+      saveBellCfg();
+      renderBellSetup();
+    }
+    function bellToggleLesson(lid) {
+      const l = BELL_LESSONS.find((x) => x.id === lid);
+      const full = l.items.every((id) => bellCfg.sel.includes(id));
+      bellCfg.sel = full ? bellCfg.sel.filter((id) => !l.items.includes(id)) : [...new Set([...bellCfg.sel, ...l.items])];
+      saveBellCfg();
+      renderBellSetup();
+    }
+    async function bellSetupGo() {
+      if (!bellCfg.sel.length) return;
+      if (BH.code) { hideBellSetup(); bellRender(); bellSend(); return; }
+      const btn = document.getElementById('bell-setup-go');
+      const err = document.getElementById('bell-setup-err');
+      btn.disabled = true;
+      btn.textContent = '방 만드는 중…';
+      err.textContent = '';
+      try {
+        const res = await fetch(`${BELL_SERVER}/api/rooms`, { method: 'POST' });
+        const data = await res.json();
+        if (!res.ok || !data.code) throw new Error(data.error);
+        hideBellSetup();
+        bellHostStart(data.code, data.hostKey);
+      } catch (e) {
+        err.textContent = navigator.onLine === false
+          ? '인터넷에 연결되어 있지 않아요. 골든벨은 인터넷이 있어야 해요.'
+          : '방을 만들지 못했어요. 인터넷 연결을 확인하고 다시 눌러 주세요.';
+        btn.disabled = false;
+        btn.textContent = '방 만들기 →';
+      }
+    }
+
+    /* ---------- 칠판(선생님) ---------- */
+    const BH = {
+      code: '', key: '', sock: null, online: false, roster: [], game: 0,
+      qs: [], index: -1, stage: 'lobby', openedAt: 0, seconds: 20, asked: 0,
+      answers: {}, scores: {}, tick: null, autoTimer: null, revealTimer: null, autoLeft: 0
+    };
+    const bellRound = () => `${BH.code}-${BH.game}-${BH.index}`;
+    const bellOnline = () => BH.roster.filter((p) => p.online);
+
+    function bellHostStart(code, key) {
+      Object.assign(BH, { code, key, online: false, roster: [], game: 0, qs: [], index: -1, stage: 'lobby', answers: {}, scores: {} });
+      BH.sock = new BellSocket(() => `${bellWs()}/api/rooms/${code}/ws?role=host&key=${key}`, {
+        status: (st) => { BH.online = st === 'open'; bellRoomChip(); },
+        message: bellHostMessage
+      });
+      showScreen('bell-screen');
+      bellRender();
+    }
+    function bellHostMessage(m) {
+      if (m.t === 'ready' || m.t === 'players') bellRoster(m.players || [], m.t === 'ready');
+      else if (m.t === 'input') bellInput(m.from, m.data);
+      else if (m.t === 'error' && (m.code === 'closed' || m.code === 'not-found')) {
+        BH.online = false;
+        bellRoomChip();
+        alert('골든벨 방이 닫혔어요. 끝내기를 누른 뒤 새로 만들어 주세요.');
+      } else if (m.t === 'error' && m.message) console.warn('골든벨:', m.message);
+    }
+    function bellRoster(list, all) {
+      const before = new Set(bellOnline().map((p) => p.id));
+      BH.roster = list;
+      list.forEach((p) => { if (BH.scores[p.id]) Object.assign(BH.scores[p.id], { name: p.name, avatar: p.avatar }); });
+      // 칠판이 다시 붙었거나 학생이 새로 들어오면 지금 화면을 보내 준다(방이 잠들었다 깨면 서버는 화면을 잊는다).
+      const fresh = all ? list.map((p) => p.id) : bellOnline().filter((p) => !before.has(p.id)).map((p) => p.id);
+      if (fresh.length) bellSend(fresh);
+      if (BH.stage === 'lobby') bellRender();
+      else bellRefreshLive();
+    }
+    function bellNewScore(p) {
+      return { id: p.id, name: p.name, avatar: p.avatar, points: 0, correct: 0, gained: 0 };
+    }
+
+    // 학생마다 지금 보여 줄 태블릿 화면
+    function bellViewFor(id) {
+      if (BH.stage === 'lobby') {
+        return { screen: 'wait', emoji: '🔔', title: '곧 골든벨을 시작해요', message: `모두 ${bellCfg.count}문제 · 한 문제 ${bellCfg.seconds}초 · 빨리 맞힐수록 점수가 높아요` };
+      }
+      const q = BH.qs[BH.index];
+      const a = BH.answers[id];
+      const s = BH.scores[id];
+      if (BH.stage === 'question') {
+        if (a) return { screen: 'wait', emoji: '✋', title: '답을 냈어요!', message: '정답 공개를 기다려요', round: bellRound() };
+        const left = Math.max(1, (BH.openedAt + BH.seconds * 1000 - Date.now()) / 1000);
+        return {
+          // elapsed: 문제를 낸 뒤 지난 시간. 중간에 다시 들어온 태블릿도 처음부터 잰 시간으로 점수를 받는다.
+          screen: 'q', round: bellRound(), no: BH.index + 1, total: BH.qs.length, seconds: left, elapsed: Date.now() - BH.openedAt,
+          q: { input: q.input, prompt: q.prompt, visual: q.visual, choices: q.choices, cols: q.cols, txt: q.txt, sign: q.sign, lhs: q.lhs, unit: q.unit, big: q.big }
+        };
+      }
+      if (BH.stage === 'reveal') {
+        if (!s) return { screen: 'wait', emoji: '🔔', title: '다음 문제부터 함께 풀어요', message: '칠판을 봐요' };
+        const standing = `지금 ${bellRankOf(id)}등 · ${s.points.toLocaleString()}점`;
+        if (a && a.ok) return { screen: 'result', good: true, title: `정답! +${a.gained}점`, message: standing };
+        return { screen: 'result', good: false, title: a ? '아쉬워요' : '시간이 다 됐어요', answer: q.ansHtml, message: standing };
+      }
+      const ranked = bellRanking();
+      const mine = ranked.find((r) => r.s.id === id);
+      if (!mine) return { screen: 'wait', emoji: '🏆', title: '골든벨 끝!', message: '칠판을 봐요' };
+      return { screen: 'end', rank: mine.rank, count: ranked.length, points: mine.s.points, correct: mine.s.correct, asked: BH.asked };
+    }
+    // 화면을 보낸다. 문제는 모두 같으니 한 번에, 결과는 학생마다 따로.
+    function bellSend(ids) {
+      if (!BH.sock) return;
+      const targets = ids || BH.roster.map((p) => p.id);
+      if (!targets.length) return;
+      if (BH.stage === 'question') {
+        const fresh = targets.filter((id) => !BH.answers[id]);
+        if (fresh.length) BH.sock.send({ t: 'view', to: fresh, view: bellViewFor(fresh[0]) });
+        const done = targets.filter((id) => BH.answers[id]);
+        if (done.length) BH.sock.send({ t: 'view', to: done, view: bellViewFor(done[0]) });
+        return;
+      }
+      const views = {};
+      targets.forEach((id) => { views[id] = bellViewFor(id); });
+      BH.sock.send({ t: 'views', views });
+    }
+
+    function bellStart() {
+      if (!bellOnline().length) return;
+      BH.qs = bellMakeSet();
+      if (!BH.qs.length) return;
+      BH.scores = {};
+      BH.asked = 0;
+      bellOpen(0);
+    }
+    function bellOpen(i) {
+      bellStopTimers();
+      Object.assign(BH, { index: i, stage: 'question', openedAt: Date.now(), seconds: bellCfg.seconds, answers: {} });
+      bellOnline().forEach((p) => { if (!BH.scores[p.id]) BH.scores[p.id] = bellNewScore(p); });
+      Object.values(BH.scores).forEach((s) => { s.gained = 0; });
+      bellSend();
+      bellRender();
+      blip('tick');
+      speak(BH.qs[i].speech);
+      BH.tick = setInterval(bellTick, 200);
+      bellTick();
+    }
+    function bellTick() {
+      const left = BH.openedAt + BH.seconds * 1000 - Date.now();
+      bellTimerUi(Math.ceil(Math.max(0, left) / 1000), BH.seconds);
+      if (left <= -BELL_GRACE_MS) bellReveal();
+    }
+    function bellMore() {
+      if (BH.stage !== 'question') return;
+      BH.seconds += BELL_EXTEND;
+      bellSend(BH.roster.map((p) => p.id).filter((id) => !BH.answers[id]));
+      bellTick();
+    }
+    function bellInput(from, data) {
+      if (!data || data.kind !== 'answer' || BH.stage !== 'question' || data.round !== bellRound() || BH.answers[from]) return;
+      const p = BH.roster.find((x) => x.id === from);
+      if (!p) return;
+      const q = BH.qs[BH.index];
+      let answer;
+      if (q.input === 'choice') {
+        const c = Number(data.choice);
+        if (!Number.isInteger(c) || c < 0 || c >= q.choices.length) return;
+        answer = { choice: c, ok: c === q.ans };
+      } else {
+        const v = String(data.value || '');
+        if (!/^\d{1,7}(\.\d{1,3})?$/.test(v)) return;
+        answer = { value: v, ok: parseNum(v) === q.ans };
+      }
+      // 태블릿이 잰 시간을 쓴다(와이파이가 느린 태블릿이 손해 보지 않게). 다만 칠판이 받은 때보다 길게는 세지 않는다.
+      const arrived = Math.max(0, Date.now() - BH.openedAt);
+      answer.ms = Number.isFinite(data.ms) ? Math.min(arrived, Math.max(0, data.ms)) : arrived;
+      BH.answers[from] = answer;
+      if (!BH.scores[from]) BH.scores[from] = bellNewScore(p);
+      bellSend([from]);
+      bellRefreshLive();
+    }
+    // 들어와 있는 학생이 모두 답하면 잠깐 뒤에 정답을 공개한다.
+    function bellCheckAll() {
+      if (BH.stage !== 'question') return;
+      const answered = Object.keys(BH.answers).length;
+      const total = new Set([...bellOnline().map((p) => p.id), ...Object.keys(BH.answers)]).size;
+      clearTimeout(BH.revealTimer);
+      if (total > 0 && answered >= total) BH.revealTimer = setTimeout(bellReveal, 700);
+    }
+    function bellReveal() {
+      if (BH.stage !== 'question') return;
+      bellStopTimers();
+      Object.entries(BH.answers).forEach(([id, a]) => {
+        const s = BH.scores[id];
+        a.gained = a.ok ? bellPoints(a.ms, BH.seconds) : 0;
+        if (!s) return;
+        s.gained = a.gained;
+        s.points += a.gained;
+        if (a.ok) s.correct += 1;
+      });
+      BH.stage = 'reveal';
+      bellSend();
+      bellRender();
+      blip(Object.values(BH.answers).some((a) => a.ok) ? 'ok' : 'no');
+      if (bellCfg.auto) {
+        BH.autoLeft = bellCfg.auto;
+        bellNextBtn();
+        BH.autoTimer = setInterval(() => {
+          // 학생이 모두 나가 있으면(와이파이가 끊기면) 저절로 넘기지 않고 기다린다.
+          if (!bellOnline().length) return;
+          BH.autoLeft -= 1;
+          bellNextBtn();
+          if (BH.autoLeft <= 0) bellNext();
+        }, 1000);
+      }
+    }
+    function bellNext() {
+      if (BH.stage !== 'reveal') return;
+      if (BH.index >= BH.qs.length - 1) { BH.asked = BH.qs.length; bellEnd(); return; }
+      bellOpen(BH.index + 1);
+    }
+    function bellFinish() {
+      if (BH.stage !== 'question' && BH.stage !== 'reveal') return;
+      if (!confirm('지금까지의 점수로 골든벨을 마칠까요?')) return;
+      BH.asked = BH.stage === 'reveal' ? BH.index + 1 : BH.index;
+      bellEnd();
+    }
+    function bellEnd() {
+      bellStopTimers();
+      BH.stage = 'end';
+      bellSend();
+      bellRender();
+      blip('fanfare');
+    }
+    function bellAgain() {
+      bellStopTimers();
+      Object.assign(BH, { game: BH.game + 1, qs: [], index: -1, stage: 'lobby', answers: {}, scores: {}, asked: 0 });
+      bellSend();
+      bellRender();
+    }
+    function bellStopTimers() {
+      clearInterval(BH.tick);
+      clearInterval(BH.autoTimer);
+      clearTimeout(BH.revealTimer);
+      BH.autoLeft = 0;
+    }
+    function bellKick(id) {
+      const p = BH.roster.find((x) => x.id === id);
+      if (!p || !BH.sock || !confirm(`${p.name}${eulReul(p.name)} 방에서 내보낼까요?`)) return;
+      BH.sock.send({ t: 'kick', playerId: id });
+    }
+    function bellCloseRoom() {
+      bellStopTimers();
+      if (BH.sock) {
+        const sock = BH.sock;
+        sock.send({ t: 'close' });
+        // 닫는 말이 서버에 닿을 틈을 준다
+        setTimeout(() => sock.close(), 400);
+      }
+      Object.assign(BH, { sock: null, code: '', key: '', roster: [], online: false, stage: 'lobby', qs: [], index: -1, answers: {}, scores: {} });
+    }
+    function bellQuit() {
+      if (BH.stage !== 'end' && BH.roster.length && !confirm('골든벨을 끝내고 방을 닫을까요? 학생 태블릿도 함께 끝나요.')) return;
+      bellCloseRoom();
+      showScreen('game-select-screen');
+    }
+
+    function bellRanking() {
+      const list = Object.values(BH.scores).sort((a, b) => b.points - a.points || b.correct - a.correct || a.name.localeCompare(b.name, 'ko'));
+      return list.map((s) => ({ s, rank: list.findIndex((o) => o.points === s.points) + 1 }));
+    }
+    function bellRankOf(id) {
+      const r = bellRanking().find((x) => x.s.id === id);
+      return r ? r.rank : 0;
+    }
+
+    /* ---------- 칠판 그리기 ---------- */
+    function bellJoinUrl() {
+      const base = /^https?:$/.test(location.protocol) ? `${location.origin}${location.pathname}` : BELL_PAGE_URL;
+      const u = new URL(base);
+      u.searchParams.set('bell', BH.code);
+      if (BELL_LOCAL) u.searchParams.set('bellServer', BELL_LOCAL);
+      return u.toString();
+    }
+    function bellRoomChip() {
+      const el = document.getElementById('bell-room');
+      if (!el) return;
+      el.className = `bell-room${BH.online ? '' : ' off'}`;
+      el.innerHTML = `<span class="dot"></span>방 <b>${BH.code}</b> · 👥 ${bellOnline().length}`;
+      el.title = BH.online ? '서버에 연결되어 있어요' : '서버에 다시 연결하는 중이에요';
+    }
+    function bellTimerUi(left, total) {
+      const t = document.getElementById('bell-timer');
+      if (total === null) { t.classList.add('hidden'); return; }
+      t.className = `timer${left <= 5 ? ' warn' : ''}`;
+      document.getElementById('bell-time-left').textContent = String(left);
+      document.getElementById('bell-timer-bar').style.strokeDashoffset = String(157.08 * (1 - Math.min(1, left / total)));
+    }
+    function bellScale() {
+      const body = document.getElementById('bell-body');
+      if (body && body.offsetParent !== null) {
+        body.style.setProperty('--s', clamp(Math.min(body.clientWidth / 1000, body.clientHeight / 660), 0.85, 1.6).toFixed(2));
+      }
+      const pad = document.getElementById('bp-body');
+      if (pad && pad.offsetParent !== null) pad.style.setProperty('--s', clamp(pad.clientWidth / 600, 0.75, 1.25).toFixed(2));
+    }
+    function bellRender() {
+      const body = document.getElementById('bell-body');
+      bellScale();
+      bellRoomChip();
+      const sub = {
+        lobby: '학생들이 다 들어오면 시작해요',
+        question: '태블릿으로 답을 내요',
+        reveal: '정답을 확인해요',
+        end: '골든벨 결과'
+      };
+      document.getElementById('bell-sub').textContent = sub[BH.stage];
+      document.getElementById('bell-finish').classList.toggle('hidden', BH.stage !== 'question' && BH.stage !== 'reveal');
+      if (BH.stage !== 'question') bellTimerUi(0, null);
+      if (BH.stage === 'lobby') body.innerHTML = bellLobbyHtml();
+      else if (BH.stage === 'question') body.innerHTML = bellQuestionHtml();
+      else if (BH.stage === 'reveal') body.innerHTML = bellRevealHtml();
+      else body.innerHTML = bellEndHtml();
+      body.scrollTop = 0;
+      bellRefreshLive();
+    }
+    // 답이 들어올 때마다 화면 전체를 다시 그리지 않고 숫자만 바꾼다.
+    function bellRefreshLive() {
+      bellRoomChip();
+      if (BH.stage !== 'question') return;
+      const answered = Object.keys(BH.answers).length;
+      const total = new Set([...bellOnline().map((p) => p.id), ...Object.keys(BH.answers)]).size;
+      const count = document.getElementById('bell-count');
+      if (count) count.innerHTML = `<b>${answered}</b> / ${total}명 답했어요`;
+      const bar = document.getElementById('bell-bar');
+      if (bar) bar.style.width = `${total ? (answered / total) * 100 : 0}%`;
+      const faces = document.getElementById('bell-faces');
+      if (faces) faces.innerHTML = bellFacesHtml();
+      bellCheckAll();
+    }
+    function bellFacesHtml() {
+      return Object.keys(BH.answers).map((id) => {
+        const s = BH.scores[id];
+        return s ? `<span title="${bellEsc(s.name)}">${bellEmoji(s.avatar)}</span>` : '';
+      }).join('');
+    }
+    function bellLobbyHtml() {
+      const on = bellOnline().length;
+      const chips = BH.roster.map((p) => `
+        <span class="bell-chip${p.online ? '' : ' off'}">
+          <span class="em">${bellEmoji(p.avatar)}</span>${bellEsc(p.name)}
+          <button class="x" type="button" onclick="bellKick('${bellEsc(p.id)}')" aria-label="${bellEsc(p.name)} 내보내기" title="내보내기">✕</button>
+        </span>`).join('');
+      return `
+        <div class="bell-lobby">
+          <section class="bell-panel bell-joinbox">
+            <img class="bell-qr" src="${BELL_SERVER}/api/qr?text=${encodeURIComponent(bellJoinUrl())}" alt="골든벨 들어가는 QR 코드" />
+            <span class="bell-code-label">방 번호</span>
+            <span class="bell-code">${BH.code}</span>
+            <p class="bell-hint">태블릿 카메라로 <b>QR</b>을 찍거나<br />쌤노리 홈 → 소수맨 → <b>🔔 골든벨 참여</b>에서 방 번호를 넣어요</p>
+          </section>
+          <section class="bell-panel bell-rosterbox">
+            <h3>들어온 친구 <b>${on}</b>명</h3>
+            <div class="bell-chips">${chips || '<p class="bell-empty">아직 아무도 없어요.<br />QR을 찍고 이름을 쓰면 여기에 나타나요.</p>'}</div>
+            <div class="bell-sum">
+              <span>📝 ${bellCfg.count}문제</span><span>⏱ 한 문제 ${bellCfg.seconds}초</span><span>🧩 유형 ${bellCfg.sel.length}가지</span>
+              <button class="ghost-btn" type="button" onclick="openBellSetup()">설정 바꾸기</button>
+            </div>
+            <button class="btn-main bell-go" type="button" onclick="bellStart()"${on ? '' : ' disabled'}>▶ 골든벨 시작</button>
+          </section>
+        </div>`;
+    }
+    function bellQHeadHtml(q) {
+      return `<div class="bell-qhead"><span class="bell-tag no">문제 ${BH.index + 1} / ${BH.qs.length}</span><span class="bell-tag">${ICONS[MIX_ITEMS[q.id].icon]}${q.label}</span></div>`;
+    }
+    function bellCardHtml(q, reveal) {
+      let body = reveal && q.ansVisual ? q.ansVisual : q.visual || '';
+      if (q.input === 'keypad') {
+        const box = reveal ? `<span class="ans-box bell-ans">${N(q.ans)}</span>` : '<span class="ans-box"><span class="ph">?</span></span>';
+        body += `<div class="ans-line"${q.big ? ' style="font-size:calc(var(--s) * 38px)"' : ''}>${q.lhs || ''}${box}${q.unit ? `<span class="unit-txt">${q.unit}</span>` : ''}</div>`;
+      }
+      return `<div class="q-card">${q.prompt ? `<div class="q-text"><span>${q.prompt}</span></div>` : ''}${body}</div>`;
+    }
+    function bellChoicesHtml(q, counts) {
+      if (q.input !== 'choice') return '';
+      return `<div class="choices c${q.cols || 2}${q.txt ? ' txtc' : ''} bell-show">${q.choices.map((html, i) => {
+        const st = !counts ? '' : i === q.ans ? ' right' : counts[i] ? ' wrong' : ' dim';
+        return `<div class="choice${q.txt ? ' txt' : ''}${q.sign ? ' sign' : ''}${st}"><span class="mk">${i + 1}</span>${html}${counts ? `<span class="ct">${counts[i]}명</span>` : ''}</div>`;
+      }).join('')}</div>`;
+    }
+    function bellLeadersHtml(showGained) {
+      const ranked = bellRanking().filter((r) => showGained || r.s.points > 0);
+      if (!ranked.length) return '<p class="bell-more">첫 문제의 정답이 나오면 순위가 보여요.</p>';
+      return `<ol class="bell-leaders">${ranked.slice(0, BELL_LEADERS).map(({ s, rank }) => `
+        <li class="bell-leader r${rank}">
+          <span class="rk">${rank === 1 ? '👑' : rank}</span><span class="em">${bellEmoji(s.avatar)}</span>
+          <span class="nm">${bellEsc(s.name)}</span>
+          <span class="pt">${s.points.toLocaleString()}${showGained && s.gained ? `<small>+${s.gained}</small>` : ''}</span>
+        </li>`).join('')}</ol>${ranked.length > BELL_LEADERS ? `<p class="bell-more">외 ${ranked.length - BELL_LEADERS}명</p>` : ''}`;
+    }
+    function bellQuestionHtml() {
+      const q = BH.qs[BH.index];
+      return `
+        <div class="bell-play">
+          <div class="bell-main">
+            ${bellQHeadHtml(q)}
+            ${bellCardHtml(q, false)}
+            ${q.input === 'choice' ? bellChoicesHtml(q) : '<p class="bell-padnote">📝 태블릿 키패드로 답을 써요</p>'}
+            <div class="bell-faces" id="bell-faces">${bellFacesHtml()}</div>
+            <div class="bell-foot">
+              <span class="bell-count" id="bell-count"></span>
+              <span class="bell-bar"><i id="bell-bar"></i></span>
+              <button class="ghost-btn" type="button" onclick="bellMore()">+${BELL_EXTEND}초</button>
+              <button class="btn-main" type="button" onclick="bellReveal()">정답 공개</button>
+            </div>
+          </div>
+          <aside class="bell-panel bell-side"><h3>👑 지금 순위</h3>${bellLeadersHtml(false)}</aside>
+        </div>`;
+    }
+    function bellNextLabel() {
+      const last = BH.index >= BH.qs.length - 1;
+      return `${last ? '🏆 결과 보기' : '다음 문제 ▶'}${BH.autoLeft > 0 ? `<small>${BH.autoLeft}</small>` : ''}`;
+    }
+    function bellNextBtn() {
+      const b = document.getElementById('bell-next');
+      if (b) b.innerHTML = bellNextLabel();
+    }
+    function bellRevealHtml() {
+      const q = BH.qs[BH.index];
+      const answers = Object.values(BH.answers);
+      const right = answers.filter((a) => a.ok).length;
+      let counts = null;
+      if (q.input === 'choice') {
+        counts = q.choices.map(() => 0);
+        answers.forEach((a) => { counts[a.choice] += 1; });
+      }
+      return `
+        <div class="bell-play">
+          <div class="bell-main">
+            ${bellQHeadHtml(q)}
+            <p class="bell-result-head">${answers.length}명 중 <b>${right}명</b> 정답!</p>
+            ${bellCardHtml(q, true)}
+            ${bellChoicesHtml(q, counts)}
+            ${q.explain ? `<p class="bell-explain">💡 ${q.explain}</p>` : ''}
+            <div class="bell-foot end"><button class="btn-main bell-next" id="bell-next" type="button" onclick="bellNext()">${bellNextLabel()}</button></div>
+          </div>
+          <aside class="bell-panel bell-side"><h3>👑 지금 순위</h3>${bellLeadersHtml(true)}</aside>
+        </div>`;
+    }
+    function bellEndHtml() {
+      const ranked = bellRanking();
+      const pods = [1, 0, 2].map((i) => (ranked[i] ? { ...ranked[i], pos: i + 1 } : null)).filter(Boolean);
+      return `
+        <div class="bell-end">
+          <h2>🏆 골든벨 결과</h2>
+          <p class="sub">${BH.asked}문제 · ${ranked.length}명 참가</p>
+          ${pods.length ? `<div class="bell-podium">${pods.map(({ s, rank, pos }) => `
+            <div class="bell-pod p${pos}">
+              <span class="em">${bellEmoji(s.avatar)}</span>
+              <span class="nm">${bellEsc(s.name)}</span>
+              <span class="pt">${s.points.toLocaleString()}점 · ${s.correct}문제</span>
+              <div class="block">${rank}</div>
+            </div>`).join('')}</div>` : '<p class="bell-more">참가한 학생이 없어요.</p>'}
+          <div class="bell-rest">${ranked.slice(3).map(({ s, rank }) => `
+            <div class="rank-row r0"><span class="rk">${rank}</span><span>${bellEmoji(s.avatar)} ${bellEsc(s.name)}</span><strong>${s.points.toLocaleString()}점 <small>(${s.correct}/${BH.asked})</small></strong></div>`).join('')}
+          </div>
+          <div class="result-btns">
+            <button class="btn-main" type="button" onclick="bellAgain()">🔁 같은 방에서 한 번 더</button>
+            <button class="ghost-btn" type="button" onclick="bellQuit()">끝내기</button>
+          </div>
+        </div>`;
+    }
+
+    /* ---------- 학생 태블릿 ---------- */
+    const BP = { code: '', sock: null, me: null, status: 'closed', view: null, round: '', shownAt: 0, deadline: 0, total: 0, input: '', picked: -1, sent: false, expired: false, timer: null, ended: false };
+    let bellMe = { name: '', avatar: '' };
+    try { bellMe = { ...bellMe, ...JSON.parse(localStorage.getItem(BELL_ME_KEY) || '{}') }; } catch (err) { /* 무시 */ }
+    const bellResumeKey = (code) => `sosuman-bell-room:${code}`;
+    function bellResume(code) {
+      try {
+        const v = JSON.parse(localStorage.getItem(bellResumeKey(code)) || 'null');
+        return v && v.pid && v.token ? v : null;
+      } catch (err) { return null; }
+    }
+    function bellSaveResume(code, v) {
+      try {
+        if (v) localStorage.setItem(bellResumeKey(code), JSON.stringify(v));
+        else localStorage.removeItem(bellResumeKey(code));
+      } catch (err) { /* 저장소를 못 쓰면 새로 불러올 때 다시 입장한다 */ }
+    }
+    function bellSetUrl(code) {
+      try {
+        const u = new URL(location.href);
+        if (code) u.searchParams.set('bell', code);
+        else u.searchParams.delete('bell');
+        history.replaceState(null, '', u);
+      } catch (err) { /* 주소를 못 바꾸는 환경이면 그대로 둔다 */ }
+    }
+
+    function openBellPad(code) {
+      BP.code = code || '';
+      showScreen('bell-join-screen');
+      bellPadTop();
+      if (BP.code && bellResume(BP.code)) bellConnect();
+      else bellPadForm();
+      bellScale();
+    }
+    function bellPadTop() {
+      document.getElementById('bp-me').innerHTML = BP.me
+        ? `<span class="em">${bellEmoji(BP.me.avatar)}</span>${bellEsc(BP.me.name)}`
+        : '🔔 골든벨';
+      document.getElementById('bp-room').textContent = BP.code && BP.sock ? `방 ${BP.code}` : '';
+      document.getElementById('bp-dot').className = `bp-dot ${BP.sock ? BP.status : ''}`;
+    }
+    function bellPadForm(errMsg) {
+      clearInterval(BP.timer);
+      BP.view = null;
+      BP.me = null;
+      bellPadTop();
+      if (!bellMe.avatar) bellMe.avatar = pick(BELL_ANIMALS)[0];
+      document.getElementById('bp-body').innerHTML = `
+        <div class="bp-form">
+          <div class="kid-art"></div>
+          <h2>🔔 골든벨 참여</h2>
+          <label class="bp-field">방 번호<input id="bp-code" class="code" inputmode="numeric" autocomplete="off" maxlength="5" value="${bellEsc(BP.code)}" placeholder="칠판의 다섯 자리" /></label>
+          <label class="bp-field">내 이름<input id="bp-name" maxlength="12" autocomplete="off" value="${bellEsc(bellMe.name)}" placeholder="이름을 써요" /></label>
+          <div class="bp-field">내 동물
+            <div class="bp-animals" id="bp-animals">${BELL_ANIMALS.map(([id, em]) => `<button type="button" class="${id === bellMe.avatar ? 'on' : ''}" data-id="${id}" onclick="bellPickAnimal('${id}')">${em}</button>`).join('')}</div>
+          </div>
+          <p class="bp-err" id="bp-err">${bellEsc(errMsg || '')}</p>
+          <button class="btn-main" type="button" onclick="bellJoin()">들어가기 →</button>
+        </div>`;
+      const focus = document.getElementById(BP.code ? 'bp-name' : 'bp-code');
+      if (focus && !focus.value) focus.focus();
+    }
+    function bellPickAnimal(id) {
+      bellMe.avatar = id;
+      document.querySelectorAll('#bp-animals button').forEach((b) => b.classList.toggle('on', b.dataset.id === id));
+    }
+    async function bellJoin() {
+      const code = document.getElementById('bp-code').value.replace(/\D/g, '');
+      const name = document.getElementById('bp-name').value.trim().slice(0, 12);
+      const err = document.getElementById('bp-err');
+      if (code.length !== 5) { err.textContent = '칠판에 있는 방 번호 다섯 자리를 써 주세요.'; return; }
+      if (!name) { err.textContent = '이름을 써 주세요.'; return; }
+      bellMe.name = name;
+      try { localStorage.setItem(BELL_ME_KEY, JSON.stringify(bellMe)); } catch (e) { /* 무시 */ }
+      err.textContent = '방을 찾는 중…';
+      try {
+        const res = await fetch(`${BELL_SERVER}/api/rooms/${code}`);
+        const info = await res.json();
+        if (!info.open) { err.textContent = '그 번호의 방이 없어요. 칠판의 방 번호를 다시 봐요.'; return; }
+      } catch (e) {
+        err.textContent = '서버에 연결하지 못했어요. 와이파이를 확인해 주세요.';
+        return;
+      }
+      BP.code = code;
+      bellSetUrl(code);
+      bellConnect();
+    }
+    function bellConnect() {
+      if (BP.sock) BP.sock.close();
+      Object.assign(BP, { ended: false, view: null, round: '', sent: false });
+      bellPadBig('🔌', '연결하는 중…', '잠깐만 기다려요');
+      const sock = new BellSocket(() => {
+        const r = bellResume(BP.code);
+        return `${bellWs()}/api/rooms/${BP.code}/ws?role=player${r ? `&pid=${encodeURIComponent(r.pid)}&token=${encodeURIComponent(r.token)}` : ''}`;
+      }, {
+        status: (st) => {
+          if (BP.sock !== sock) return;
+          BP.status = st;
+          bellPadTop();
+          if (st === 'open' && !bellResume(BP.code)) sock.send({ t: 'join', name: bellMe.name, avatar: bellMe.avatar });
+        },
+        message: (m) => { if (BP.sock === sock) bellPadMessage(m); }
+      });
+      BP.sock = sock;
+      bellPadTop();
+    }
+    function bellPadMessage(m) {
+      if (m.t === 'welcome') {
+        bellSaveResume(BP.code, { pid: m.player.id, token: m.token });
+        BP.me = m.player;
+        bellPadTop();
+        if (!BP.view) bellPadBig('🔔', '들어왔어요!', '칠판을 보며 기다려요');
+      } else if (m.t === 'view') {
+        bellPadView(m.view);
+      } else if (m.t === 'error' && m.code === 'bad-token') {
+        // 내보냈거나 지난 방의 입장 정보다. 이름이 있으면 바로 새로 들어간다.
+        bellSaveResume(BP.code, null);
+        if (bellMe.name) BP.sock.send({ t: 'join', name: bellMe.name, avatar: bellMe.avatar });
+        else { BP.sock.close(); BP.sock = null; bellPadForm(); }
+      } else if (m.t === 'error' && m.code === 'bad-name') {
+        BP.sock.close();
+        BP.sock = null;
+        bellPadForm(m.message);
+      } else if (m.t === 'closed' || m.t === 'error') {
+        if (m.t === 'closed' || ['kicked', 'not-found', 'closed'].includes(m.code)) bellSaveResume(BP.code, null);
+        bellPadEnded(m.t === 'closed' ? '골든벨이 끝났어요' : m.message);
+      }
+    }
+    function bellPadEnded(message) {
+      clearInterval(BP.timer);
+      BP.ended = true;
+      const btns = `<div class="bp-btns"><button class="btn-main" type="button" onclick="bellPadForm()">다른 방 들어가기</button><button class="ghost-btn" type="button" onclick="bellLeave(true)">처음으로</button></div>`;
+      // 최종 등수를 보고 있었다면 그대로 두고 아래에 버튼만 붙인다.
+      if (BP.view && BP.view.screen === 'end') {
+        const card = document.querySelector('#bp-body .bp-big');
+        if (card && !card.querySelector('.bp-btns')) card.insertAdjacentHTML('beforeend', btns);
+      } else {
+        bellPadBig('🔔', message || '골든벨이 끝났어요', '선생님이 새 방을 열면 방 번호로 다시 들어와요', '', btns);
+      }
+      BP.sock = null;
+      bellPadTop();
+    }
+    function bellLeave(force) {
+      if (!force && BP.sock && !BP.ended && !confirm('골든벨에서 나갈까요?')) return;
+      clearInterval(BP.timer);
+      if (BP.sock) BP.sock.close();
+      Object.assign(BP, { sock: null, me: null, view: null, ended: false });
+      bellSetUrl('');
+      showScreen('start-screen');
+    }
+    function bellPadBig(emoji, title, message, cls = '', extra = '') {
+      clearInterval(BP.timer);
+      document.getElementById('bp-body').innerHTML = `
+        <div class="bp-big${cls ? ` ${cls}` : ''}">
+          <span class="emo">${emoji}</span>
+          <h2>${bellEsc(title || '')}</h2>
+          ${message ? `<p>${bellEsc(message)}</p>` : ''}
+          ${extra}
+        </div>`;
+    }
+    function bellPadView(v) {
+      if (!v || typeof v !== 'object') return;
+      // 답을 낸 뒤 오는 '답을 냈어요'는 고른 답이 보이는 지금 화면을 그대로 둔다.
+      if (v.screen === 'wait' && v.round && v.round === BP.round && BP.sent && document.querySelector('#bp-body .bp-q')) {
+        BP.view = v;
+        return;
+      }
+      BP.view = v;
+      if (v.screen === 'q') { bellPadQuestion(v); return; }
+      if (v.screen === 'wait') { bellPadBig(v.emoji || '🔔', v.title, v.message); return; }
+      if (v.screen === 'result') {
+        blip(v.good ? 'ok' : 'no');
+        bellPadBig(v.good ? '🎉' : '💪', v.title, v.message, v.good ? 'good' : 'bad', v.answer ? `<span class="ans">정답: ${v.answer}</span>` : '');
+        return;
+      }
+      if (v.screen === 'end') {
+        blip('fanfare');
+        const medal = ['🥇', '🥈', '🥉'][v.rank - 1] || '🏅';
+        bellPadBig(medal, `최종 ${v.rank}등!`, `${v.count}명 중 ${v.rank}등 · ${Number(v.points).toLocaleString()}점 · ${v.asked}문제 중 ${v.correct}문제 정답`, v.rank <= 3 ? 'good' : '');
+      }
+    }
+    function bellPadQuestion(v) {
+      clearInterval(BP.timer);
+      if (BP.round !== v.round) Object.assign(BP, { round: v.round, input: '', picked: -1, sent: false, expired: false, shownAt: Date.now() - (Number(v.elapsed) || 0) });
+      BP.deadline = Date.now() + v.seconds * 1000;
+      BP.total = v.seconds * 1000;
+      BP.expired = false;
+      const q = v.q;
+      let card = q.visual || '';
+      let controls;
+      if (q.input === 'choice') {
+        controls = `<div class="choices c${q.cols || 2}${q.txt ? ' txtc' : ''}">${q.choices.map((html, i) => `
+          <button class="choice${q.txt ? ' txt' : ''}${q.sign ? ' sign' : ''}${i === BP.picked ? ' picked' : ''}" type="button" onclick="bellPadPick(${i})">${html}</button>`).join('')}</div>`;
+      } else {
+        card += `<div class="ans-line"${q.big ? ' style="font-size:calc(var(--s) * 38px)"' : ''}>${q.lhs || ''}<span class="ans-box" id="bp-ans">${bellPadAnsHtml()}</span>${q.unit ? `<span class="unit-txt">${q.unit}</span>` : ''}</div>`;
+        const keys = ['7', '8', '9', 'del', '4', '5', '6', '.', '1', '2', '3', '0'];
+        controls = `<div class="keypad k4">${keys.map((k) => {
+          if (k === 'del') return '<button class="key fn" type="button" onclick="bellPadKey(\'del\')" aria-label="지우기">⌫</button>';
+          if (k === '.') return '<button class="key dotk" type="button" onclick="bellPadKey(\'.\')" aria-label="소수점"><i></i></button>';
+          return `<button class="key" type="button" onclick="bellPadKey('${k}')">${k}</button>`;
+        }).join('')}</div>
+          <button class="btn-main bp-submit" type="button" onclick="bellPadSubmit()">답 내기</button>`;
+      }
+      document.getElementById('bp-body').innerHTML = `
+        <div class="bp-q${BP.sent ? ' locked' : ''}" id="bp-q">
+          <div class="bp-qhead"><span>${Number(v.no)} / ${Number(v.total)}</span><span class="bp-time" id="bp-time"><i id="bp-tbar"></i></span><span class="bp-left" id="bp-left"></span></div>
+          <div class="q-card">${q.prompt ? `<div class="q-text"><span>${q.prompt}</span></div>` : ''}${card}</div>
+          ${controls}
+          <div class="bp-msg" id="bp-msg">${BP.sent ? '✋ 답을 냈어요! 정답 공개를 기다려요' : ''}</div>
+        </div>`;
+      bellScale();
+      if (!BP.sent) {
+        BP.timer = setInterval(bellPadTick, 200);
+        bellPadTick();
+      }
+    }
+    function bellPadTick() {
+      const left = BP.deadline - Date.now();
+      const bar = document.getElementById('bp-tbar');
+      if (!bar) { clearInterval(BP.timer); return; }
+      bar.style.transform = `scaleX(${Math.max(0, left) / Math.max(1, BP.total)})`;
+      document.getElementById('bp-time').classList.toggle('warn', left <= 5000);
+      document.getElementById('bp-left').textContent = `${Math.ceil(Math.max(0, left) / 1000)}초`;
+      if (left <= 0) {
+        clearInterval(BP.timer);
+        BP.expired = true;
+        document.getElementById('bp-q').classList.add('locked');
+        bellPadMsg('⏰ 시간이 다 됐어요. 정답 공개를 기다려요', '');
+      }
+    }
+    function bellPadMsg(text, cls) {
+      const el = document.getElementById('bp-msg');
+      if (!el) return;
+      el.className = `bp-msg${cls ? ` ${cls}` : ''}`;
+      el.textContent = text;
+    }
+    function bellPadAnsHtml() {
+      return BP.input ? numHtml(BP.input) : '<span class="ph">?</span>';
+    }
+    function bellPadCanAnswer() {
+      return BP.view && BP.view.screen === 'q' && !BP.sent && !BP.expired && BP.sock;
+    }
+    function bellPadSend(data) {
+      BP.sent = true;
+      clearInterval(BP.timer);
+      BP.sock.send({ t: 'input', data: { kind: 'answer', round: BP.round, ms: Date.now() - BP.shownAt, ...data } });
+      document.getElementById('bp-q').classList.add('locked');
+      bellPadMsg('✋ 답을 냈어요! 정답 공개를 기다려요', '');
+    }
+    function bellPadPick(i) {
+      if (!bellPadCanAnswer()) return;
+      BP.picked = i;
+      document.querySelectorAll('#bp-q .choice').forEach((b, k) => b.classList.toggle('picked', k === i));
+      bellPadSend({ choice: i });
+    }
+    function bellPadKey(key) {
+      if (!bellPadCanAnswer()) return;
+      if (key === 'del') BP.input = BP.input.slice(0, -1);
+      else if (key === '.') {
+        if (BP.input.includes('.')) return;
+        BP.input = `${BP.input || '0'}.`;
+      } else {
+        if (BP.input.replace('.', '').length >= 7) return;
+        if (BP.input.includes('.') && BP.input.split('.')[1].length >= 3) return;
+        BP.input = BP.input === '0' ? key : BP.input + key;
+      }
+      bellPadMsg('', '');
+      const el = document.getElementById('bp-ans');
+      if (el) el.innerHTML = bellPadAnsHtml();
+    }
+    function bellPadSubmit() {
+      if (!bellPadCanAnswer()) return;
+      if (!BP.input || BP.input.endsWith('.')) { bellPadMsg('답을 끝까지 써 주세요.', 'hint'); return; }
+      bellPadSend({ value: BP.input });
+    }
+
+    // 태블릿에 키보드가 있으면 숫자·소수점·지우기·엔터로도 답한다.
+    document.addEventListener('keydown', (e) => {
+      if (document.getElementById('bell-join-screen').classList.contains('hidden') || !bellPadCanAnswer()) return;
+      if (e.target && e.target.tagName === 'INPUT') return;
+      const q = BP.view.q;
+      if (q.input === 'choice') {
+        const i = Number(e.key) - 1;
+        if (Number.isInteger(i) && i >= 0 && i < q.choices.length) { bellPadPick(i); e.preventDefault(); }
+        return;
+      }
+      if (/^[0-9]$/.test(e.key) || e.key === '.') bellPadKey(e.key);
+      else if (e.key === 'Backspace') bellPadKey('del');
+      else if (e.key === 'Enter') bellPadSubmit();
+      else return;
+      e.preventDefault();
+    });
+
+    // 골든벨을 하는 중에 칠판 창을 닫거나 새로 불러오면 학생 태블릿이 멈춘 채로 남으니 한 번 묻고, 떠나면 방을 닫는다.
+    window.addEventListener('beforeunload', (e) => {
+      if (BH.sock && BH.stage !== 'end' && BH.stage !== 'lobby') { e.preventDefault(); e.returnValue = ''; }
+    });
+    window.addEventListener('pagehide', () => { if (BH.sock) BH.sock.send({ t: 'close' }); });
+    window.addEventListener('resize', bellScale);
+
+    function bellBoot() {
+      const code = PAGE_PARAMS.get('bell');
+      if (code && /^\d{5}$/.test(code)) openBellPad(code);
+    }
+
+    /* =========================================================
        키보드 (혼자 할 때)
        ========================================================= */
     document.addEventListener('keydown', (e) => {
@@ -4752,6 +6030,7 @@
     renderStages();
     renderPlayerSeg();
     animateHero();
+    bellBoot();
   </script>
 </body>
 </html>
