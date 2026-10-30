@@ -1149,6 +1149,16 @@ body.card-stats-visible .card-stats:not([hidden]) {
   color: #17191f;
 }
 
+.program-guide h3 {
+  color: var(--text-primary);
+  font-size: 1.1rem;
+  margin: 2rem 0 0.7rem;
+}
+
+.program-guide ul {
+  margin-top: 0.6rem;
+}
+
 .program-image-block {
   margin: 1.2rem 0 0;
 }
