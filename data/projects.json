@@ -411,7 +411,7 @@
     "category": "web-game",
     "badge": "웹게임",
     "thumbnail": "assets/thumbnails/decimalman.svg",
-    "description": "소수 계산과 19종의 A4 학습지를 익히고, 최대 40명이 QR로 참여하는 실시간 골든벨을 즐기는 4학년 2학기 수학 게임입니다.",
+    "description": "소수 계산과 19종의 A4 학습지를 익히고, 최대 40명이 참여하는 실시간 골든벨·시간 대결을 즐기는 4학년 2학기 수학 게임입니다.",
     "actions": [
       {
         "type": "play",
