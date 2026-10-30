@@ -1709,6 +1709,7 @@
     .bell-join-btn { height: 58px; padding: 0 22px; border-radius: 20px; border-color: #ffd36b; background: #fffaf0; color: #9a6400; font-size: 18px; font-weight: 850; }
     .bell-card .bell-opts { display: flex; flex-wrap: wrap; gap: 10px 18px; margin-top: 14px; padding: 14px 16px; border-radius: 20px; background: #fff8e3; }
     .bell-card .seg button { padding: 0 12px; }
+    .bell-pad-link { align-self: flex-start; color: var(--teal-d); font-size: 14px; font-weight: 800; text-decoration: underline; }
     .bell-err { color: var(--bad); font-size: 14px; font-weight: 800; }
     .bell-err:empty { display: none; }
 
@@ -1899,7 +1900,6 @@
         <p class="hero-sub">0.01과 0.001부터 크기 비교, 덧셈과 뺄셈까지 <br /><strong>모눈종이 · 수직선 · 세로셈</strong>으로 차근차근 익혀요</p>
         <div class="hero-actions">
           <button class="start-btn" type="button" onclick="showScreen('game-select-screen')">시작하기 →</button>
-          <button class="ghost-btn bell-join-btn" type="button" onclick="openBellPad()">🔔 골든벨 참여</button>
           <span class="hero-note">1~6명이 한 화면에서 함께 겨뤄요</span>
         </div>
         <div class="topic-list" aria-hidden="true">
@@ -5256,6 +5256,7 @@
               <span><b>${n}</b>가지 유형을 골랐어요</span>
               <span class="mix-cap">학생은 태블릿·스마트폰으로 QR을 찍어 들어와요 (최대 40명)</span>
               <span class="bell-err" id="bell-setup-err"></span>
+              <button class="bell-pad-link" type="button" onclick="hideBellSetup(); openBellPad()">📱 학생 태블릿으로 참여 →</button>
             </div>
             <div class="mix-btns">
               <button class="ghost-btn" type="button" onclick="hideBellSetup()">닫기</button>
@@ -5726,7 +5727,7 @@
             <img class="bell-qr" src="${BELL_SERVER}/api/qr?text=${encodeURIComponent(bellJoinUrl())}" alt="골든벨 들어가는 QR 코드" />
             <span class="bell-code-label">방 번호</span>
             <span class="bell-code">${BH.code}</span>
-            <p class="bell-hint">태블릿 카메라로 <b>QR</b>을 찍거나<br />쌤노리 홈 → 소수맨 → <b>🔔 골든벨 참여</b>에서 방 번호를 넣어요</p>
+            <p class="bell-hint">태블릿 카메라로 <b>QR</b>을 찍거나<br />QR이 안 되면 소수맨 → 🔔 골든벨 → <b>학생 태블릿으로 참여</b>에서 방 번호를 넣어요</p>
           </section>
           <section class="bell-panel bell-rosterbox">
             <h3>들어온 친구 <b>${on}</b>명</h3>
