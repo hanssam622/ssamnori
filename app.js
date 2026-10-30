@@ -234,7 +234,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!portfolioGrid) return;
 
     try {
-      const response = await fetch('data/projects.json?v=20261015');
+      const response = await fetch('data/projects.json', { cache: 'no-store' });
       if (!response.ok) throw new Error(`Project data request failed: ${response.status}`);
       const projects = await response.json();
       renderProjects(projects);
