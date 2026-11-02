@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>소수맨</title>
-  <meta name="description" content="소수 계산과 A4 학습지 만들기, 최대 40명이 함께하는 실시간 골든벨과 제한 시간 대결을 즐기는 수학 게임입니다." />
+  <meta name="description" content="소수 계산과 A4 학습지, 실시간 골든벨과 반 전체 단원 평가를 제공하는 수학 게임입니다." />
   <link rel="canonical" href="https://hanssam622.github.io/ssamnori/games/decimalman/index.html" />
   <script src="../../stats-config.js?v=20261030"></script>
   <script src="../../analytics.js?v=20261030"></script>
@@ -1863,6 +1863,69 @@
     .race-row .ok { min-width: 3.2em; color: var(--good); font-size: .85em; text-align: right; }
     .race-count { color: var(--teal-d); font-size: 64px; font-weight: 900; line-height: 1; font-variant-numeric: tabular-nums; }
 
+    /* 단원 평가 (반 전체) */
+    .exam-note { display: grid; gap: 6px; margin-top: 12px; padding: 14px 16px; border-radius: 20px; background: #f3efff; }
+    .exam-note p { margin: 0; color: var(--ink-2); font-size: 15px; font-weight: 700; line-height: 1.6; word-break: keep-all; }
+    .exam-note b { color: #6b3fd6; }
+    .exam-privacy { margin: 4px 0 0; color: #6b3fd6; font-size: 14px; font-weight: 800; word-break: keep-all; }
+    .bell-chip.warn { background: #ffeded; color: var(--bad); }
+    .exam-pv-card { width: min(1180px, 96vw); padding: 22px 22px 0; text-align: left; }
+    .exam-pv-head h2 { margin: 0 0 4px; font-size: 28px; }
+    .exam-pv-head p { margin: 0; color: var(--muted); font-weight: 700; word-break: keep-all; }
+    .exam-pv-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); gap: 12px; margin-top: 14px; }
+    .exam-pv { --s: .72; display: flex; flex-direction: column; min-width: 0; border: 1.5px solid var(--line); border-radius: 18px; background: #fff; overflow: hidden; }
+    .exam-pv header { display: flex; align-items: center; gap: 8px; padding: 8px 10px; background: var(--soft); font-size: 14px; font-weight: 800; color: var(--ink-2); }
+    .exam-pv header b { display: grid; place-items: center; min-width: 28px; height: 28px; border-radius: 50%; background: var(--ink); color: #fff; font-size: 14px; }
+    .exam-pv header .ghost-btn { height: 34px; margin-left: auto; padding: 0 10px; font-size: 13px; }
+    .exam-pv header .rate { margin-left: auto; color: var(--good); }
+    .exam-pv header .rate.low { color: var(--bad); }
+    .exam-pv-body { flex: 1; display: flex; flex-direction: column; gap: 8px; padding: 10px; pointer-events: none; }
+    .exam-pv-body .keypad, .exam-pv-body .spk, .exam-pv-body .btns { display: none; }
+    .exam-pv footer { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-top: 1px dashed var(--line); color: var(--good); font-size: 15px; font-weight: 850; }
+    .exam-pv footer .ans { color: var(--ink); }
+    .exam-pv-card .mix-btns { position: sticky; bottom: 0; justify-content: flex-end; margin: 14px -22px 0; padding: 12px 22px 16px; background: rgba(255,255,255,.97); border-top: 1px solid var(--line); }
+    .exam-names-card { width: min(520px, 94vw); text-align: left; }
+    .exam-names-card h2 { font-size: 26px; }
+    .exam-names-card p { margin: 0 0 8px; color: var(--ink-2); font-weight: 700; line-height: 1.6; word-break: keep-all; }
+    .exam-names-card textarea { width: 100%; padding: 12px; border: 2px solid var(--line); border-radius: 14px; font: inherit; font-size: 16px; line-height: 1.5; resize: vertical; }
+    .exam-names-card .mix-btns { justify-content: flex-end; margin-top: 12px; }
+    .exam-row { grid-template-columns: minmax(56px, 110px) minmax(0, 1fr) 5em 3.2em; }
+    .exam-row.done { background: #ecfbf3; }
+    .exam-row .ok { min-width: 0; color: var(--ink-2); }
+    .exam-row.done .ok { color: var(--good); }
+    .exam-row .away { color: var(--coral); font-size: .85em; text-align: right; }
+    .exam-end { display: flex; flex-direction: column; gap: 14px; max-width: 1180px; margin: 0 auto; }
+    .exam-end-head { text-align: center; }
+    .exam-end-head h2 { margin: 0; font-size: calc(var(--s) * 36px); font-weight: 900; }
+    .exam-end-head .sub { margin: 4px 0 0; color: var(--ink-2); font-size: 18px; font-weight: 800; }
+    .exam-end-head .sub b { color: var(--teal-d); font-size: 1.3em; }
+    .exam-end h3 { margin: 0 0 10px; font-size: 20px; font-weight: 900; }
+    .exam-rates { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); gap: 6px 18px; margin: 0 0 8px; padding: 0; list-style: none; }
+    .exam-rates li { display: grid; grid-template-columns: 28px 8.5em minmax(0, 1fr) 3.2em; align-items: center; gap: 8px; font-size: 15px; font-weight: 800; }
+    .exam-rates .no { display: grid; place-items: center; height: 26px; border-radius: 8px; background: var(--soft); }
+    .exam-rates .sec { color: var(--muted); font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .exam-rates .track { height: 12px; border-radius: 999px; background: #e9eff3; overflow: hidden; }
+    .exam-rates .track i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #1cc6b5, #0ea193); }
+    .exam-rates b { text-align: right; font-variant-numeric: tabular-nums; }
+    .exam-rates li.low .track i { background: linear-gradient(90deg, #ff8a7a, #e5484d); }
+    .exam-rates li.low b, .exam-rates li.low .no { color: var(--bad); }
+    .exam-res-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
+    .exam-res-head h3 { margin: 0; }
+    .exam-res-head .ghost-btn { height: 40px; }
+    .exam-table-wrap { overflow-x: auto; }
+    .exam-table { width: 100%; border-collapse: collapse; font-size: 14px; font-weight: 750; font-variant-numeric: tabular-nums; }
+    .exam-table th, .exam-table td { padding: 6px 4px; border-bottom: 1px solid var(--line); text-align: center; white-space: nowrap; }
+    .exam-table th { color: var(--muted); font-size: 12.5px; }
+    .exam-table .o { color: var(--good); }
+    .exam-table .x { color: var(--bad); font-weight: 900; }
+    .exam-table .na { color: #b8c2cc; }
+    .exam-table .nm { text-align: left; }
+    .bp-nos { display: grid; grid-template-columns: repeat(auto-fill, minmax(52px, 1fr)); gap: 6px; }
+    .bp-nos button { height: 52px; border-radius: 14px; border: 2px solid transparent; background: var(--soft); font-size: 20px; font-weight: 850; }
+    .bp-nos button.on { border-color: #8b5cf0; background: #efeaff; color: #6b3fd6; }
+    body.exam-quiet .pscore { display: none; }
+    .player-cell.exam-sent .cell-body, .player-cell.exam-sent .btns { pointer-events: none; opacity: .55; }
+
     @media (max-width: 860px) {
       .bell-lobby, .bell-play { grid-template-columns: minmax(0, 1fr); }
       .bell-side { position: static; }
@@ -3090,17 +3153,22 @@
     }
 
     /* ---------- 14. 단원 마무리 평가 ---------- */
+    const EXAM_SECS = ['소수 두·세 자리 수', '소수 사이의 관계', '크기 비교', '소수의 덧셈', '소수의 뺄셈', '생활 속 문제'];
+    const EXAM_PLAN = [
+      [makeGrid, 0], [makePlace, 0], [makePlace, 0], [makeRead, 0], [makeLine, 0], [makeUnit, 0],
+      [makeTimes, 1], [makeShift, 1],
+      [makeCompare, 2], [makeCompare, 2],
+      [() => exprQ('+'), 3], [() => exprQ('+'), 3], [() => makeVcalc('+', 'm'), 3], [() => makeVcalc('+', '2'), 3],
+      [() => exprQ('-'), 4], [() => exprQ('-'), 4], [() => makeVcalc('-', 'm'), 4], [() => makeVcalc('-', '1'), 4],
+      [makeWord, 5], [makeWord, 5]
+    ];
+    // i번째 문제를 새로 만든다(선생님이 미리보기에서 한 문제만 바꿀 때도 쓴다)
+    function examMake(i) {
+      const [mk, sec] = EXAM_PLAN[i];
+      return { ...mk(), sec: EXAM_SECS[sec] };
+    }
     function buildExamQueue() {
-      const S = ['소수 두·세 자리 수', '소수 사이의 관계', '크기 비교', '소수의 덧셈', '소수의 뺄셈', '생활 속 문제'];
-      const plan = [
-        [makeGrid, 0], [makePlace, 0], [makePlace, 0], [makeRead, 0], [makeLine, 0], [makeUnit, 0],
-        [makeTimes, 1], [makeShift, 1],
-        [makeCompare, 2], [makeCompare, 2],
-        [() => exprQ('+'), 3], [() => exprQ('+'), 3], [() => makeVcalc('+', 'm'), 3], [() => makeVcalc('+', '2'), 3],
-        [() => exprQ('-'), 4], [() => exprQ('-'), 4], [() => makeVcalc('-', 'm'), 4], [() => makeVcalc('-', '1'), 4],
-        [makeWord, 5], [makeWord, 5]
-      ];
-      return plan.map(([mk, sec]) => ({ ...mk(), sec: S[sec] }));
+      return EXAM_PLAN.map((_, i) => examMake(i));
     }
     function examQuestionFor(idx) {
       const queue = examQueues[idx];
@@ -3650,6 +3718,9 @@
     function createPlayer(idx) {
       const prevQ = players[idx] && players[idx].q ? players[idx].q : null;
       const q = mode === 'exam' ? examQuestionFor(idx) : makeQuestion(prevQ && prevQ.key, prevQ && prevQ.mixId);
+      return setupPlayer(idx, q);
+    }
+    function setupPlayer(idx, q) {
       const p = { idx, q, tries: 0, state: '', message: '', locked: !q, picked: [], pickedWhy: [], input: '', inputBad: false };
       if (!q) return p;
       p.message = START_MSG[q.kind] || '알맞은 답을 골라 보세요.';
@@ -3736,6 +3807,7 @@
     function finishGame() {
       // 시간 대결 중인 태블릿은 결과 창 대신 칠판에 마지막 점수를 보내고 기다린다.
       if (BP.race && BP.race.running) { bellRaceStop(); return; }
+      if (BP.exam && BP.exam.running) { bellExamStop(); return; }
       if (!players.length) return;
       stopAll();
       const ranking = scores
@@ -3844,9 +3916,9 @@
     }
 
     function cellInner(p) {
-      // 시간 대결 중인 태블릿에는 학생이 고른 이름과 동물을 보여 준다
-      const a = BP.race && BP.race.running && BP.me
-        ? { emoji: bellEmoji(BP.me.avatar), name: bellEsc(BP.me.name) }
+      // 시간 대결·평가 중인 태블릿에는 학생이 고른 이름(번호)과 동물을 보여 준다
+      const a = BP.me && ((BP.race && BP.race.running) || (BP.exam && BP.exam.running))
+        ? { emoji: BP.exam && BP.exam.running ? '📝' : bellEmoji(BP.me.avatar), name: bellEsc(BP.me.name) }
         : ANIMALS[p.idx % ANIMALS.length];
       const q = p.q;
       const body = !q ? examDoneBody(p) : (BODIES[q.kind] || choiceBody)(p);
@@ -4166,6 +4238,8 @@
       if (correct) scores[idx] += EXAM_POINT;
       examIndex[idx] += 1;
       p.locked = true;
+      // 반 전체 평가 중인 태블릿은 맞았는지 알려 주지 않고 칠판에만 보낸다
+      if (BP.exam && BP.exam.running) { bellExamAnswered(p, correct); return; }
       p.state = correct ? 'ok' : 'no';
       const ansText = q.ansText || (q.choices ? (q.choices.find((c) => c.v === q.ans) || {}).html : '');
       p.message = correct ? `정답! <b>+${EXAM_POINT}점</b>` : `아쉬워요. 정답: <b>${ansText}</b>`;
@@ -4975,18 +5049,24 @@
     const RACE_IDS = Object.keys(MIX_ITEMS);
     const bellTimeText = (sec) => (sec % 60 ? `${Math.floor(sec / 60) ? `${Math.floor(sec / 60)}분 ` : ''}${sec % 60}초` : `${sec / 60}분`);
 
-    let bellCfg = { kind: 'bell', sel: [...BELL_IDS], count: 10, seconds: 20, auto: 0, race: 180, raceSel: [...RACE_IDS] };
+    // 단원 평가: 제한 시간(분, 0은 무제한)과 끝난 뒤 학생 태블릿에 점수를 보여 줄지
+    const EXAM_MINS = [10, 15, 20, 30, 40, 0];
+    const BELL_KINDS = ['bell', 'race', 'exam'];
+
+    let bellCfg = { kind: 'bell', sel: [...BELL_IDS], count: 10, seconds: 20, auto: 0, race: 180, raceSel: [...RACE_IDS], examMin: 20, examShow: true };
     try {
       const saved = JSON.parse(localStorage.getItem(BELL_CFG_KEY) || 'null');
       if (saved && Array.isArray(saved.sel)) {
         bellCfg = {
-          kind: saved.kind === 'race' ? 'race' : 'bell',
+          kind: BELL_KINDS.includes(saved.kind) ? saved.kind : 'bell',
           sel: saved.sel.filter((id) => BELL_IDS.includes(id)),
           count: BELL_COUNTS.includes(saved.count) ? saved.count : 10,
           seconds: BELL_SECONDS.includes(saved.seconds) ? saved.seconds : 20,
           auto: BELL_AUTOS.includes(saved.auto) ? saved.auto : 0,
           race: BELL_RACES.includes(saved.race) ? saved.race : 180,
-          raceSel: Array.isArray(saved.raceSel) ? saved.raceSel.filter((id) => RACE_IDS.includes(id)) : [...RACE_IDS]
+          raceSel: Array.isArray(saved.raceSel) ? saved.raceSel.filter((id) => RACE_IDS.includes(id)) : [...RACE_IDS],
+          examMin: EXAM_MINS.includes(saved.examMin) ? saved.examMin : 20,
+          examShow: saved.examShow !== false
         };
       }
     } catch (err) { /* 저장소를 쓸 수 없으면 기본 설정으로 한다 */ }
@@ -5210,29 +5290,39 @@
       const box = document.getElementById('bell-overlay');
       const prevScroll = box.firstElementChild ? box.firstElementChild.scrollTop : 0;
       const race = bellCfg.kind === 'race';
+      const exam = bellCfg.kind === 'exam';
       const sel = bellCfg[bellSelKey()];
-      const n = sel.length;
+      const n = exam ? EXAM_TOTAL : sel.length;
       const seg = (key, list) => `<div class="seg">${list.map(([v, t]) => `<button type="button" class="${String(bellCfg[key]) === String(v).replace(/'/g, '') ? 'on' : ''}" onclick="bellSet('${key}', ${v})">${t}</button>`).join('')}</div>`;
       box.innerHTML = `
         <div class="result-card mix-card bell-card">
           <div class="concept-head">
             <div class="kid-art"></div>
             <div>
-              <h2>${race ? '⏱ 소수맨 시간 대결' : '🔔 소수맨 골든벨'}</h2>
-              <p>${race
+              <h2>${exam ? '📝 소수맨 단원 평가' : race ? '⏱ 소수맨 시간 대결' : '🔔 소수맨 골든벨'}</h2>
+              <p>${exam
+                ? '단원 마무리 평가 20문제를 반 전체 태블릿에 한꺼번에 보내요. 칠판에서 문제를 미리 보고 바꿀 수 있고, 시간이 끝나면 학생별·문항별 결과가 선생님 화면에 모여요.'
+                : race
                 ? '반 친구들이 각자 태블릿으로 제한 시간 안에 최대한 많은 문제를 풀어요. 처음에 맞히면 2점, 다시 풀어 맞히면 1점! 칠판에 순위가 바로바로 보여요.'
                 : '반 친구들이 각자 태블릿으로 같은 문제를 한꺼번에 풀어요. 맞히면 500~1000점, 빨리 맞힐수록 점수가 높아요.'}</p>
             </div>
           </div>
           <div class="bell-opts">
-            <div class="setting-row"><span class="setting-label">게임 방식</span>${seg('kind', [["'bell'", '🔔 골든벨 · 같은 문제 동시에'], ["'race'", '⏱ 시간 대결 · 많이 풀기']])}</div>
-            ${race ? `
+            <div class="setting-row"><span class="setting-label">게임 방식</span>${seg('kind', [["'bell'", '🔔 골든벨 · 같은 문제 동시에'], ["'race'", '⏱ 시간 대결 · 많이 풀기'], ["'exam'", '📝 단원 평가 · 결과 받기']])}</div>
+            ${exam ? `
+            <div class="setting-row"><span class="setting-label">제한 시간</span>${seg('examMin', EXAM_MINS.map((v) => [v, v ? `${v}분` : '없음']))}</div>
+            <div class="setting-row"><span class="setting-label">끝나면 태블릿에</span>${seg('examShow', [[true, '점수 보여 주기'], [false, '점수 숨기기']])}</div>` : race ? `
             <div class="setting-row"><span class="setting-label">제한 시간</span>${seg('race', BELL_RACES.map((v) => [v, bellTimeText(v)]))}</div>` : `
             <div class="setting-row"><span class="setting-label">문제 수</span>${seg('count', BELL_COUNTS.map((v) => [v, `${v}문제`]))}</div>
             <div class="setting-row"><span class="setting-label">한 문제 시간</span>${seg('seconds', BELL_SECONDS.map((v) => [v, `${v}초`]))}</div>
             <div class="setting-row"><span class="setting-label">정답 공개 뒤</span>${seg('auto', [[0, '선생님이 넘기기'], [5, '5초 뒤 다음'], [10, '10초 뒤 다음']])}</div>`}
           </div>
-          ${bellLessons().map((l) => {
+          ${exam ? `
+          <section class="exam-note">
+            <p>📋 <b>문제 구성</b> · ${EXAM_SECS.map((t) => `${t} ${EXAM_PLAN.filter(([, k]) => EXAM_SECS[k] === t).length}`).join(' · ')}문제 (한 문제 ${EXAM_POINT}점)</p>
+            <p>🔢 학생은 이름 대신 <b>번호</b>로 들어와요. 문제마다 한 번만 답하고, 푸는 동안에는 맞았는지 보여 주지 않아요.</p>
+            <p>🔒 이름은 서버로 보내지 않아요. 결과는 이 화면에만 모이고 창을 닫으면 사라지니, 끝나면 <b>CSV로 저장</b>하거나 인쇄해 두세요.</p>
+          </section>` : bellLessons().map((l) => {
             const full = l.items.every((id) => sel.includes(id));
             return `
               <section class="mix-lesson">
@@ -5253,8 +5343,8 @@
           }).join('')}
           <div class="mix-foot">
             <div class="mix-sum">
-              <span><b>${n}</b>가지 유형을 골랐어요</span>
-              <span class="mix-cap">학생은 태블릿·스마트폰으로 QR을 찍어 들어와요 (최대 40명)</span>
+              <span>${exam ? `단원 전체 <b>${n}</b>문제` : `<b>${n}</b>가지 유형을 골랐어요`}</span>
+              <span class="mix-cap">학생은 태블릿·스마트폰으로 QR을 찍어 ${exam ? '번호로 ' : ''}들어와요 (최대 40명)</span>
               <span class="bell-err" id="bell-setup-err"></span>
               <button class="bell-pad-link" type="button" onclick="hideBellSetup(); openBellPad()">📱 학생 태블릿으로 참여 →</button>
             </div>
@@ -5286,7 +5376,7 @@
       renderBellSetup();
     }
     async function bellSetupGo() {
-      if (!bellCfg[bellSelKey()].length) return;
+      if (bellCfg.kind !== 'exam' && !bellCfg[bellSelKey()].length) return;
       if (BH.code) { hideBellSetup(); bellRender(); bellSend(); return; }
       const btn = document.getElementById('bell-setup-go');
       const err = document.getElementById('bell-setup-err');
@@ -5314,6 +5404,8 @@
       qs: [], index: -1, stage: 'lobby', openedAt: 0, seconds: 20, asked: 0,
       // 시간 대결: 게임 방식, 제한 시간(초), 시작·끝 시각
       kind: 'bell', raceSec: 0, raceStart: 0, raceEnd: 0, raceItems: [],
+      // 단원 평가: 칠판에서 정한 20문제, 제한 시간(초, 0은 무제한), 끝 시각, 학생별 답(맞음·틀림), 결과표를 펼쳤는지
+      examQs: [], examSec: 0, examEnd: 0, examRes: {}, examOpen: false,
       answers: {}, scores: {}, tick: null, autoTimer: null, revealTimer: null, autoLeft: 0
     };
     const bellRound = () => `${BH.code}-${BH.game}-${BH.index}`;
@@ -5331,6 +5423,7 @@
     function bellHostMessage(m) {
       if (m.t === 'ready' || m.t === 'players') bellRoster(m.players || [], m.t === 'ready');
       else if (m.t === 'input' && m.data && m.data.kind === 'race') bellRaceInput(m.from, m.data);
+      else if (m.t === 'input' && m.data && m.data.kind === 'exam') bellExamInput(m.from, m.data);
       else if (m.t === 'input') bellInput(m.from, m.data);
       else if (m.t === 'error' && (m.code === 'closed' || m.code === 'not-found')) {
         BH.online = false;
@@ -5356,6 +5449,7 @@
     function bellViewFor(id) {
       if (BH.stage === 'lobby') {
         if (bellCfg.kind === 'race') return { screen: 'wait', emoji: '⏱', title: '곧 시간 대결을 시작해요', message: `${bellTimeText(bellCfg.race)} 안에 최대한 많이 맞혀요` };
+        if (bellCfg.kind === 'exam') return { screen: 'wait', emoji: '📝', title: '곧 단원 평가를 시작해요', message: `${EXAM_TOTAL}문제 · ${bellCfg.examMin ? `제한 시간 ${bellCfg.examMin}분` : '시간 제한 없음'} · 문제마다 한 번만 답할 수 있어요` };
         return { screen: 'wait', emoji: '🔔', title: '곧 골든벨을 시작해요', message: `모두 ${bellCfg.count}문제 · 한 문제 ${bellCfg.seconds}초 · 빨리 맞힐수록 점수가 높아요` };
       }
       if (BH.stage === 'race') {
@@ -5386,6 +5480,7 @@
         if (a && a.ok) return { screen: 'result', good: true, title: `정답! +${a.gained}점`, message: standing };
         return { screen: 'result', good: false, title: a ? '아쉬워요' : '시간이 다 됐어요', answer: q.ansHtml, message: standing };
       }
+      if (BH.kind === 'exam') return bellExamEndView(id);
       const ranked = bellRanking();
       const mine = ranked.find((r) => r.s.id === id);
       if (!mine) return { screen: 'wait', emoji: '🏆', title: '골든벨 끝!', message: '칠판을 봐요' };
@@ -5401,6 +5496,13 @@
         const p = BH.roster.find((x) => x.id === id);
         if (p && p.online && !BH.scores[id]) BH.scores[id] = bellNewScore(p);
       });
+      // 평가 문제는 모두 같으니 한 번에 보낸다(학생마다 따로 보내면 말이 너무 커진다)
+      if (BH.stage === 'exam') {
+        // 늦게 들어온 학생도 진행표에 0문제로 올린다
+        targets.forEach((id) => { if (BH.roster.some((p) => p.id === id && p.online)) bellExamRec(id); });
+        BH.sock.send({ t: 'view', to: targets, view: bellExamView() });
+        return;
+      }
       if (BH.stage === 'question') {
         const fresh = targets.filter((id) => !BH.answers[id]);
         if (fresh.length) BH.sock.send({ t: 'view', to: fresh, view: bellViewFor(fresh[0]) });
@@ -5417,6 +5519,7 @@
       if (!bellOnline().length) return;
       BH.kind = bellCfg.kind;
       if (BH.kind === 'race') { bellRaceStart(); return; }
+      if (BH.kind === 'exam') { bellExamStart(); return; }
       BH.qs = bellMakeSet();
       if (!BH.qs.length) return;
       BH.scores = {};
@@ -5510,7 +5613,11 @@
       bellOpen(BH.index + 1);
     }
     function bellFinish() {
-      if (BH.stage !== 'question' && BH.stage !== 'reveal' && BH.stage !== 'race') return;
+      if (!['question', 'reveal', 'race', 'exam'].includes(BH.stage)) return;
+      if (BH.stage === 'exam') {
+        if (confirm('단원 평가를 지금 끝낼까요? 학생 태블릿도 함께 끝나요.')) bellEnd();
+        return;
+      }
       if (!confirm(`지금까지의 점수로 ${BH.kind === 'race' ? '시간 대결' : '골든벨'}을 마칠까요?`)) return;
       BH.asked = BH.stage === 'reveal' ? BH.index + 1 : BH.index;
       bellEnd();
@@ -5524,7 +5631,7 @@
     }
     function bellAgain() {
       bellStopTimers();
-      Object.assign(BH, { game: BH.game + 1, qs: [], index: -1, stage: 'lobby', answers: {}, scores: {}, asked: 0 });
+      Object.assign(BH, { game: BH.game + 1, qs: [], index: -1, stage: 'lobby', answers: {}, scores: {}, asked: 0, examQs: [], examRes: {}, examOpen: false });
       bellSend();
       bellRender();
     }
@@ -5547,9 +5654,11 @@
         // 닫는 말이 서버에 닿을 틈을 준다
         setTimeout(() => sock.close(), 400);
       }
-      Object.assign(BH, { sock: null, code: '', key: '', roster: [], online: false, stage: 'lobby', qs: [], index: -1, answers: {}, scores: {} });
+      Object.assign(BH, { sock: null, code: '', key: '', roster: [], online: false, stage: 'lobby', qs: [], index: -1, answers: {}, scores: {}, examQs: [], examRes: {}, examOpen: false });
     }
     function bellQuit() {
+      if (BH.stage === 'end' && BH.kind === 'exam' && Object.keys(BH.examRes).length
+        && !confirm('평가 결과는 이 화면에만 있어요. CSV로 저장했나요? 닫으면 결과가 사라져요.')) return;
       if (BH.stage !== 'end' && BH.roster.length && !confirm('골든벨을 끝내고 방을 닫을까요? 학생 태블릿도 함께 끝나요.')) return;
       bellCloseRoom();
       showScreen('game-select-screen');
@@ -5635,11 +5744,337 @@
       return r ? r.rank : 0;
     }
 
+    /* ---------- 단원 평가 (칠판) ---------- */
+    // 칠판이 20문제를 정해 모든 태블릿에 똑같이 보낸다. 태블릿은 단원 마무리 평가를 맞았는지 알려 주지 않고 풀며,
+    // 문제마다 맞음·틀림만 칠판에 알린다. 결과는 이 화면에만 모이고, 이름은 선생님 컴퓨터의 명렬표로만 붙인다.
+    const EXAM_GRACE_MS = 3000;
+    const EXAM_NAMES_KEY = 'sosuman-exam-names';
+    const examNo = (name) => { const m = /^(\d{1,2})번$/.exec(name || ''); return m ? Number(m[1]) : 0; };
+    const bellByNo = (a, b) => (examNo(a.name) || 999) - (examNo(b.name) || 999) || a.name.localeCompare(b.name, 'ko');
+    const examAnswered = (r) => r.res.filter((v) => typeof v === 'boolean').length;
+    const examCorrect = (r) => r.res.filter((v) => v === true).length;
+    let examNames = [];
+    try {
+      const saved = JSON.parse(localStorage.getItem(EXAM_NAMES_KEY) || '[]');
+      if (Array.isArray(saved)) examNames = saved.map((v) => String(v || ''));
+    } catch (err) { /* 명렬표 없이 번호만 쓴다 */ }
+    const examNameOf = (name) => { const n = examNo(name); return (n && examNames[n - 1]) || ''; };
+
+    function bellExamEnsure() {
+      if (BH.examQs.length !== EXAM_TOTAL) BH.examQs = buildExamQueue();
+    }
+    function examAnsHtml(q) {
+      if (q.ansText) return q.ansText;
+      const c = q.choices && q.choices.find((x) => x.v === q.ans);
+      return c ? c.html : '';
+    }
+    // 미리보기: 태블릿과 같은 모양으로 그리되 누를 수는 없게 한다
+    function examPreviewBody(q, i) {
+      const keep = mode;
+      mode = 'exam';
+      try {
+        const p = setupPlayer(900 + i, q);
+        p.locked = true;
+        return (BODIES[q.kind] || choiceBody)(p);
+      } finally {
+        mode = keep;
+      }
+    }
+    function bellExamPreview() {
+      bellExamEnsure();
+      const box = document.getElementById('bell-overlay');
+      const edit = BH.stage === 'lobby';
+      box.innerHTML = `
+        <div class="result-card exam-pv-card">
+          <div class="exam-pv-head">
+            <h2>📋 ${edit ? '평가 문제 미리보기' : '평가 문제와 정답'}</h2>
+            <p>${edit ? '마음에 들지 않는 문제는 🔄 바꾸기를 눌러요. 학생 태블릿에는 이 문제가 이 차례로 나가요.' : '학생들이 푼 문제예요. 정답률이 낮은 문제를 함께 다시 풀어 보세요.'}</p>
+          </div>
+          <div class="exam-pv-grid">${BH.examQs.map((q, i) => bellExamCardHtml(q, i, edit)).join('')}</div>
+          <div class="mix-btns">
+            ${edit ? '<button class="ghost-btn" type="button" onclick="bellExamReroll(-1)">🔄 모두 새로 만들기</button>' : ''}
+            <button class="btn-main" type="button" onclick="hideBellSetup()">${edit ? '이대로 할게요' : '닫기'}</button>
+          </div>
+        </div>`;
+      box.classList.remove('hidden');
+      document.body.classList.add('modal');
+      box.firstElementChild.scrollTop = 0;
+    }
+    function bellExamCardHtml(q, i, edit) {
+      const rate = BH.stage === 'end' ? bellExamRates()[i] : null;
+      return `
+        <article class="exam-pv" id="exam-pv-${i}">
+          <header>
+            <b>${i + 1}</b><span>${q.sec}</span>
+            ${rate === null ? '' : `<span class="rate${rate < 50 ? ' low' : ''}">정답률 ${rate}%</span>`}
+            ${edit ? `<button class="ghost-btn" type="button" onclick="bellExamReroll(${i})">🔄 바꾸기</button>` : ''}
+          </header>
+          <div class="exam-pv-body">${examPreviewBody(q, i)}</div>
+          <footer>정답 <span class="ans">${examAnsHtml(q)}</span></footer>
+        </article>`;
+    }
+    function bellExamReroll(i) {
+      if (BH.stage !== 'lobby') return;
+      if (i < 0) {
+        if (!confirm(`${EXAM_TOTAL}문제를 모두 새로 만들까요?`)) return;
+        BH.examQs = buildExamQueue();
+        bellExamPreview();
+        return;
+      }
+      const keys = new Set(BH.examQs.map((q) => q.key));
+      let q = examMake(i);
+      for (let k = 0; k < 8 && keys.has(q.key); k += 1) q = examMake(i);
+      BH.examQs[i] = q;
+      const card = document.getElementById(`exam-pv-${i}`);
+      if (card) card.outerHTML = bellExamCardHtml(q, i, true);
+    }
+
+    function bellExamStart() {
+      bellExamEnsure();
+      bellStopTimers();
+      hideBellSetup();
+      const now = Date.now();
+      Object.assign(BH, {
+        game: BH.game + 1, qs: [], index: -1, stage: 'exam', answers: {}, scores: {}, examRes: {}, examOpen: false,
+        examSec: bellCfg.examMin * 60, examEnd: bellCfg.examMin ? now + bellCfg.examMin * 60000 : 0
+      });
+      bellSend();
+      bellRender();
+      blip('tick');
+      BH.tick = setInterval(bellExamTick, 250);
+      bellExamTick();
+    }
+    function bellExamRec(id) {
+      if (BH.examRes[id]) return BH.examRes[id];
+      const p = BH.roster.find((x) => x.id === id);
+      if (!p) return null;
+      return (BH.examRes[id] = { id, name: p.name, res: [], away: 0, done: false });
+    }
+    function bellExamView() {
+      return { screen: 'exam', round: bellRound(), qs: BH.examQs, total: BH.examSec, left: BH.examEnd ? Math.max(0, BH.examEnd - Date.now()) : 0 };
+    }
+    function bellExamTick() {
+      const clock = document.getElementById('exam-clock');
+      if (!BH.examEnd) {
+        if (clock) clock.textContent = '시간 제한 없음';
+        return;
+      }
+      const left = Math.max(0, Math.ceil((BH.examEnd - Date.now()) / 1000));
+      if (clock) {
+        clock.textContent = left > 0 ? `${Math.floor(left / 60)}:${String(left % 60).padStart(2, '0')}` : '끝!';
+        clock.classList.toggle('warn', left <= 60);
+      }
+      if (Date.now() >= BH.examEnd + EXAM_GRACE_MS) bellEnd();
+    }
+    // 한 문제에는 처음 온 답만 받는다(다시 붙은 태블릿이 같은 답을 또 보내도 괜찮다).
+    function bellExamInput(from, data) {
+      if (BH.stage !== 'exam' || data.round !== bellRound()) return;
+      const r = bellExamRec(from);
+      if (!r) return;
+      const i = Number(data.i);
+      if (Number.isInteger(i) && i >= 0 && i < EXAM_TOTAL && typeof r.res[i] !== 'boolean') r.res[i] = data.ok === true;
+      if (data.away === true) r.away += 1;
+      if (data.done === true || examAnswered(r) >= EXAM_TOTAL) r.done = true;
+      bellRefreshLive();
+      // 들어온 학생이 모두 다 풀었으면 잠깐 뒤에 끝낸다
+      const allDone = () => BH.stage === 'exam' && Object.values(BH.examRes).every((x) => x.done);
+      if (allDone()) setTimeout(() => { if (allDone()) bellEnd(); }, 1500);
+    }
+    function bellExamHtml() {
+      return `
+        <div class="race-board">
+          <div class="race-head">
+            <span class="race-clock" id="exam-clock"></span>
+            <p class="race-info">📝 각자 태블릿으로 ${EXAM_TOTAL}문제를 풀어요 · 칠판에는 몇 문제를 풀었는지만 보여요</p>
+          </div>
+          <ol class="race-list${BH.roster.length > 10 ? ' two' : ''}" id="exam-list">${bellExamRowsHtml()}</ol>
+        </div>`;
+    }
+    function bellExamRowsHtml() {
+      const recs = Object.values(BH.examRes).sort(bellByNo);
+      if (!recs.length) return '<p class="bell-more">아직 답을 낸 학생이 없어요.</p>';
+      return recs.map((r) => {
+        const n = examAnswered(r);
+        const p = BH.roster.find((x) => x.id === r.id);
+        const state = r.done ? '✅ 끝' : p && !p.online ? '📶 끊김' : `${n} / ${EXAM_TOTAL}`;
+        return `
+        <li class="race-row exam-row${r.done ? ' done' : ''}">
+          <span class="nm">${bellEsc(r.name)}</span>
+          <span class="track"><i style="width:${(n / EXAM_TOTAL) * 100}%"></i></span>
+          <span class="ok">${state}</span>
+          <span class="away" title="평가 중에 다른 화면으로 나간 횟수">${r.away ? `👀 ${r.away}` : ''}</span>
+        </li>`;
+      }).join('');
+    }
+    function bellExamEndView(id) {
+      const r = BH.examRes[id];
+      if (!r) return { screen: 'wait', emoji: '📝', title: '단원 평가가 끝났어요', message: '칠판을 봐요' };
+      const correct = examCorrect(r);
+      return { screen: 'examEnd', show: bellCfg.examShow, correct, total: EXAM_TOTAL, points: correct * EXAM_POINT };
+    }
+
+    /* ---------- 단원 평가 결과 (칠판) ---------- */
+    // 한 문제라도 답한 학생만 응시한 것으로 센다. 답하지 않은 문제는 틀린 것으로 본다.
+    function bellExamTakers() {
+      return Object.values(BH.examRes).filter((r) => examAnswered(r) > 0).sort(bellByNo);
+    }
+    function bellExamRates() {
+      const takers = bellExamTakers();
+      return BH.examQs.map((_, i) => (takers.length ? Math.round((takers.filter((r) => r.res[i] === true).length / takers.length) * 100) : 0));
+    }
+    function bellExamAvg() {
+      const takers = bellExamTakers();
+      return takers.length ? Math.round((takers.reduce((sum, r) => sum + examCorrect(r) * EXAM_POINT, 0) / takers.length) * 10) / 10 : 0;
+    }
+    function bellExamTableHtml() {
+      const names = bellExamTakers().some((r) => examNameOf(r.name));
+      return `
+        <table class="exam-table">
+          <thead><tr><th>번호</th>${names ? '<th>이름</th>' : ''}${BH.examQs.map((_, i) => `<th>${i + 1}</th>`).join('')}<th>맞힌 수</th><th>점수</th><th title="평가 중에 다른 화면으로 나간 횟수">👀</th></tr></thead>
+          <tbody>${bellExamTakers().map((r) => `
+            <tr>
+              <td class="no">${bellEsc(r.name)}</td>${names ? `<td class="nm">${bellEsc(examNameOf(r.name))}</td>` : ''}
+              ${BH.examQs.map((_, i) => (r.res[i] === true ? '<td class="o">○</td>' : r.res[i] === false ? '<td class="x">✕</td>' : '<td class="na">–</td>')).join('')}
+              <td>${examCorrect(r)}</td><td><b>${examCorrect(r) * EXAM_POINT}</b></td><td>${r.away || ''}</td>
+            </tr>`).join('')}
+          </tbody>
+        </table>`;
+    }
+    function bellExamEndHtml() {
+      const takers = bellExamTakers();
+      const rates = bellExamRates();
+      return `
+        <div class="exam-end">
+          <div class="exam-end-head">
+            <h2>📝 단원 평가 끝!</h2>
+            <p class="sub">${takers.length}명 응시 · 평균 <b>${bellExamAvg()}</b>점</p>
+          </div>
+          <section class="bell-panel">
+            <h3>문항별 정답률</h3>
+            <ol class="exam-rates">${BH.examQs.map((q, i) => `
+              <li class="${rates[i] < 50 ? 'low' : ''}">
+                <span class="no">${i + 1}</span><span class="sec">${q.sec}</span>
+                <span class="track"><i style="width:${rates[i]}%"></i></span><b>${rates[i]}%</b>
+              </li>`).join('')}
+            </ol>
+            <p class="bell-more">빨간 문제는 반 친구 절반 넘게 틀렸어요. 📋 문제 다시 보기로 함께 풀어 보세요.</p>
+          </section>
+          <section class="bell-panel">
+            <div class="exam-res-head">
+              <h3>학생별 결과</h3>
+              <button class="ghost-btn" type="button" onclick="bellExamToggle()">${BH.examOpen ? '🙈 가리기' : '🔒 펼치기'}</button>
+            </div>
+            ${!takers.length ? '<p class="bell-more">답을 낸 학생이 없어요.</p>'
+              : BH.examOpen ? `<div class="exam-table-wrap">${bellExamTableHtml()}</div>`
+              : '<p class="bell-more">학생별 점수는 선생님만 보세요. 칠판에 띄운 화면이라면 학생들이 보지 않을 때 펼쳐요.</p>'}
+          </section>
+          <div class="bell-foot end">
+            <button class="ghost-btn" type="button" onclick="bellExamCsv()"${takers.length ? '' : ' disabled'}>📥 CSV 저장</button>
+            <button class="ghost-btn" type="button" onclick="bellExamPrint()"${takers.length ? '' : ' disabled'}>🖨 인쇄</button>
+            <button class="ghost-btn" type="button" onclick="bellExamNames()">👥 명렬표 넣기</button>
+            <button class="ghost-btn" type="button" onclick="bellExamPreview()">📋 문제 다시 보기</button>
+            <button class="btn-main" type="button" onclick="bellAgain()">새 평가 준비</button>
+          </div>
+        </div>`;
+    }
+    function bellExamToggle() {
+      BH.examOpen = !BH.examOpen;
+      bellRender();
+    }
+    const examDate = () => {
+      const d = new Date();
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    };
+    function bellExamCsv() {
+      const cell = (v) => (/[",\r\n]/.test(String(v)) ? `"${String(v).replace(/"/g, '""')}"` : String(v));
+      const rates = bellExamRates();
+      const rows = [
+        ['번호', '이름', ...BH.examQs.map((q, i) => `${i + 1}번(${q.sec})`), '맞힌 수', '점수', '화면 나감'],
+        ...bellExamTakers().map((r) => [
+          examNo(r.name) || r.name, examNameOf(r.name),
+          ...BH.examQs.map((_, i) => (r.res[i] === true ? 'O' : r.res[i] === false ? 'X' : '')),
+          examCorrect(r), examCorrect(r) * EXAM_POINT, r.away
+        ]),
+        ['정답률', '', ...rates.map((v) => `${v}%`), '', `평균 ${bellExamAvg()}`, '']
+      ];
+      // 엑셀이 한글을 바로 읽도록 BOM을 붙인다
+      const blob = new Blob([`﻿${rows.map((r) => r.map(cell).join(',')).join('\r\n')}`], { type: 'text/csv;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `소수맨-단원평가-${examDate()}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+    }
+    function bellExamPrint() {
+      const w = window.open('', '_blank');
+      if (!w) { alert('팝업이 막혀 있어요. 팝업을 허용한 뒤 다시 눌러 주세요.'); return; }
+      const rates = bellExamRates();
+      w.document.write(`<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>소수맨 단원 평가 결과 ${examDate()}</title>
+        <style>
+          body { margin: 24px; color: #1d2838; font-family: system-ui, -apple-system, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; }
+          h1 { margin: 0 0 4px; font-size: 22px; } h2 { margin: 24px 0 8px; font-size: 17px; } p { margin: 0 0 14px; color: #556; }
+          table { border-collapse: collapse; width: 100%; font-size: 12px; } th, td { border: 1px solid #c9d3dd; padding: 4px 3px; text-align: center; }
+          th { background: #f0f4f7; } .o { color: #12804a; } .x { color: #d64545; font-weight: 700; } .na { color: #aab; } .nm { white-space: nowrap; }
+          .low { color: #d64545; font-weight: 700; }
+          @page { size: A4 landscape; margin: 12mm; }
+        </style></head><body>
+        <h1>소수맨 단원 평가 결과</h1>
+        <p>${examDate()} · ${bellExamTakers().length}명 응시 · 평균 ${bellExamAvg()}점 · 한 문제 ${EXAM_POINT}점</p>
+        ${bellExamTableHtml()}
+        <h2>문항별 정답률</h2>
+        <table><thead><tr>${BH.examQs.map((_, i) => `<th>${i + 1}</th>`).join('')}</tr></thead>
+          <tbody><tr>${rates.map((v) => `<td class="${v < 50 ? 'low' : ''}">${v}%</td>`).join('')}</tr>
+          <tr>${BH.examQs.map((q) => `<td>${q.sec}</td>`).join('')}</tr></tbody></table>
+        </body></html>`);
+      w.document.close();
+      w.focus();
+      setTimeout(() => w.print(), 300);
+    }
+    // 명렬표: 번호와 이름을 잇는 표는 이 컴퓨터(브라우저)에만 두고 서버로 보내지 않는다.
+    function bellExamNames() {
+      const box = document.getElementById('bell-overlay');
+      box.innerHTML = `
+        <div class="result-card exam-names-card">
+          <h2>👥 명렬표 넣기</h2>
+          <p>한 줄에 한 명씩 <b>1번부터 차례로</b> 이름을 써요. 엑셀의 이름 칸을 복사해 붙여도 되고, "7 김하늘"처럼 번호를 앞에 써도 돼요.</p>
+          <p class="exam-privacy">🔒 이름은 이 컴퓨터에만 저장되고 서버로 가지 않아요.</p>
+          <textarea id="exam-names" rows="12" spellcheck="false" placeholder="김하늘&#10;이바다&#10;박구름">${bellEsc(examNames.join('\n'))}</textarea>
+          <div class="mix-btns">
+            <button class="ghost-btn" type="button" onclick="bellExamSaveNames(true)">모두 지우기</button>
+            <button class="ghost-btn" type="button" onclick="hideBellSetup()">닫기</button>
+            <button class="btn-main" type="button" onclick="bellExamSaveNames()">저장</button>
+          </div>
+        </div>`;
+      box.classList.remove('hidden');
+      document.body.classList.add('modal');
+    }
+    function bellExamSaveNames(clear) {
+      const list = [];
+      if (!clear) {
+        document.getElementById('exam-names').value.split(/\r?\n/).forEach((line, k) => {
+          const m = /^\s*(\d{1,2})\s*(?:번|[.)]|\t|\s)\s*(.*)$/.exec(line);
+          const at = m ? Number(m[1]) - 1 : k;
+          const name = (m ? m[2] : line).trim().slice(0, 20);
+          if (at >= 0 && at < MAX_EXAM_NAMES) list[at] = name;
+        });
+      }
+      examNames = Array.from(list, (v) => v || '');
+      while (examNames.length && !examNames[examNames.length - 1]) examNames.pop();
+      try { localStorage.setItem(EXAM_NAMES_KEY, JSON.stringify(examNames)); } catch (err) { /* 저장하지 못하면 이번 창에서만 쓴다 */ }
+      hideBellSetup();
+      bellRender();
+    }
+    const MAX_EXAM_NAMES = 40;
+
     /* ---------- 칠판 그리기 ---------- */
     function bellJoinUrl() {
       const base = /^https?:$/.test(location.protocol) ? `${location.origin}${location.pathname}` : BELL_PAGE_URL;
       const u = new URL(base);
       u.searchParams.set('bell', BH.code);
+      // 평가 방이면 태블릿이 이름 대신 번호를 묻는다
+      if (bellCfg.kind === 'exam') u.searchParams.set('exam', '1');
       if (BELL_LOCAL) u.searchParams.set('bellServer', BELL_LOCAL);
       return u.toString();
     }
@@ -5669,20 +6104,23 @@
       const body = document.getElementById('bell-body');
       bellScale();
       bellRoomChip();
-      const race = (BH.stage === 'lobby' ? bellCfg.kind : BH.kind) === 'race';
-      document.getElementById('bell-title').textContent = race ? '⏱ 소수맨 시간 대결' : '🔔 소수맨 골든벨';
+      const kind = BH.stage === 'lobby' ? bellCfg.kind : BH.kind;
+      document.getElementById('bell-title').textContent = { race: '⏱ 소수맨 시간 대결', exam: '📝 소수맨 단원 평가' }[kind] || '🔔 소수맨 골든벨';
       const sub = {
         lobby: '학생들이 다 들어오면 시작해요',
         race: '태블릿으로 최대한 많이 풀어요',
+        exam: '태블릿으로 평가를 풀어요',
         question: '태블릿으로 답을 내요',
         reveal: '정답을 확인해요',
-        end: '골든벨 결과'
+        end: kind === 'exam' ? '평가 결과' : '골든벨 결과'
       };
       document.getElementById('bell-sub').textContent = sub[BH.stage];
-      document.getElementById('bell-finish').classList.toggle('hidden', !['question', 'reveal', 'race'].includes(BH.stage));
+      document.getElementById('bell-finish').classList.toggle('hidden', !['question', 'reveal', 'race', 'exam'].includes(BH.stage));
       if (BH.stage !== 'question' && BH.stage !== 'race') bellTimerUi(0, null);
       if (BH.stage === 'lobby') body.innerHTML = bellLobbyHtml();
       else if (BH.stage === 'race') body.innerHTML = bellRaceHtml();
+      else if (BH.stage === 'exam') body.innerHTML = bellExamHtml();
+      else if (BH.stage === 'end' && BH.kind === 'exam') body.innerHTML = bellExamEndHtml();
       else if (BH.stage === 'question') body.innerHTML = bellQuestionHtml();
       else if (BH.stage === 'reveal') body.innerHTML = bellRevealHtml();
       else body.innerHTML = bellEndHtml();
@@ -5695,6 +6133,11 @@
       if (BH.stage === 'race') {
         const list = document.getElementById('race-list');
         if (list) list.innerHTML = bellRaceRowsHtml();
+        return;
+      }
+      if (BH.stage === 'exam') {
+        const list = document.getElementById('exam-list');
+        if (list) list.innerHTML = bellExamRowsHtml();
         return;
       }
       if (BH.stage !== 'question') return;
@@ -5716,9 +6159,13 @@
     }
     function bellLobbyHtml() {
       const on = bellOnline().length;
-      const chips = BH.roster.map((p) => `
-        <span class="bell-chip${p.online ? '' : ' off'}">
-          <span class="em">${bellEmoji(p.avatar)}</span>${bellEsc(p.name)}
+      const exam = bellCfg.kind === 'exam';
+      if (exam) bellExamEnsure();
+      // 평가는 번호 차례로 늘어놓고, 번호가 아니거나 겹친 이름(7번2)은 빨갛게 보여 준다
+      const list = exam ? [...BH.roster].sort(bellByNo) : BH.roster;
+      const chips = list.map((p) => `
+        <span class="bell-chip${p.online ? '' : ' off'}${exam && !examNo(p.name) ? ' warn' : ''}">
+          <span class="em">${exam ? '📝' : bellEmoji(p.avatar)}</span>${bellEsc(p.name)}
           <button class="x" type="button" onclick="bellKick('${bellEsc(p.id)}')" aria-label="${bellEsc(p.name)} 내보내기" title="내보내기">✕</button>
         </span>`).join('');
       return `
@@ -5728,17 +6175,21 @@
             <span class="bell-code-label">방 번호</span>
             <span class="bell-code">${BH.code}</span>
             <p class="bell-hint">태블릿 카메라로 <b>QR</b>을 찍거나<br />QR이 안 되면 소수맨 → 🔔 골든벨 → <b>학생 태블릿으로 참여</b>에서 방 번호를 넣어요</p>
+            ${exam ? '<p class="exam-privacy">🔒 학생은 번호로만 들어와요. 이름은 서버로 가지 않아요.</p>' : ''}
           </section>
           <section class="bell-panel bell-rosterbox">
             <h3>들어온 친구 <b>${on}</b>명</h3>
-            <div class="bell-chips">${chips || '<p class="bell-empty">아직 아무도 없어요.<br />QR을 찍고 이름을 쓰면 여기에 나타나요.</p>'}</div>
+            <div class="bell-chips">${chips || `<p class="bell-empty">아직 아무도 없어요.<br />QR을 찍고 ${exam ? '번호를 고르면' : '이름을 쓰면'} 여기에 나타나요.</p>`}</div>
             <div class="bell-sum">
-              ${bellCfg.kind === 'race'
+              ${exam
+                ? `<span>📝 ${EXAM_TOTAL}문제</span><span>⏱ ${bellCfg.examMin ? `${bellCfg.examMin}분` : '시간 제한 없음'}</span><span>${bellCfg.examShow ? '🙂 끝나면 점수 보여 줌' : '🙈 점수 숨김'}</span>
+                   <button class="ghost-btn" type="button" onclick="bellExamPreview()">📋 문제 미리보기</button>`
+                : bellCfg.kind === 'race'
                 ? `<span>⏱ 시간 대결 ${bellTimeText(bellCfg.race)}</span><span>🧩 유형 ${bellCfg.raceSel.length}가지</span>`
                 : `<span>📝 ${bellCfg.count}문제</span><span>⏱ 한 문제 ${bellCfg.seconds}초</span><span>🧩 유형 ${bellCfg.sel.length}가지</span>`}
               <button class="ghost-btn" type="button" onclick="openBellSetup()">설정 바꾸기</button>
             </div>
-            <button class="btn-main bell-go" type="button" onclick="bellStart()"${on ? '' : ' disabled'}>▶ ${bellCfg.kind === 'race' ? '시간 대결' : '골든벨'} 시작</button>
+            <button class="btn-main bell-go" type="button" onclick="bellStart()"${on ? '' : ' disabled'}>▶ ${{ race: '시간 대결', exam: '평가' }[bellCfg.kind] || '골든벨'} 시작</button>
           </section>
         </div>`;
     }
@@ -5846,7 +6297,9 @@
 
     /* ---------- 학생 태블릿 ---------- */
     // race: 시간 대결 중이면 { round, score, correct, end, total, items, running, done }
-    const BP = { code: '', sock: null, me: null, status: 'closed', view: null, round: '', shownAt: 0, deadline: 0, total: 0, input: '', picked: -1, sent: false, expired: false, timer: null, ended: false, race: null };
+    const BP = { code: '', sock: null, me: null, status: 'closed', view: null, round: '', shownAt: 0, deadline: 0, total: 0, input: '', picked: -1, sent: false, expired: false, timer: null, ended: false, race: null, exam: null,
+      // 평가 방(QR에 exam=1)이면 이름 대신 번호로 들어간다
+      byNo: PAGE_PARAMS.get('exam') === '1' };
     let bellMe = { name: '', avatar: '' };
     try { bellMe = { ...bellMe, ...JSON.parse(localStorage.getItem(BELL_ME_KEY) || '{}') }; } catch (err) { /* 무시 */ }
     const bellResumeKey = (code) => `sosuman-bell-room:${code}`;
@@ -5892,32 +6345,50 @@
       BP.me = null;
       bellPadTop();
       if (!bellMe.avatar) bellMe.avatar = pick(BELL_ANIMALS)[0];
+      const byNo = BP.byNo;
       document.getElementById('bp-body').innerHTML = `
         <div class="bp-form">
           <div class="kid-art"></div>
-          <h2>🔔 골든벨 참여</h2>
+          <h2>${byNo ? '📝 단원 평가 참여' : '🔔 골든벨 참여'}</h2>
           <label class="bp-field">방 번호<input id="bp-code" class="code" inputmode="numeric" autocomplete="off" maxlength="5" value="${bellEsc(BP.code)}" placeholder="칠판의 다섯 자리" /></label>
+          ${byNo ? `
+          <div class="bp-field">내 번호
+            <div class="bp-nos" id="bp-nos">${Array.from({ length: MAX_EXAM_NAMES }, (_, k) => `<button type="button" class="${k + 1 === bellMe.no ? 'on' : ''}" data-no="${k + 1}" onclick="bellPickNo(${k + 1})">${k + 1}</button>`).join('')}</div>
+          </div>` : `
           <label class="bp-field">내 이름<input id="bp-name" maxlength="12" autocomplete="off" value="${bellEsc(bellMe.name)}" placeholder="이름을 써요" /></label>
           <div class="bp-field">내 동물
             <div class="bp-animals" id="bp-animals">${BELL_ANIMALS.map(([id, em]) => `<button type="button" class="${id === bellMe.avatar ? 'on' : ''}" data-id="${id}" onclick="bellPickAnimal('${id}')">${em}</button>`).join('')}</div>
-          </div>
+          </div>`}
           <p class="bp-err" id="bp-err">${bellEsc(errMsg || '')}</p>
           <button class="btn-main" type="button" onclick="bellJoin()">들어가기 →</button>
+          <button class="bell-pad-link" type="button" onclick="BP.byNo = ${!byNo}; bellPadForm()">${byNo ? '🔔 골든벨은 이름으로 들어가요' : '📝 단원 평가는 번호로 들어가요'}</button>
         </div>`;
       const focus = document.getElementById(BP.code ? 'bp-name' : 'bp-code');
       if (focus && !focus.value) focus.focus();
     }
+    function bellPickNo(n) {
+      bellMe.no = n;
+      document.querySelectorAll('#bp-nos button').forEach((b) => b.classList.toggle('on', Number(b.dataset.no) === n));
+    }
+    // 평가 방에는 이름 대신 "7번"만 보낸다
+    const bellJoinMsg = () => (BP.byNo
+      ? { t: 'join', name: `${bellMe.no}번`, avatar: 'owl' }
+      : { t: 'join', name: bellMe.name, avatar: bellMe.avatar });
     function bellPickAnimal(id) {
       bellMe.avatar = id;
       document.querySelectorAll('#bp-animals button').forEach((b) => b.classList.toggle('on', b.dataset.id === id));
     }
     async function bellJoin() {
       const code = document.getElementById('bp-code').value.replace(/\D/g, '');
-      const name = document.getElementById('bp-name').value.trim().slice(0, 12);
       const err = document.getElementById('bp-err');
       if (code.length !== 5) { err.textContent = '칠판에 있는 방 번호 다섯 자리를 써 주세요.'; return; }
-      if (!name) { err.textContent = '이름을 써 주세요.'; return; }
-      bellMe.name = name;
+      if (BP.byNo) {
+        if (!bellMe.no) { err.textContent = '내 번호를 골라 주세요.'; return; }
+      } else {
+        const name = document.getElementById('bp-name').value.trim().slice(0, 12);
+        if (!name) { err.textContent = '이름을 써 주세요.'; return; }
+        bellMe.name = name;
+      }
       try { localStorage.setItem(BELL_ME_KEY, JSON.stringify(bellMe)); } catch (e) { /* 무시 */ }
       err.textContent = '방을 찾는 중…';
       try {
@@ -5944,7 +6415,7 @@
           if (BP.sock !== sock) return;
           BP.status = st;
           bellPadTop();
-          if (st === 'open' && !bellResume(BP.code)) sock.send({ t: 'join', name: bellMe.name, avatar: bellMe.avatar });
+          if (st === 'open' && !bellResume(BP.code)) sock.send(bellJoinMsg());
         },
         message: (m) => { if (BP.sock === sock) bellPadMessage(m); }
       });
@@ -5962,7 +6433,7 @@
       } else if (m.t === 'error' && m.code === 'bad-token') {
         // 내보냈거나 지난 방의 입장 정보다. 이름이 있으면 바로 새로 들어간다.
         bellSaveResume(BP.code, null);
-        if (bellMe.name) BP.sock.send({ t: 'join', name: bellMe.name, avatar: bellMe.avatar });
+        if (BP.byNo ? bellMe.no : bellMe.name) BP.sock.send(bellJoinMsg());
         else { BP.sock.close(); BP.sock = null; bellPadForm(); }
       } else if (m.t === 'error' && m.code === 'bad-name') {
         BP.sock.close();
@@ -5975,11 +6446,12 @@
     }
     function bellPadEnded(message) {
       if (BP.race && BP.race.running) bellRaceStop();
+      if (BP.exam && BP.exam.running) bellExamStop();
       clearInterval(BP.timer);
       BP.ended = true;
       const btns = `<div class="bp-btns"><button class="btn-main" type="button" onclick="bellPadForm()">다른 방 들어가기</button><button class="ghost-btn" type="button" onclick="bellLeave(true)">처음으로</button></div>`;
       // 최종 등수를 보고 있었다면 그대로 두고 아래에 버튼만 붙인다.
-      if (BP.view && BP.view.screen === 'end') {
+      if (BP.view && (BP.view.screen === 'end' || BP.view.screen === 'examEnd')) {
         const card = document.querySelector('#bp-body .bp-big');
         if (card && !card.querySelector('.bp-btns')) card.insertAdjacentHTML('beforeend', btns);
       } else {
@@ -6015,8 +6487,16 @@
       }
       // 칠판이 시간 대결을 끝냈으면(일찍 마쳤거나 결과가 나왔으면) 하던 게임을 멈춘다.
       if (BP.race && BP.race.running && v.screen !== 'race') bellRaceStop();
+      if (BP.exam && BP.exam.running && v.screen !== 'exam') bellExamStop();
       BP.view = v;
       if (v.screen === 'race') { bellRaceView(v); return; }
+      if (v.screen === 'exam') { bellPadExam(v); return; }
+      if (v.screen === 'examEnd') {
+        blip('fanfare');
+        if (v.show) bellPadBig('📝', `${Number(v.points)}점`, `${Number(v.total)}문제 중 ${Number(v.correct)}문제를 맞혔어요. 수고했어요!`, 'good');
+        else bellPadBig('📝', '단원 평가 끝!', '수고했어요! 결과는 선생님이 알려 줄 거예요');
+        return;
+      }
       if (v.screen === 'q') { bellPadQuestion(v); return; }
       if (v.screen === 'wait') { bellPadBig(v.emoji || '🔔', v.title, v.message); return; }
       if (v.screen === 'result') {
@@ -6207,6 +6687,122 @@
       showScreen('bell-join-screen');
       bellPadBig('🏁', '시간 끝!', `${scores[0]}점 · ${r.correct}문제 맞혔어요. 칠판에서 순위를 봐요`, 'good');
     }
+
+    /* ---------- 단원 평가 (태블릿) ---------- */
+    // 칠판이 보낸 20문제로 기존 단원 마무리 평가(1명)를 돌린다. 맞았는지는 보여 주지 않고 칠판에만 알린다.
+    // 태블릿을 새로 불러와도 이어 풀도록 낸 답(맞음·틀림)을 이 기기에 적어 둔다.
+    const EXAM_SAVE_PREFIX = 'sosuman-exam:';
+    function bellExamLoad(round) {
+      try {
+        const v = JSON.parse(localStorage.getItem(EXAM_SAVE_PREFIX + round) || 'null');
+        return Array.isArray(v) ? v.filter((x) => typeof x === 'boolean').slice(0, EXAM_TOTAL) : [];
+      } catch (err) { return []; }
+    }
+    function bellExamSave() {
+      try { localStorage.setItem(EXAM_SAVE_PREFIX + BP.exam.round, JSON.stringify(examLog[0].map((r) => r.correct))); } catch (err) { /* 무시 */ }
+    }
+    function bellExamForget(keep) {
+      try {
+        Object.keys(localStorage).filter((k) => k.startsWith(EXAM_SAVE_PREFIX) && k !== EXAM_SAVE_PREFIX + keep).forEach((k) => localStorage.removeItem(k));
+      } catch (err) { /* 무시 */ }
+    }
+    function bellPadExam(v) {
+      const left = Math.max(0, Number(v.left) || 0);
+      const e = BP.exam;
+      if (e && e.round === v.round) {
+        // 칠판이 다시 보낸 남은 시간으로 맞춘다
+        if (e.end && left) e.end = Date.now() + left;
+        if (e.done) bellExamDoneScreen();
+        return;
+      }
+      if (!Array.isArray(v.qs) || v.qs.length !== EXAM_TOTAL) return;
+      clearInterval(BP.timer);
+      bellExamForget(v.round);
+      const log = bellExamLoad(v.round);
+      const total = Number(v.total) || 0;
+      BP.exam = { round: v.round, qs: v.qs, total, end: total ? Date.now() + left : 0, running: false, done: false, timeUp: false };
+      if (log.length >= EXAM_TOTAL || (total && left < 1000)) {
+        BP.exam.done = true;
+        BP.exam.timeUp = log.length < EXAM_TOTAL;
+        bellExamDoneScreen();
+        return;
+      }
+      bellExamGo(log);
+    }
+    function bellExamGo(log) {
+      const e = BP.exam;
+      e.running = true;
+      // 여러 태블릿이 한꺼번에 읽어 주면 교실이 시끄러우니 평가 중에는 읽어 주기를 끈다
+      e.voice = voiceOn;
+      if (voiceOn) toggleVoice();
+      mode = 'exam';
+      playerCount = 1;
+      combos = [0];
+      examQueues = [e.qs];
+      examIndex = [log.length];
+      examLog = [log.map((ok, i) => ({ sec: e.qs[i].sec, correct: ok }))];
+      scores = [log.filter(Boolean).length * EXAM_POINT];
+      players = [createPlayer(0)];
+      gameActive = true;
+      document.getElementById('mode-title').innerHTML = `<span class="ic">${ICONS.exam}</span>단원 평가`;
+      document.getElementById('mode-sub').textContent = `방 ${BP.code} · 문제마다 한 번만 답할 수 있어요`;
+      document.body.classList.add('racing', 'exam-quiet');
+      showScreen('game-screen');
+      renderPlayers();
+      // 새로 불러온 태블릿이면 앞서 낸 답을 칠판에 다시 알린다(칠판은 겹친 답을 버린다)
+      if (BP.sock) log.forEach((ok, i) => BP.sock.send({ t: 'input', data: { kind: 'exam', round: e.round, i, ok } }));
+      clearInterval(timerId);
+      if (!e.end) { setTimerUi(0, null); return; }
+      timeTotal = e.total;
+      const tick = () => {
+        timeLeft = Math.max(0, Math.ceil((e.end - Date.now()) / 1000));
+        setTimerUi(timeLeft, timeTotal);
+        document.getElementById('time-left').textContent = timeLeft > 60 ? `${Math.ceil(timeLeft / 60)}분` : String(timeLeft);
+        if (timeLeft <= 0) { e.timeUp = true; finishGame(); }
+      };
+      timerId = setInterval(() => { if (gameActive) tick(); }, 250);
+      tick();
+    }
+    function bellExamAnswered(p, correct) {
+      const e = BP.exam;
+      bellExamSave();
+      if (BP.sock) BP.sock.send({ t: 'input', data: { kind: 'exam', round: e.round, i: examIndex[0] - 1, ok: correct } });
+      // 칸을 다시 그리면 정답·오답 색이 드러나므로 말만 바꾸고 누르지 못하게 막는다
+      const cell = document.getElementById('cell-0');
+      if (cell) cell.classList.add('exam-sent');
+      setMsg(0, '✋ 답을 냈어요');
+      blip('tick');
+      clearTimeout(nextTimers[0]);
+      nextTimers[0] = setTimeout(() => {
+        if (!e.running || players[0] !== p) return;
+        if (examIndex[0] >= EXAM_TOTAL) { finishGame(); return; }
+        const live = document.getElementById('cell-0');
+        if (live) live.classList.remove('exam-sent');
+        players[0] = createPlayer(0);
+        renderCell(0);
+      }, 600);
+    }
+    function bellExamStop() {
+      const e = BP.exam;
+      if (!e || !e.running) return;
+      e.running = false;
+      e.done = true;
+      stopAll();
+      if (e.voice && !voiceOn) toggleVoice();
+      document.body.classList.remove('racing', 'exam-quiet');
+      if (BP.sock) BP.sock.send({ t: 'input', data: { kind: 'exam', round: e.round, done: true } });
+      showScreen('bell-join-screen');
+      bellExamDoneScreen();
+    }
+    function bellExamDoneScreen() {
+      const e = BP.exam;
+      bellPadBig('📝', e && e.timeUp ? '⏰ 시간이 끝났어요' : '평가를 마쳤어요', '수고했어요! 친구들이 끝날 때까지 조용히 기다려요', 'good');
+    }
+    // 평가 중에 다른 앱이나 탭으로 나가면 칠판에 알린다(몇 번 나갔는지만 센다)
+    document.addEventListener('visibilitychange', () => {
+      const e = BP.exam;
+      if (document.visibilityState === 'hidden' && e && e.running && BP.sock) BP.sock.send({ t: 'input', data: { kind: 'exam', round: e.round, away: true } });
+    });
 
     // 태블릿에 키보드가 있으면 숫자·소수점·지우기·엔터로도 답한다.
     document.addEventListener('keydown', (e) => {
