@@ -463,6 +463,20 @@
     ]
   },
   {
+    "id": "suhakdaejeon",
+    "updatedAt": "2026-11-09",
+    "title": "수학대전",
+    "category": "web-game",
+    "badge": "웹게임",
+    "thumbnail": "assets/thumbnails/suhakdaejeon.png",
+    "description": "수학 문제를 풀고 알을 튕겨 겨루는 교실 게임입니다. 알까기와 알까기 축구를 즐길 수 있습니다.",
+    "actions": [
+      { "type": "play", "label": "바로 플레이", "url": "https://suhakdaejeon.onpod.ai/", "downloadKey": "" },
+      { "type": "external", "label": "새 창", "url": "https://suhakdaejeon.onpod.ai/", "downloadKey": "" },
+      { "type": "info", "label": "설명", "url": "programs/suhakdaejeon.html", "downloadKey": "" }
+    ]
+  },
+  {
     "id": "semman",
     "updatedAt": "2026-10-24",
     "title": "셈맨",
