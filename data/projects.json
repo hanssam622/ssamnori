@@ -478,12 +478,12 @@
   },
   {
     "id": "semman",
-    "updatedAt": "2026-10-24",
+    "updatedAt": "2026-11-18",
     "title": "셈맨",
     "category": "web-game",
     "badge": "웹게임",
     "thumbnail": "assets/thumbnails/semman.svg",
-    "description": "하나씩 세기와 모으기·가르기부터 두 자리 수, 덧셈·뺄셈, 곱셈구구까지 단계별로 연습하는 1~2학년 전자칠판 수학 게임입니다.",
+    "description": "수 세기와 모으기·가르기부터 10을 이용한 덧셈·뺄셈, 곱셈구구까지 연습하는 1~2학년 전자칠판 수학 게임입니다.",
     "actions": [
       {
         "type": "play",

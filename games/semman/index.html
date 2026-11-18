@@ -863,6 +863,28 @@
     /* ---------- 모으기·가르기 ---------- */
     .bond { width: calc(var(--s) * 236px); height: auto; overflow: visible; }
 
+    /* ---------- 가르기로 계산하기 ---------- */
+    .split { display: block; width: 100%; max-width: calc(var(--s) * 430px); height: auto; overflow: visible; }
+    .split .sn { font-size: 46px; font-weight: 900; fill: var(--ink); text-anchor: middle; }
+    .split .so { font-size: 40px; font-weight: 800; fill: var(--muted); text-anchor: middle; }
+    .split .br { fill: none; stroke: #ec5c95; stroke-width: 3.4; stroke-linecap: round; }
+    .split .band { fill: none; stroke: #e6dcff; stroke-linecap: round; }
+    .split .tint { fill: #e6dcff; }
+    .split .sb rect { fill: #fff; stroke: #2fb4d9; stroke-width: 3.4; }
+    .split .sb text { font-size: 42px; font-weight: 900; fill: var(--ink); text-anchor: middle; }
+    .split .sb.given rect { fill: #f4f0ff; stroke: #a58cf0; }
+    .split .sb.given text { fill: #6b46d6; }
+    .split .sb.got text { fill: #12804a; }
+    .split .sb.key text { fill: #e2443a; }
+    .split .sb.cur rect { fill: #fffaf0; stroke: var(--brand); stroke-width: 4.4; stroke-dasharray: 10 6; }
+    .split .sb.cur text { fill: var(--brand-d); }
+    .split .ten { transform-box: fill-box; transform-origin: center; animation: tenPop .5s cubic-bezier(.3, 1.6, .5, 1) both; }
+    .split .ten rect { fill: #8b5cf0; }
+    .split .ten text { font-size: 26px; font-weight: 900; fill: #fff; text-anchor: middle; }
+    @keyframes tenPop { from { transform: scale(.2); opacity: 0; } }
+    .ans-line .p { color: #7c4ddb; }
+    .crow .split { max-width: 300px; }
+
     /* ---------- 비교 ---------- */
     .cmp { display: grid; gap: calc(var(--s) * 10px); justify-content: center; --os: calc(var(--s) * 42px); }
     .cmp-row { display: flex; align-items: center; gap: calc(var(--s) * 10px); }
@@ -1238,6 +1260,9 @@
     .ws-page .track b { min-width: 11mm; height: 11mm; font-size: 5mm; border-width: .35mm; border-radius: 2mm; }
     .ws-page .track b.blank { border-width: .45mm; color: #e2443a; }
     .ws-page .bond { width: 46mm; }
+    .ws-page .split { width: 51mm; max-width: 100%; }
+    .ws-sec { grid-column: 1 / -1; margin: 1.4mm 0 0; display: flex; align-items: center; gap: 2mm; font-size: 4.4mm; font-weight: 900; }
+    .ws-sec::before { content: ""; width: 1.6mm; height: 4.4mm; border-radius: 1mm; background: #8b5cf0; }
     .ws-page .blocks { --u: 3mm; gap: 3mm; }
     .ws-page .plates { --os: 4.6mm; gap: 2.4mm; }
     .ws-page .plate { padding: 1.6mm; min-width: calc(var(--os) * 3 + 6mm); min-height: calc(var(--os) * 3 + 5mm); border-width: .3mm; }
@@ -1735,7 +1760,7 @@
        미리 만든 MP3 조각(window.VOICE_DATA)을 빈틈없이 이어 재생한다.
        조각이 없으면 같은 글을 브라우저 음성으로 읽는다.
        말 = { ko: [조각…], ru: [조각…] } (배열 하나면 두 말이 같은 조각)
-       조각: 'p_…' 고정 문장 · V.n 수 · V.t 수+은/는 · V.c 하나·둘 · V.u 한 개·한 마리 · V.g 구구단
+       조각: 'p_…' 고정 문장 · V.n 수 · V.t 수+은/는 · V.c 하나·둘 · V.u 한 개·한 마리 · V.w 수+과/와 · V.g 구구단
        ========================================================= */
     const RU1 = ['ноль', 'один', 'два', 'три', 'четыре', 'пять', 'шесть', 'семь', 'восемь', 'девять', 'десять', 'одиннадцать', 'двенадцать', 'тринадцать', 'четырнадцать', 'пятнадцать', 'шестнадцать', 'семнадцать', 'восемнадцать', 'девятнадцать'];
     const RU10 = ['', '', 'двадцать', 'тридцать', 'сорок', 'пятьдесят', 'шестьдесят', 'семьдесят', 'восемьдесят', 'девяносто'];
@@ -1832,6 +1857,21 @@
       p_hint_right_remain: ['오른쪽 상자에 남은 파란 구슬을 세어 봐요.', 'Посчитай синие шарики, которые остались справа.'],
       p_hint_10and: ['10과 남은 수를 모아 봐요.', 'Сложи десять и остаток.'],
       p_ten_full: ['10이 되었어요!', 'Получилось десять!'],
+      p_split_make10: ['수를 갈라서 10을 먼저 만들어요.', 'Разделим число и сначала соберём десять.'],
+      p_split_sub10: ['수를 갈라서 10을 이용해 빼요.', 'Разделим число и вычтем через десять.'],
+      p_e_need10: ['에 몇을 더하면 10이 될까요?', ''],
+      p_eseo_need10: ['에서 몇을 빼면 10이 될까요?', ''],
+      p_ru_plus_what10: ['', 'плюс сколько будет десять?'],
+      p_ru_minus_what10: ['', 'минус сколько будет десять?'],
+      p_what_q: ['몇일까요?', ''],
+      p_ru_eto: ['', 'это'],
+      p_ru_i: ['', 'и'],
+      p_ru_and_what: ['', 'и сколько?'],
+      p_hint_pair10: ['더해서 10이 되는 짝꿍 수예요. 10칸 상자의 빈칸을 세어 봐요.', 'Это пара до десяти. Посчитай пустые клетки в рамке.'],
+      p_hint_right_left: ['오른쪽 상자에 남은 구슬을 세어 봐요.', 'Посчитай шарики, которые остались в правой рамке.'],
+      p_hint_teens: ['십몇은 10과 몇이에요. 오른쪽 상자의 구슬을 세어 봐요.', 'Это десять и ещё сколько-то. Посчитай шарики в правой рамке.'],
+      p_hint_take_ones: ['오른쪽 상자의 구슬을 모두 빼면 10이 남아요.', 'Убери все шарики из правой рамки, и останется десять.'],
+      p_hint_more_take: ['얼마를 더 빼야 하는지 생각해 봐요.', 'Подумай, сколько ещё нужно отнять.'],
       p_sub10_q: ['꽉 찬 10칸 상자에서 먼저 빼 보세요.', 'Сначала вычитай из полной рамки на десять.'],
       p_need_cross10: ['왼쪽 상자에서 빼는 수만큼 눌러 가위표 해요.', 'Зачеркни в левой рамке столько, сколько вычитаем.'],
       p_ok_count_all: ['좋아요! 남은 구슬을 모두 세어 봐요.', 'Хорошо! Теперь посчитай все оставшиеся шарики.'],
@@ -1877,7 +1917,8 @@
       t: (x) => ({ t: x }),
       c: (x) => ({ c: x }),
       u: (x, unit) => ({ u: x, unit }),
-      g: (a, b) => ({ g: [a, b] })
+      g: (a, b) => ({ g: [a, b] }),
+      w: (x) => ({ w: x })
     };
     const cat = (...sps) => {
       const pickL = (s, L) => (!s ? [] : Array.isArray(s) ? s : s[L] || []);
@@ -1894,6 +1935,8 @@
       if ('t' in tok) return lang === 'ko' ? { key: `ko:t${tok.t}`, text: ko(tok.t) + jn(tok.t, '은', '는'), num: tok.t } : clip({ n: tok.t }, lang);
       if ('c' in tok) return lang === 'ko' && tok.c >= 1 && tok.c <= 20 ? { key: `ko:c${tok.c}`, text: nat(tok.c), num: tok.c } : clip({ n: tok.c }, lang);
       if ('u' in tok) return lang === 'ko' && tok.u >= 1 && tok.u <= 20 ? { key: `ko:u${tok.unit === '마리' ? 'm' : 'g'}${tok.u}`, text: `${natCount(tok.u)} ${tok.unit}`, num: tok.u } : clip({ n: tok.u }, lang);
+      // 수+과/와 (삼과, 이와 …)
+      if ('w' in tok) return lang === 'ko' && tok.w >= 1 && tok.w <= 20 ? { key: `ko:w${tok.w}`, text: ko(tok.w) + jn(tok.w, '과', '와'), num: tok.w } : clip({ n: tok.w }, lang);
       if ('g' in tok) {
         const [a, b] = tok.g;
         return { key: `${lang}:g${a}${b}`, text: lang === 'ko' ? guguSay(a, b) : `${ruNum(a)} умножить на ${ruNum(b)} будет ${ruNum(a * b)}`, gugu: [a, b] };
@@ -2008,6 +2051,7 @@
       });
       for (let n = 0; n <= 99; n += 1) add(V.t(n), 'ko', true);
       for (let n = 1; n <= 20; n += 1) { add(V.c(n), 'ko', true); add(V.u(n, '개'), 'ko', true); add(V.u(n, '마리'), 'ko', true); }
+      for (let n = 1; n <= 10; n += 1) add(V.w(n), 'ko', true);
       return [...out.values()];
     }
     function fallbackSay(parts, my, done) {
@@ -2059,6 +2103,8 @@
       make10: ic(`${icTf(2, 8, 5.6, ['a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'b', 'b'])}${icTf(18, 28, 5.6, ['b', 'b', 'b'])}<path d="M10 32c0-4 2-6 6-6" fill="none" stroke="#3a7ff2" stroke-width="2" stroke-linecap="round"/><path d="m14 23.6 2.4 2.4-2.4 2.4" fill="none" stroke="#3a7ff2" stroke-width="2" stroke-linecap="round"/>`),
       sub10: ic(`${icTf(4, 14, 8, ['a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a'])}<path d="M31 15l6 6m0-6-6 6M39 15l6 6m0-6-6 6M39 23l6 6m0-6-6 6" stroke="#1d2838" stroke-width="2" stroke-linecap="round"/>`),
       fact20: ic('<rect x="4" y="9" width="40" height="30" rx="8" fill="#fff" stroke="#8b5cf0" stroke-width="2.4"/><text x="24" y="30" text-anchor="middle" font-size="14" font-weight="900" fill="#1d2838" font-family="Arial">8+5</text>'),
+      sadd: ic('<path d="M10 12 24 35" stroke="#ddd0ff" stroke-width="10" stroke-linecap="round"/><text x="10" y="17" text-anchor="middle" font-size="13" font-weight="900" fill="#1d2838" font-family="Arial">7</text><path d="M17.5 12.5h6M20.5 9.5v6" stroke="#6b7687" stroke-width="2.2" stroke-linecap="round"/><text x="31" y="17" text-anchor="middle" font-size="13" font-weight="900" fill="#1d2838" font-family="Arial">5</text><path d="M31 20 24 29M31 20l7 9" stroke="#ec5c95" stroke-width="2" stroke-linecap="round" fill="none"/><rect x="18" y="29" width="12" height="13" rx="3" fill="#fff" stroke="#2fb4d9" stroke-width="2"/><rect x="32" y="29" width="12" height="13" rx="3" fill="#fff" stroke="#2fb4d9" stroke-width="2"/><text x="24" y="39.5" text-anchor="middle" font-size="10" font-weight="900" fill="#7c4ddb" font-family="Arial">3</text><text x="38" y="39.5" text-anchor="middle" font-size="10" font-weight="900" fill="#1d2838" font-family="Arial">2</text>'),
+      ssub: ic('<rect x="30" y="4" width="12" height="16" rx="4" fill="#ddd0ff"/><text x="13" y="17" text-anchor="middle" font-size="12" font-weight="900" fill="#1d2838" font-family="Arial">14</text><path d="M22 12.5h5" stroke="#6b7687" stroke-width="2.2" stroke-linecap="round"/><text x="36" y="17" text-anchor="middle" font-size="12" font-weight="900" fill="#1d2838" font-family="Arial">6</text><path d="M13 20 8 29M13 20l7 9" stroke="#ec5c95" stroke-width="2" stroke-linecap="round" fill="none"/><rect x="1.5" y="29" width="13" height="13" rx="3" fill="#f4f0ff" stroke="#a58cf0" stroke-width="2"/><rect x="16" y="29" width="12" height="13" rx="3" fill="#fff" stroke="#2fb4d9" stroke-width="2"/><text x="8" y="39" text-anchor="middle" font-size="8.5" font-weight="900" fill="#6b46d6" font-family="Arial">10</text><text x="22" y="39.5" text-anchor="middle" font-size="10" font-weight="900" fill="#1d2838" font-family="Arial">4</text>'),
       blocks: ic('<g fill="#ff9a1f" stroke="#c86a00" stroke-width="1.2">' + [6, 13, 20].map((x) => `<rect x="${x}" y="6" width="6" height="36" rx="1.5"/>`).join('') + '</g><g fill="#3a9ef2" stroke="#1e6fc0" stroke-width="1.2"><rect x="31" y="30" width="6" height="6" rx="1"/><rect x="38" y="30" width="6" height="6" rx="1"/><rect x="31" y="23" width="6" height="6" rx="1"/><rect x="31" y="37" width="6" height="5" rx="1"/></g>'),
       add2: ic('<rect x="4" y="9" width="40" height="30" rx="8" fill="#fff" stroke="#f08a24" stroke-width="2.4"/><text x="24" y="30" text-anchor="middle" font-size="12.5" font-weight="900" fill="#1d2838" font-family="Arial">23+5</text>'),
       group: ic(`<circle cx="13" cy="16" r="10" fill="#fff" stroke="#e4dccf" stroke-width="2"/><circle cx="35" cy="16" r="10" fill="#fff" stroke="#e4dccf" stroke-width="2"/><circle cx="24" cy="35" r="10" fill="#fff" stroke="#ff9a1f" stroke-width="2.2"/>${[[9, 13], [17, 13], [13, 20], [31, 13], [39, 13], [35, 20], [20, 32], [28, 32], [24, 39]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="3" fill="#ff5b4f"/>`).join('')}`),
@@ -2092,7 +2138,9 @@
       diff: { title: '몇 개 더 많을까?', icon: 'diff', tint: '#ffedf5', ans: 'choice', sub: '짝지어 보고 남는 것을 세어 차이를 구해요', desc: '두 줄을 짝지어 보고 짝이 없는 것을 세면 차이를 알 수 있어요.' },
       fact10: { title: '식으로 더하고 빼기', icon: 'fact10', tint: '#ffedf5', ans: 'pad', sub: '식만 보고 계산해요. 어려우면 💡 도움!', desc: '그림 없이 식만 보고 풀어요. 어려우면 💡 도움을 눌러 그림을 볼 수 있어요.', opts: [['mix', '섞기'], ['add', '덧셈만'], ['sub', '뺄셈만']], def: 'mix' },
       make10: { title: '10을 만들어 더하기', icon: 'make10', tint: '#f1ecff', ans: 'pad', sub: '파란 구슬을 옮겨 10칸 상자를 먼저 채워요', desc: '8 + 5는 8에 2를 옮겨 10을 만들고 3을 더해요. 10 + 3 = 13!', th: [8, 20, 34] },
+      sadd: { title: '가르기로 더하기', icon: 'sadd', tint: '#f1ecff', ans: 'pad', sub: '한 수를 둘로 갈라 10을 먼저 만들고, 남은 수를 더해요', desc: '7 + 5는 5를 3과 2로 갈라요. 7과 3을 모아 10, 10과 2를 모아 12! 학습지와 같은 가르기 그림으로 풀어요.', opts: [['back', '뒤의 수 가르기'], ['front', '앞의 수 가르기'], ['mix', '섞기']], def: 'back' },
       sub10: { title: '10에서 빼기', icon: 'sub10', tint: '#f1ecff', ans: 'pad', sub: '꽉 찬 10칸 상자에서 먼저 빼고, 남은 것을 더해요', desc: '13 − 5는 10에서 5를 빼고 남은 5와 3을 더해요. 5 + 3 = 8!', th: [8, 20, 34] },
+      ssub: { title: '가르기로 빼기', icon: 'ssub', tint: '#f1ecff', ans: 'pad', sub: '수를 둘로 갈라 10을 이용해서 빼요', desc: '14 − 6은 14를 10과 4로 갈라 10에서 6을 빼요. 16 − 7은 7을 6과 1로 갈라 먼저 10을 만들어요.', opts: [['front', '앞의 수 가르기 (10에서 빼기)'], ['back', '뒤의 수 가르기 (10 만들고 빼기)'], ['mix', '섞기']], def: 'front' },
       fact20: { title: '식으로 연습 (20까지)', icon: 'fact20', tint: '#f1ecff', ans: 'pad', sub: '받아올림·받아내림이 있는 식을 풀어요', desc: '8 + 5, 13 − 6 같은 식을 풀어요. 💡 도움을 누르면 10칸 상자가 나와요.', opts: [['mix', '섞기'], ['add', '덧셈만'], ['sub', '뺄셈만']], def: 'mix' },
       blocks: { title: '10개씩 묶음과 낱개', icon: 'blocks', tint: '#fff1e2', ans: 'pad', sub: '막대(10개씩 묶음)와 낱개 블록으로 수를 읽고 만들어요', desc: '막대 3개와 낱개 4개는 34! 블록으로 두 자리 수를 읽고 직접 만들어요.', opts: [['mix', '섞기'], ['read', '읽기'], ['build', '만들기']], def: 'mix' },
       add2: { title: '두 자리 수 더하기·빼기', icon: 'add2', tint: '#fff1e2', ans: 'pad', sub: '낱개는 낱개끼리, 묶음은 묶음끼리 계산해요', desc: '블록을 보며 23 + 5, 47 − 3, 25 + 7 같은 계산을 해요.', opts: [['n1', '(몇십몇) ± (몇)'], ['n2', '받아올림 (몇십몇) + (몇)'], ['n3', '(몇십몇) ± (몇십몇)']], def: 'n1' },
@@ -2111,7 +2159,7 @@
       { no: 2, color: '#12a3b3', title: '모으기와 가르기', short: '모으기·가르기', page: '1학년 1학기 · 덧셈과 뺄셈', concept: 'c2', items: ['bond', 'ten'] },
       { no: 3, color: '#3a7ff2', title: '덧셈 (합이 10까지)', short: '덧셈', page: '1학년 1학기 · 덧셈과 뺄셈', concept: 'c3', items: ['addpic', 'hop'] },
       { no: 4, color: '#e64f95', title: '뺄셈 (10까지)', short: '뺄셈', page: '1학년 1학기 · 덧셈과 뺄셈', concept: 'c4', items: ['subpic', 'diff', 'fact10'] },
-      { no: 5, color: '#8b5cf0', title: '10을 넘는 덧셈과 뺄셈', short: '10 넘기', page: '1학년 2학기 · 덧셈과 뺄셈(2)', concept: 'c5', items: ['make10', 'sub10', 'fact20'] },
+      { no: 5, color: '#8b5cf0', title: '10을 넘는 덧셈과 뺄셈', short: '10 넘기', page: '1학년 2학기 · 덧셈과 뺄셈(2)', concept: 'c5', items: ['make10', 'sadd', 'sub10', 'ssub', 'fact20'] },
       { no: 6, color: '#f08a24', title: '두 자리 수', short: '두 자리 수', page: '1학년 2학기 · 100까지의 수 · 덧셈과 뺄셈(3)', concept: 'c6', items: ['blocks', 'add2'] },
       { no: 7, color: '#e2443a', title: '곱셈의 원리', short: '곱셈 원리', page: '2학년 1학기 · 곱셈', concept: 'c7', items: ['group', 'mulexpr', 'array', 'skip'] },
       { no: 8, color: '#c98a06', title: '구구단 외우기', short: '구구단', page: '2학년 2학기 · 곱셈구구', concept: 'c8', items: ['study', 'seq', 'quiz', 'speed'], dan: true }
@@ -2269,6 +2317,68 @@
         ${cell(v.a, 'a', 72, 146, 36, '#ff5b4f', '#ffeeec')}
         ${cell(v.b, 'b', 228, 146, 36, '#3a7ff2', '#eaf1ff')}
       </svg>`;
+    }
+
+    // 가르기 그림 (학습지와 같은 모양): 7 + 5 = □ 아래에서 한 수를 두 칸으로 가른다.
+    // 10을 만드는 짝은 보라 띠로 묶는다.
+    // v: { op, side: 'a'|'b' 가르는 수, a, b, L, R, T, given: 미리 쓴 칸, band: [끝, 끝], tint: 보라 바탕 }
+    // o: { show: { L, R, T } 칸에 보일 값, cur: 지금 쓰는 칸, input, idx, ten: 띠에 10 표시, key: 정답지, noBand }
+    const SPLIT_POS = { a: [84, 52], b: [188, 52], T: [310, 52] };
+    function splitSvg(v, o = {}) {
+      const sx = SPLIT_POS[v.side][0];
+      const pos = { ...SPLIT_POS, L: [sx - 38, 160], R: [sx + 38, 160] };
+      const show = o.show || {};
+      const given = v.given || [];
+      const box = (k, w, h) => {
+        const [cx, cy] = pos[k];
+        const cur = o.cur === k;
+        const fixed = given.includes(k);
+        const val = fixed ? v[k] : show[k];
+        const has = val !== undefined && val !== null && val !== '';
+        const txt = cur ? (o.input || '?') : has ? val : '';
+        const cls = `sb${cur ? ' cur' : fixed ? ' given' : has ? (o.key ? ' key' : ' got') : ''}`;
+        const id = cur && o.idx >= 0 ? ` id="sbx-${o.idx}"` : '';
+        return `<g class="${cls}"><rect x="${cx - w / 2}" y="${cy - h / 2}" width="${w}" height="${h}" rx="10"/><text x="${cx}" y="${cy + 15}"${id}>${txt}</text></g>`;
+      };
+      let under = '';
+      let ten = '';
+      if (!o.noBand) {
+        if (v.band) {
+          const [x1, y1] = pos[v.band[0]];
+          const [x2, y2] = pos[v.band[1]];
+          under += `<line class="band" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke-width="66"/>`;
+          if (o.ten) {
+            const mx = (x1 + x2) / 2;
+            const my = (y1 + y2) / 2;
+            ten = `<g class="ten"><rect x="${mx - 28}" y="${my - 18}" width="56" height="36" rx="18"/><text x="${mx}" y="${my + 9}">10</text></g>`;
+          }
+        }
+        (v.tint || []).forEach((k) => {
+          const [x, y] = pos[k];
+          under += `<rect class="tint" x="${x - 34}" y="${y - 36}" width="68" height="72" rx="18"/>`;
+        });
+      }
+      const [lx, ly] = pos.L;
+      const [rx, ry] = pos.R;
+      return `<svg class="split" viewBox="0 10 380 188" aria-hidden="true">${under}
+        <path class="br" d="M${sx} 80L${lx} ${ly - 28}M${sx} 80L${rx} ${ry - 28}"/>
+        <text class="sn" x="${pos.a[0]}" y="68">${v.a}</text><text class="so" x="136" y="66">${OPS[v.op]}</text>
+        <text class="sn" x="${pos.b[0]}" y="68">${v.b}</text><text class="so" x="240" y="66">=</text>
+        ${box('T', 92, 64)}${box('L', 62, 56)}${box('R', 62, 56)}${ten}
+      </svg>`;
+    }
+    // 가르기 도움 그림: 10칸 상자 두 개 (왼쪽이 10, 오른쪽이 남은 수)
+    function splitCells(v, step) {
+      const fill = (n, c) => Array(n).fill(c);
+      if (v.op === '+') {
+        if (v.side === 'b') return tfFill(step === 0 ? [...fill(v.a, 'a'), ...fill(10 - v.a, ''), ...fill(v.b, 'b')] : [...fill(v.a, 'a'), ...fill(v.L, 'b'), ...fill(v.R, 'b')]);
+        return tfFill(step === 0 ? [...fill(v.b, 'b'), ...fill(10 - v.b, ''), ...fill(v.a, 'a')] : [...fill(v.b, 'b'), ...fill(v.R, 'a'), ...fill(v.L, 'a')]);
+      }
+      const c = v.a - 10;
+      const xs = (n, k) => Array.from({ length: n }, (_, i) => ({ c: 'a', x: i >= n - k }));
+      if (v.side === 'a') return step === 0 ? [...xs(10, 0), ...xs(c, 0)] : [...xs(10, v.b), ...xs(c, 0)];
+      if (step === 0) return [...xs(10, 0), ...xs(c, 0)];
+      return [...xs(10, step === 1 ? 0 : v.R), ...xs(c, c)];
     }
 
     // 두 줄 비교. link: 짝 잇는 선 / 남는 것 강조
@@ -2723,6 +2833,172 @@
       };
     }
 
+    // 가르기로 계산하기 — 학습지의 가르기 그림과 같은 순서로 칸을 채운다
+    // 덧셈: ① 그대로 둔 수와 모아 10이 되는 조각 ② 남은 조각 ③ 10과 남은 조각을 모아 십몇
+    function makeSplitAdd(opt) {
+      const side = opt === 'front' ? 'a' : opt === 'back' ? 'b' : pick(['a', 'b']);
+      let a;
+      let b;
+      do { a = randInt(2, 9); b = randInt(2, 9); } while (a + b < 11);
+      const keep = side === 'b' ? a : b; // 그대로 두는 수
+      const cut = side === 'b' ? b : a; // 가르는 수
+      const p = 10 - keep; // keep과 모아 10이 되는 조각
+      const r = cut - p; // 남은 조각
+      const sa = `<span class="r">${a}</span>`;
+      const sb = `<span class="b">${b}</span>`;
+      const ten = '<span class="p">10</span>';
+      const op = (t) => `<span class="op">${t}</span>`;
+      const q0 = { ko: [V.n(keep), 'p_e_need10'], ru: [V.n(keep), 'p_ru_plus_what10'] };
+      const sp = cat({ ko: [V.n(a), 'p_plus', V.n(b), 'p_split_make10'], ru: [V.n(a), 'p_plus', V.n(b), 'p_split_make10'] }, q0);
+      return {
+        key: `sa-${side}-${a}-${b}`,
+        prompt: `${N(a)} + ${N(b)}, ${N(cut)}${jn(cut, '을', '를')} 갈라서 10을 먼저 만들어요.`,
+        sp,
+        vis: { type: 'split', op: '+', side, a, b, L: side === 'b' ? p : r, R: side === 'b' ? r : p, T: a + b, band: side === 'b' ? ['a', 'L'] : ['R', 'b'] },
+        start: '보라색 띠로 묶인 두 수를 모으면 10이 돼요.',
+        steps: [
+          {
+            box: side === 'b' ? 'L' : 'R',
+            prompt: `${N(keep)}에 몇을 더하면 <b>10</b>이 될까요?`,
+            psp: sp,
+            line: side === 'b' ? `${sa} ${op('+')} {A} ${op('=')} ${ten}` : `{A} ${op('+')} ${sb} ${op('=')} ${ten}`,
+            ans: p,
+            sp: side === 'b' ? eqSp(a, '+', p, 10) : eqSp(p, '+', b, 10),
+            ok: '10이 되었어요! 이제 남은 수를 찾아요.',
+            oksp: ['p_ten_full'],
+            hint: `${keep}${jn(keep, '과', '와')} 더해서 10이 되는 짝꿍 수예요. 10칸 상자의 빈칸을 세어 봐요.`,
+            hsp: ['p_hint_pair10']
+          },
+          {
+            box: side === 'b' ? 'R' : 'L',
+            prompt: `${N(cut)}${jn(cut, '을', '를')} ${N(p)}${jn(p, '과', '와')} 몇으로 가를까요?`,
+            psp: { ko: [V.t(cut), V.w(p), 'p_what_q'], ru: [V.n(cut), 'p_ru_eto', V.n(p), 'p_ru_and_what'] },
+            line: `<span>${side === 'b' ? sb : sa}${jn(cut, '은', '는')}</span> <span><span class="p">${p}</span>${jn(p, '과', '와')}</span> {A}`,
+            ans: r,
+            sp: { ko: [V.t(cut), V.w(p), V.n(r)], ru: [V.n(cut), 'p_ru_eto', V.n(p), 'p_ru_i', V.n(r)] },
+            hint: `${cut}${jn(cut, '은', '는')} ${p}${jn(p, '과', '와')} 몇일까요? 오른쪽 상자에 남은 구슬을 세어 봐요.`,
+            hsp: ['p_hint_right_left']
+          },
+          {
+            box: 'T',
+            prompt: `10과 ${N(r)}${jn(r, '을', '를')} 모으면 얼마일까요?`,
+            psp: eqSp(10, '+', r),
+            line: `${sa} ${op('+')} ${sb} ${op('=')} ${ten} ${op('+')} ${r} ${op('=')} {A}`,
+            ans: a + b,
+            sp: eqSp(a, '+', b, a + b),
+            hint: `10과 ${r}${jn(r, '을', '를')} 모으면 십${KD[r]}이에요.`,
+            hsp: ['p_hint_10and']
+          }
+        ],
+        range: [0, 18]
+      };
+    }
+
+    // 뺄셈: 앞의 수 가르기 14 − 6 → 14를 10과 4로 갈라 10에서 6을 빼고 4를 더해요
+    //       뒤의 수 가르기 16 − 7 → 7을 6과 1로 갈라 16 − 6 = 10, 10 − 1 = 9
+    function makeSplitSub(opt) {
+      const side = opt === 'front' ? 'a' : opt === 'back' ? 'b' : pick(['a', 'b']);
+      const a = randInt(11, 18);
+      const c = a - 10;
+      const b = randInt(c + 1, 9);
+      const res = a - b;
+      const sa = `<span class="r">${a}</span>`;
+      const sb = `<span class="b">${b}</span>`;
+      const ten = '<span class="p">10</span>';
+      const op = (t) => `<span class="op">${t}</span>`;
+      const intro = { ko: [V.n(a), 'p_minus', V.n(b), 'p_split_sub10'], ru: [V.n(a), 'p_minus', V.n(b), 'p_split_sub10'] };
+      if (side === 'a') {
+        const q0 = { ko: [V.t(a), V.w(10), 'p_what_q'], ru: [V.n(a), 'p_ru_eto', V.n(10), 'p_ru_and_what'] };
+        const sp = cat(intro, q0);
+        const left = 10 - b;
+        return {
+          key: `ss-a-${a}-${b}`,
+          prompt: `${N(a)} − ${N(b)}, ${N(a)}${jn(a, '을', '를')} 10과 몇으로 갈라서 10에서 빼요.`,
+          sp,
+          vis: { type: 'split', op: '-', side, a, b, L: 10, R: c, T: res, given: ['L'], tint: ['b'] },
+          start: `${a}${jn(a, '을', '를')} 10과 몇으로 갈라 봐요.`,
+          steps: [
+            {
+              box: 'R',
+              prompt: `${N(a)}${jn(a, '은', '는')} 10과 몇일까요?`,
+              psp: sp,
+              line: `<span>${sa}${jn(a, '은', '는')}</span> <span>${ten}과</span> {A}`,
+              ans: c,
+              sp: { ko: [V.t(a), V.w(10), V.n(c)], ru: [V.n(a), 'p_ru_eto', V.n(10), 'p_ru_i', V.n(c)] },
+              hint: '십몇은 10과 몇이에요. 오른쪽 상자의 구슬을 세어 봐요.',
+              hsp: ['p_hint_teens']
+            },
+            {
+              box: null,
+              prompt: `10에서 ${N(b)}${jn(b, '을', '를')} 빼면 얼마일까요?`,
+              psp: eqSp(10, '-', b),
+              line: `${ten} ${op('−')} ${sb} ${op('=')} {A}`,
+              ans: left,
+              sp: eqSp(10, '-', b, left),
+              hint: `10에서 ${b}${jn(b, '을', '를')} 빼요. 왼쪽 상자에 남은 구슬을 세어 봐요.`,
+              hsp: ['p_hint_left_remain']
+            },
+            {
+              box: 'T',
+              prompt: `${N(left)}${jn(left, '과', '와')} ${N(c)}${jn(c, '을', '를')} 모으면 얼마일까요?`,
+              psp: eqSp(left, '+', c),
+              line: `${sa} ${op('−')} ${sb} ${op('=')} ${left} ${op('+')} ${c} ${op('=')} {A}`,
+              ans: res,
+              sp: eqSp(a, '-', b, res),
+              hint: `10에서 빼고 남은 ${left}${jn(left, '과', '와')} 갈라 둔 ${c}${jn(c, '을', '를')} 모아요.`,
+              hsp: ['p_hint_add_both']
+            }
+          ],
+          range: [0, 18]
+        };
+      }
+      const r = b - c;
+      const q0 = { ko: [V.n(a), 'p_eseo_need10'], ru: [V.n(a), 'p_ru_minus_what10'] };
+      const sp = cat(intro, q0);
+      return {
+        key: `ss-b-${a}-${b}`,
+        prompt: `${N(a)} − ${N(b)}, ${N(b)}${jn(b, '을', '를')} 갈라서 먼저 10을 만들어요.`,
+        sp,
+        vis: { type: 'split', op: '-', side, a, b, L: c, R: r, T: res, band: ['a', 'L'] },
+        start: '먼저 빼서 10을 만들고, 남은 만큼 더 빼요.',
+        steps: [
+          {
+            box: 'L',
+            prompt: `${N(a)}에서 몇을 빼면 <b>10</b>이 될까요?`,
+            psp: sp,
+            line: `${sa} ${op('−')} {A} ${op('=')} ${ten}`,
+            ans: c,
+            sp: eqSp(a, '-', c, 10),
+            ok: '10이 되었어요! 이제 더 뺄 수를 찾아요.',
+            oksp: ['p_ten_full'],
+            hint: `${a}${jn(a, '은', '는')} 10과 몇일까요? 오른쪽 상자의 구슬을 모두 빼면 10이 남아요.`,
+            hsp: ['p_hint_take_ones']
+          },
+          {
+            box: 'R',
+            prompt: `${N(b)}${jn(b, '을', '를')} ${N(c)}${jn(c, '과', '와')} 몇으로 가를까요?`,
+            psp: { ko: [V.t(b), V.w(c), 'p_what_q'], ru: [V.n(b), 'p_ru_eto', V.n(c), 'p_ru_and_what'] },
+            line: `<span>${sb}${jn(b, '은', '는')}</span> <span><span class="p">${c}</span>${jn(c, '과', '와')}</span> {A}`,
+            ans: r,
+            sp: { ko: [V.t(b), V.w(c), V.n(r)], ru: [V.n(b), 'p_ru_eto', V.n(c), 'p_ru_i', V.n(r)] },
+            hint: `${b}만큼 빼야 하는데 ${c}만큼 뺐어요. 얼마를 더 빼야 할까요?`,
+            hsp: ['p_hint_more_take']
+          },
+          {
+            box: 'T',
+            prompt: `10에서 ${N(r)}${jn(r, '을', '를')} 빼면 얼마일까요?`,
+            psp: eqSp(10, '-', r),
+            line: `${sa} ${op('−')} ${sb} ${op('=')} ${ten} ${op('−')} ${r} ${op('=')} {A}`,
+            ans: res,
+            sp: eqSp(a, '-', b, res),
+            hint: `10에서 ${r}${jn(r, '을', '를')} 더 빼요. 왼쪽 상자에 남은 구슬을 세어 봐요.`,
+            hsp: ['p_hint_left_remain']
+          }
+        ],
+        range: [0, 18]
+      };
+    }
+
     function makeBlocks(opt) {
       const build = opt === 'build' || (opt !== 'read' && Math.random() < 0.5);
       const n = randInt(11, 99);
@@ -2981,7 +3257,7 @@
       count: makeCount, place: makePlace, compare: makeCompare, order: makeOrder,
       bond: makeBond, ten: makeTen, addpic: makeAddPic, hop: makeHop,
       subpic: makeSubPic, diff: makeDiff, fact10: makeFact10,
-      make10: makeMake10, sub10: makeSub10, fact20: makeFact20,
+      make10: makeMake10, sadd: makeSplitAdd, sub10: makeSub10, ssub: makeSplitSub, fact20: makeFact20,
       blocks: makeBlocks, add2: makeAdd2,
       group: makeGroup, mulexpr: makeMulExpr, array: makeArray, skip: makeSkip,
       study: makeStudy, seq: makeSeq, quiz: makeQuiz, speed: makeQuiz
@@ -3041,7 +3317,8 @@
         rows: () => [
           { fig: tfHtml(tfFill([...Array(8).fill('a'), 'b', 'b', 'b', 'b', 'b']), { full: [0] }), title: '10을 만들어 더하기', say: '팔 더하기 오에서 오를 이와 삼으로 갈라요. 팔과 이로 십을 만들고, 십과 삼을 모으면 십삼!', text: '8 + 5에서 5를 <b>2와 3</b>으로 갈라요. 8과 2로 10을 만들고, 10과 3을 모으면 <b>13</b>!' },
           { fig: tfHtml([...Array.from({ length: 10 }, (_, i) => ({ c: 'a', x: i >= 5 })), { c: 'a' }, { c: 'a' }, { c: 'a' }]), title: '10에서 빼기', say: '십삼 빼기 오에서 십삼을 십과 삼으로 갈라요. 십에서 오를 빼면 오, 오와 삼을 모으면 팔!', text: '13 − 5에서 13을 <b>10과 3</b>으로 갈라요. 10에서 5를 빼면 5, 5와 3을 모으면 <b>8</b>!' },
-          { fig: '<div class="eqs">9 + 1 · 8 + 2 · 7 + 3<br>6 + 4 · 5 + 5</div>', title: '짝꿍 수가 열쇠', say: '구에는 일, 팔에는 이, 칠에는 삼을 더하면 십이 돼요. 짝꿍 수를 빨리 떠올리면 받아올림이 쉬워져요.', text: '9에는 1, 8에는 2, 7에는 3을 더하면 10. <b>짝꿍 수를 빨리 떠올리면</b> 받아올림이 쉬워져요.' }
+          { fig: '<div class="eqs">9 + 1 · 8 + 2 · 7 + 3<br>6 + 4 · 5 + 5</div>', title: '짝꿍 수가 열쇠', say: '구에는 일, 팔에는 이, 칠에는 삼을 더하면 십이 돼요. 짝꿍 수를 빨리 떠올리면 받아올림이 쉬워져요.', text: '9에는 1, 8에는 2, 7에는 3을 더하면 10. <b>짝꿍 수를 빨리 떠올리면</b> 받아올림이 쉬워져요.' },
+          { fig: splitSvg({ op: '+', side: 'b', a: 7, b: 5, L: 3, R: 2, T: 12, band: ['a', 'L'] }, { show: { L: 3, R: 2, T: 12 }, ten: true }), title: '가르기로 계산하기', say: '칠 더하기 오에서 오를 삼과 이로 갈라요. 칠과 삼을 모으면 십, 십과 이를 모으면 십이! 보라색 띠가 십을 만드는 짝이에요.', text: '7 + 5에서 5를 <b>3과 2</b>로 갈라요. 7과 3을 모으면 10, 10과 2를 모으면 <b>12</b>! <b>보라색 띠</b>가 10을 만드는 짝이에요.' }
         ]
       },
       c6: {
@@ -3098,7 +3375,8 @@
       c5: [
         'Восемь плюс пять: делим пять на два и три. Восемь и два — это десять, десять и три — тринадцать!',
         'Тринадцать минус пять: делим тринадцать на десять и три. Десять минус пять — пять, пять и три — восемь!',
-        'К девяти прибавь один, к восьми — два, к семи — три, и получится десять. Пары до десяти помогают считать быстро.'
+        'К девяти прибавь один, к восьми — два, к семи — три, и получится десять. Пары до десяти помогают считать быстро.',
+        'Семь плюс пять: делим пять на три и два. Семь и три — это десять, десять и два — двенадцать! Фиолетовая полоска показывает пару, которая даёт десять.'
       ],
       c6: [
         'Десять единиц — это один десяток, одна палочка. Три палочки и четыре кубика — это тридцать четыре.',
@@ -3601,7 +3879,7 @@
       const body = cell && cell.querySelector('.cell-body');
       if (!p || !body) return;
       const qk = p.q ? p.q.key + (p.q.a !== undefined ? p.q.a : '') : '';
-      const key = `${qk}|${p.step}|${p.help > 0}|${p.goalDone ? 1 : 0}`;
+      const key = `${qk}|${p.step}|${p.help > 0 || p.tries > 0}|${p.goalDone ? 1 : 0}`;
       const sameQ = p.fitKey && p.fitKey.split('|')[0] === qk;
       if (p.fitKey === key) { cell.style.setProperty('--s', p.fs); return; }
       let s = sameQ ? p.fs : baseS;
@@ -3820,6 +4098,19 @@
           h = `${bondSvg(v, p.solved)}${objsHtml({ obj: v.obj, groups: [{ n: v.a, tone: 'a' }, { n: v.b, tone: 'b' }] }, p, { sm: true })}`;
           note = p.counted.length ? `센 수: <b>${p.counted.length}</b>` : '그림을 눌러 세어 봐요';
           if (live) btns = `<button class="mini-btn" type="button" onclick="resetCount(${idx})"${p.counted.length ? '' : ' style="visibility:hidden"'}>처음부터 다시 세기</button>`;
+          break;
+        }
+        case 'split': {
+          const upto = p.solved ? q.steps.length : p.step;
+          const show = {};
+          q.steps.slice(0, upto).forEach((s) => { if (s.box) show[s.box] = s.ans; });
+          const cur = !p.solved && !p.locked ? q.steps[p.step].box : null;
+          h = splitSvg(v, { show, cur, input: useChoices(p) ? '' : p.input, idx, ten: upto > 0 });
+          // 틀렸거나 💡 도움을 누르면 10칸 상자 그림이 나온다
+          if (p.help > 0 || p.tries > 0) {
+            const step = Math.min(upto, q.steps.length - 1);
+            h += tfHtml(splitCells(v, step), { sm: true, full: v.op === '+' && step > 0 ? [0] : [] });
+          }
           break;
         }
         case 'cmp': h = cmpHtml(v, p.help > 0 || p.step > 0 || p.solved); break;
@@ -4203,6 +4494,8 @@
       blip('tick');
       const el = document.getElementById(`ans-${idx}`);
       if (el) el.outerHTML = ansSlot(p);
+      const sbx = document.getElementById(`sbx-${idx}`);
+      if (sbx) sbx.textContent = p.input || '?';
     }
     function submit(idx) {
       const p = live(idx);
@@ -4433,6 +4726,9 @@
       { id: 'fact10', st: 4, title: '덧셈과 뺄셈 (10까지)', guide: '계산을 하세요.', per: 30, cols: 3, flat: true, opts: 'fact10' },
       { id: 'make10', st: 5, title: '10을 만들어 더하기', guide: '파란 ○를 왼쪽 상자로 옮겨 10을 만든다고 생각하고 계산하세요.', per: 8, cols: 2 },
       { id: 'sub10', st: 5, title: '10에서 빼기', guide: '왼쪽 10칸 상자에서 빼는 수만큼 ✕표 하고 계산하세요.', per: 8, cols: 2 },
+      { id: 'sadd', st: 5, title: '가르기로 더하기', guide: '10이 되도록 수를 가르고, 덧셈을 하세요.', per: 18, cols: 3, opts: 'sadd', split: true },
+      { id: 'ssub', st: 5, title: '가르기로 빼기', guide: '수를 갈라 10을 이용하여 뺄셈을 하세요.', per: 18, cols: 3, opts: 'ssub', split: true },
+      { id: 'smix', st: 5, title: '가르기로 덧셈과 뺄셈', guide: '수를 갈라 10을 만들어 계산하세요.', per: 18, cols: 3, split: true, mix: true },
       { id: 'fact20', st: 5, title: '덧셈과 뺄셈 (20까지)', guide: '계산을 하세요.', per: 30, cols: 3, flat: true, opts: 'fact20' },
       { id: 'blocks', st: 6, title: '10개씩 묶음과 낱개', guide: '막대(10개씩 묶음)와 낱개를 세어 수를 쓰세요.', per: 6, cols: 2 },
       { id: 'add2', st: 6, title: '두 자리 수 더하기·빼기', guide: '낱개는 낱개끼리, 10개씩 묶음은 묶음끼리 계산하세요.', per: 30, cols: 3, flat: true, opts: 'add2' },
@@ -4443,7 +4739,7 @@
       { id: 'quiz', st: 8, title: '구구단 섞어 풀기', guide: '곱셈을 하세요.', per: 40, cols: 4, flat: true, dan: true },
       { id: 'table', st: 8, title: '곱셈표 빈칸 채우기', guide: '곱셈표의 빈칸에 알맞은 수를 쓰세요.', dan: true }
     ];
-    const ws = { type: 'count', opt: {}, pages: 1, key: true, dans: null, data: [] };
+    const ws = { type: 'count', opt: {}, pages: 1, key: true, band: true, dans: null, data: [] };
     function wsType() { return WS_TYPES.find((t) => t.id === ws.type) || WS_TYPES[0]; }
     function wsOpt(T) {
       if (!T.opts) return '';
@@ -4468,6 +4764,8 @@
         case 'fact10': return makeFact10(o);
         case 'make10': return makeMake10();
         case 'sub10': return makeSub10();
+        case 'sadd': return makeSplitAdd(o);
+        case 'ssub': return makeSplitSub(o);
         case 'fact20': return makeFact20(o);
         case 'blocks': return makeBlocks('read');
         case 'add2': return makeAdd2(o);
@@ -4491,13 +4789,23 @@
           const items = [];
           const seen = new Set();
           let guard = 0;
+          // 덧셈과 뺄셈: 덧셈 9문제(뒤의 수 6 · 앞의 수 3), 뺄셈 9문제(앞의 수 6 · 뒤의 수 3)
+          const plan = T.mix ? [[makeSplitAdd, 'back', 6], [makeSplitAdd, 'front', 3], [makeSplitSub, 'front', 6], [makeSplitSub, 'back', 3]] : null;
+          const nextItem = () => {
+            if (!plan) return wsItem(T);
+            let k = items.length;
+            const part = plan.find(([, , n]) => { if (k < n) return true; k -= n; return false; });
+            return part[0](part[1]);
+          };
           while (items.length < T.per && guard < T.per * 20) {
-            const q = wsItem(T);
+            const q = nextItem();
             guard += 1;
             if (seen.has(q.key) && guard < T.per * 12) continue;
             seen.add(q.key);
             items.push(q);
           }
+          // 섞기로 뽑아도 같은 방법끼리 모아 둔다 (덧셈은 뒤의 수, 뺄셈은 앞의 수 가르기부터)
+          if (T.split && !T.mix) items.sort((x, y) => (x.vis.side === (x.vis.op === '+' ? 'b' : 'a') ? 0 : 1) - (y.vis.side === (y.vis.op === '+' ? 'b' : 'a') ? 0 : 1));
           pages.push({ items });
         }
       }
@@ -4543,6 +4851,10 @@
           const cells = [...Array.from({ length: 10 }, (_, k) => ({ c: 'a', x: ans && k >= 10 - b })), ...Array.from({ length: c }, () => ({ c: 'a' }))];
           return `<div class="ws-line"><b>${10 + c} − ${b}</b></div>${tfHtml(cells)}${q.steps.map((s) => line(s.line, s.ans)).join('')}`;
         }
+        case 'sadd':
+        case 'ssub':
+        case 'smix':
+          return splitSvg(q.vis, { show: ans ? { L: q.vis.L, R: q.vis.R, T: q.vis.T } : {}, key: ans, noBand: !ws.band });
         case 'blocks': {
           const [s1, s2, s3] = q.steps;
           return `${blocksHtml(q.vis)}<div class="ws-line"><span class="t">10개씩 묶음</span>${box(s1.ans)}<span class="t">개, 낱개</span>${box(s2.ans)}<span class="t">개 →</span>${box(s3.ans)}</div>`;
@@ -4574,6 +4886,15 @@
           count += rows.reduce((s, r) => s + r.blank.filter(Boolean).length, 0);
           return `<table class="ws-tbl"><tr><th>×</th>${[1, 2, 3, 4, 5, 6, 7, 8, 9].map((b) => `<th>${b}</th>`).join('')}</tr>${rows.map((r) => `<tr><th>${r.a}</th>${r.blank.map((bl, j) => `<td class="${bl ? 'ans' : ''}">${bl ? (ans ? r.a * (j + 1) : '') : r.a * (j + 1)}</td>`).join('')}</tr>`).join('')}</table>`;
         }).join('')}</div>`;
+      } else if (T.mix) {
+        count = page.items.length;
+        const half = page.items.findIndex((q) => q.vis.op === '-');
+        const cell = (q, i) => `<div class="ws-item"><span class="ws-no">${i + 1}</span>${wsItemHtml(T, q, i, ans)}</div>`;
+        const rows = (n) => Math.ceil(n / T.cols);
+        body = `<div class="ws-grid" style="grid-template-columns:repeat(${T.cols},minmax(0,1fr));grid-template-rows:auto repeat(${rows(half)},minmax(0,1fr)) auto repeat(${rows(page.items.length - half)},minmax(0,1fr))">
+          <h3 class="ws-sec">덧셈을 해 보세요.</h3>${page.items.slice(0, half).map((q, i) => cell(q, i)).join('')}
+          <h3 class="ws-sec">뺄셈을 해 보세요.</h3>${page.items.slice(half).map((q, i) => cell(q, half + i)).join('')}
+        </div>`;
       } else {
         count = page.items.length;
         const rows = Math.ceil(page.items.length / T.cols);
@@ -4615,13 +4936,14 @@
       if (k === 'opt') ws.opt[ws.type] = v;
       if (k === 'pages') ws.pages = v;
       if (k === 'key') ws.key = v;
+      if (k === 'band') ws.band = v;
       if (k === 'dan') {
         const s = new Set(ws.dans);
         if (s.has(v)) s.delete(v); else s.add(v);
         if (!s.size) s.add(v);
         ws.dans = [...s];
       }
-      if (k !== 'key') wsGen();
+      if (k !== 'key' && k !== 'band') wsGen();
       renderWs();
     }
     function renderWs() {
@@ -4639,6 +4961,7 @@
             ${M && M.opts ? `<div class="ws-field"><label for="ws-opt">문제 범위</label><select id="ws-opt" class="select" onchange="wsSet('opt', this.value)">${M.opts.filter(([v]) => !(T.id === 'skip' && v === 'line') && !(T.id === 'blocks' && v !== 'read')).map(([v, t]) => `<option value="${v}"${v === wsOpt(T) ? ' selected' : ''}>${t}</option>`).join('')}</select></div>` : ''}
             ${T.dan ? `<div class="ws-field"><span class="lab">단 고르기</span><div class="ws-dans">${DAN_ORDER.slice().sort((a, b) => a - b).map((d) => `<button type="button" class="dan-chip${(ws.dans || []).includes(d) ? ' on' : ''}" onclick="wsSet('dan', ${d})">${d === 0 ? '0' : `${d}단`}</button>`).join('')}</div></div>` : ''}
             <div class="ws-field"><span class="lab">${T.id === 'seq' ? '묶음 수 (두 번째부터는 띄엄띄엄)' : '장 수'}</span><div class="seg">${[1, 2, 3, 5].map((n) => `<button type="button" class="${ws.pages === n ? 'on' : ''}" onclick="wsSet('pages', ${n})">${n}장</button>`).join('')}</div></div>
+            ${T.split ? `<div class="ws-field"><label class="ws-check"><input type="checkbox" ${ws.band ? 'checked' : ''} onchange="wsSet('band', this.checked)" /> 보라색 띠로 10 만드는 짝 보여 주기</label></div>` : ''}
             <div class="ws-field"><label class="ws-check"><input type="checkbox" ${ws.key ? 'checked' : ''} onchange="wsSet('key', this.checked)" /> 정답지도 함께 뽑기</label></div>
             <div class="ws-actions">
               <button class="btn-main" type="button" onclick="wsPrint()">🖨 인쇄하기</button>
