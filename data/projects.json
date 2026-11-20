@@ -477,6 +477,20 @@
     ]
   },
   {
+    "id": "polygonman",
+    "updatedAt": "2026-11-20",
+    "title": "다각형맨",
+    "category": "web-game",
+    "badge": "웹게임",
+    "thumbnail": "assets/thumbnails/polygonman.png",
+    "description": "도형판과 모양 조각을 직접 다루며 다각형, 정다각형과 대각선을 익히는 4학년 수학 게임입니다.",
+    "actions": [
+      { "type": "play", "label": "바로 플레이", "url": "games/polygonman/index.html", "downloadKey": "" },
+      { "type": "external", "label": "새 창", "url": "games/polygonman/index.html", "downloadKey": "" },
+      { "type": "info", "label": "설명", "url": "programs/polygonman.html", "downloadKey": "" }
+    ]
+  },
+  {
     "id": "semman",
     "updatedAt": "2026-11-18",
     "title": "셈맨",
