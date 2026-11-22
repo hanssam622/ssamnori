@@ -491,6 +491,34 @@
     ]
   },
   {
+    "id": "graphman-line",
+    "updatedAt": "2026-11-22",
+    "title": "그래프맨 (꺾은선)",
+    "category": "web-game",
+    "badge": "웹게임",
+    "thumbnail": "assets/thumbnails/graphman-line.png",
+    "description": "꺾은선그래프를 읽고 점을 찍어 그리며 자료의 변화를 해석하는 4학년 수학 게임입니다.",
+    "actions": [
+      { "type": "play", "label": "바로 플레이", "url": "games/graphman-line/index.html", "downloadKey": "" },
+      { "type": "external", "label": "새 창", "url": "games/graphman-line/index.html", "downloadKey": "" },
+      { "type": "info", "label": "설명", "url": "programs/graphman-line.html", "downloadKey": "" }
+    ]
+  },
+  {
+    "id": "shapeman-move",
+    "updatedAt": "2026-11-22",
+    "title": "도형맨 (이동)",
+    "category": "web-game",
+    "badge": "웹게임",
+    "thumbnail": "assets/thumbnails/shapeman-move.png",
+    "description": "점과 평면도형을 밀고, 뒤집고, 돌리며 이동과 무늬를 익히는 4학년 수학 게임입니다.",
+    "actions": [
+      { "type": "play", "label": "바로 플레이", "url": "games/shapeman-move/index.html", "downloadKey": "" },
+      { "type": "external", "label": "새 창", "url": "games/shapeman-move/index.html", "downloadKey": "" },
+      { "type": "info", "label": "설명", "url": "programs/shapeman-move.html", "downloadKey": "" }
+    ]
+  },
+  {
     "id": "semman",
     "updatedAt": "2026-11-18",
     "title": "셈맨",
